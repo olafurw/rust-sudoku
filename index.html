@@ -1,25 +1,28 @@
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learn WGPU</title>
+    <meta charset="utf-8">
+    <title>TITLE</title>
     <style>
+        html,
+        body,
         canvas {
-            background-color: black;
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: absolute;
+            background: black;
+            z-index: 0;
         }
     </style>
 </head>
 
-<body id="wasm-game">
-  <script type="module">
-      import init from "./pkg/rust_sudoku.js";
-      init().then(() => {
-          console.log("WASM Loaded");
-      });
-  </script>
+<body>
+    <canvas id="glcanvas" tabindex='1'></canvas>
+    <script src="bundle.js"></script>
+    <script>load("target/wasm32-unknown-unknown/debug/rust-sudoku.wasm");</script>
 </body>
 
 </html>
