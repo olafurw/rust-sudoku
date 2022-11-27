@@ -1,5 +1,7 @@
 use macroquad::prelude::*;
 
+use crate::PADDING;
+
 #[derive(Clone)]
 pub struct Cell {
     x: f32,
@@ -21,11 +23,16 @@ impl Cell {
         self.size = size;
     }
 
-    pub fn draw(&self, text_params: &TextParams) {
+    pub fn draw(&self, text_params: &TextParams, font_x_offset: f32, font_y_offset: f32) {
         draw_rectangle(self.x, self.y, self.size, self.size, WHITE);
 
         if let Some(n) = self.number {
-            draw_text_ex(n.to_string().as_str(), self.x, self.y, *text_params);
+            draw_text_ex(
+                n.to_string().as_str(), 
+                self.x + font_x_offset, 
+                self.y + font_y_offset + (self.size / 2.0) + PADDING, 
+                *text_params
+            );
         }
     }
 }

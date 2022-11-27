@@ -18,6 +18,7 @@ pub fn cell_font(font: &Font, cell_size: f32) -> u16 {
 
     let mut font_size = 1;
 
+    // todo: turn into binary search
     for test_size in 1..200 {
         let measurement = measure_text("9", Some(*font), test_size, 1.0);
         if measurement.height / cell_size > 0.6 {
@@ -31,14 +32,19 @@ pub fn cell_font(font: &Font, cell_size: f32) -> u16 {
 
 struct Context {
     params: TextParams,
+    font_height: f32,
+    font_width: f32,
     board: Board,
 }
 
 impl Context {
     async fn new(font_path: &str) -> Self {
         let font = load_ttf_font(font_path).await.unwrap();
+        let measure = measure_text("9", Some(font), 48, 1.0);
         Context {
             params: TextParams { font, font_size: 48, font_scale: 1.0, font_scale_aspect: 1.0, rotation: 0.0, color: BLACK },
+            font_height: measure.height,
+            font_width: measure.width,
             board: Board::new(),
         }
     }
@@ -50,6 +56,9 @@ impl Context {
         }
 
         self.params.font_size = cell_font(&self.params.font, self.board.cell_size);
+        
+        let measure = measure_text("9", Some(self.params.font), self.params.font_size, 1.0);
+        self.board.update_font_offset(measure.height, measure.width);
     }
 }
 
