@@ -11,7 +11,7 @@ pub struct Cell {
 impl Cell {
     pub fn new() -> Self {
         Cell {
-            x: 0.0, y: 0.0, size: 0.0, number: None,
+            x: 0.0, y: 0.0, size: 0.0, number: Some(9),
         }
     }
 
@@ -21,8 +21,11 @@ impl Cell {
         self.size = size;
     }
 
-    pub fn draw(&self) {
+    pub fn draw(&self, text_params: &TextParams) {
         draw_rectangle(self.x, self.y, self.size, self.size, WHITE);
-        draw_text("9", self.x, self.y, 100.0, BLACK);
+
+        if let Some(n) = self.number {
+            draw_text_ex(n.to_string().as_str(), self.x, self.y, *text_params);
+        }
     }
 }

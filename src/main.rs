@@ -1,71 +1,55 @@
-use cell::Cell;
+mod cell;
+mod board;
+
+use board::Board;
 use macroquad::{prelude::*};
 
-mod cell;
+pub const PADDING: f32 = 10.0;
+pub const DIGIT_COUNT: usize = 9;
 
-const PADDING: f32 = 10.0;
-const DIGIT_COUNT: usize = 9;
-
-fn index_to_2d(index: usize) -> (usize, usize) {
+pub fn index_to_2d(index: usize) -> (usize, usize) {
     (index % DIGIT_COUNT, index / DIGIT_COUNT)
 }
 
-struct Board {
-    cells: Vec<Cell>,
-    board_size: f32,
-    cell_size: f32,
-}
-
-impl Board {
-    fn new() -> Self {
-        Board {
-            cells: vec![Cell::new(); 81],
-            board_size: 0.0,
-            cell_size: 0.0,
-        }
+pub fn cell_font(font: &Font, cell_size: f32) -> u16 {
+    if cell_size < 1.0 {
+        return 1;
     }
-    
-    fn update(&mut self, board_size: f32) {
-        if self.board_size as i32 == board_size as i32 {
-            return;
-        }
 
-        self.board_size = board_size;
-        self.cell_size = self.board_size / 9.0;
+    let mut font_size = 1;
 
-        for (i, cell) in self.cells.iter_mut().enumerate() {
-            let (x, y) = index_to_2d(i);
-            let x_pos = PADDING + (x as f32 * self.cell_size);
-            let y_pos = PADDING + (y as f32 * self.cell_size);
-
-            cell.update(x_pos, y_pos, self.cell_size);
+    for test_size in 1..200 {
+        let measurement = measure_text("9", Some(*font), test_size, 1.0);
+        if measurement.height / cell_size > 0.6 {
+            font_size = test_size;
+            break;
         }
     }
 
-    fn draw(&self) {
-        for cell in self.cells.iter() {
-            cell.draw();
-        }
-    }
+    font_size
 }
 
 struct Context {
-    font: Font,
+    params: TextParams,
     board: Board,
 }
 
 impl Context {
     async fn new(font_path: &str) -> Self {
+        let font = load_ttf_font(font_path).await.unwrap();
         Context {
-            font: load_ttf_font(font_path).await.unwrap(),
+            params: TextParams { font, font_size: 48, font_scale: 1.0, font_scale_aspect: 1.0, rotation: 0.0, color: BLACK },
             board: Board::new(),
         }
     }
 
     fn update(&mut self) {
         let board_size = screen_width() - (2.0 * PADDING);
-        
-        self.board.update(board_size);
+        if !self.board.update(board_size) {
+            return;
+        }
+
+        self.params.font_size = cell_font(&self.params.font, self.board.cell_size);
     }
 }
 
@@ -102,7 +86,7 @@ fn draw_box_lines(context: &Context) {
 fn draw(context: &Context) {
     clear_background(LIGHTGRAY);
 
-    context.board.draw();
+    context.board.draw(&context.params);
 
     draw_cell_lines(context);
     draw_box_lines(context);
