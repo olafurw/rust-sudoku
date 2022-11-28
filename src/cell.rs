@@ -30,7 +30,7 @@ impl Cell {
             draw_text_ex(
                 n.to_string().as_str(), 
                 self.x + font_x_offset, 
-                self.y + font_y_offset + (self.size / 2.0) + PADDING, 
+                self.y + font_y_offset, 
                 *text_params
             );
         }

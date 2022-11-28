@@ -56,9 +56,9 @@ impl Context {
         }
 
         self.params.font_size = cell_font(&self.params.font, self.board.cell_size);
-        
+
         let measure = measure_text("9", Some(self.params.font), self.params.font_size, 1.0);
-        self.board.update_font_offset(measure.height, measure.width);
+        self.board.update_font_offset(measure.width, measure.height);
     }
 }
 

@@ -44,9 +44,9 @@ impl Board {
         true
     }
 
-    pub fn update_font_offset(&mut self, font_height: f32, font_width: f32) {
+    pub fn update_font_offset(&mut self, font_width: f32, font_height: f32) {
         self.font_x_offset = (self.cell_size / 2.0) - (font_width / 2.0);
-        self.font_y_offset = (self.cell_size / 2.0) - (font_height / 2.0);
+        self.font_y_offset = (self.cell_size / 2.0) + (font_height / 2.0);
     }
 
     pub fn draw(&self, text_params: &TextParams) {
