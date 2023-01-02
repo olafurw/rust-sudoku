@@ -1,7 +1,5 @@
 use macroquad::prelude::*;
 
-use crate::PADDING;
-
 #[derive(Clone)]
 pub struct Cell {
     x: f32,
@@ -13,7 +11,7 @@ pub struct Cell {
 impl Cell {
     pub fn new() -> Self {
         Cell {
-            x: 0.0, y: 0.0, size: 0.0, number: Some(9),
+            x: 0.0, y: 0.0, size: 0.0, number: Some(1),
         }
     }
 
