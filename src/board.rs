@@ -17,6 +17,22 @@ impl Board {
             cell_size: 0.0,
         }
     }
+
+    pub fn clear(&mut self) {
+        for cell in self.cells.iter_mut() {
+            cell.clear();
+        }
+    }
+
+    pub fn click(&mut self, x: f32, y: f32) {
+        self.clear();
+        
+        for cell in self.cells.iter_mut() {
+            if cell.click(x, y) {
+                break;
+            }
+        }
+    }
     
     pub fn update(&mut self, board_size: f32) -> bool {
         if self.board_size as i32 == board_size as i32 {

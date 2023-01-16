@@ -6,13 +6,27 @@ pub struct Cell {
     y: f32,
     size: f32,
     number: Option<u32>,
+    selected: bool,
 }
 
 impl Cell {
     pub fn new() -> Self {
         Cell {
-            x: 0.0, y: 0.0, size: 0.0, number: Some(1),
+            x: 0.0, y: 0.0, size: 0.0, number: Some(1), selected: false
         }
+    }
+
+    pub fn clear(&mut self) {
+        self.selected = false;
+    }
+
+    pub fn click(&mut self, x: f32, y: f32) -> bool {
+        if x >= self.x && x <= self.x + self.size
+        && y >= self.y && y <= self.y + self.size {
+            self.selected = true;
+        }
+
+        self.selected
     }
 
     pub fn update(&mut self, x: f32, y: f32, size: f32) {
@@ -22,7 +36,8 @@ impl Cell {
     }
 
     pub fn draw(&self, text_params: &TextParams, font_x_offset: f32, font_y_offset: f32) {
-        draw_rectangle(self.x, self.y, self.size, self.size, WHITE);
+        let color = if self.selected { GRAY } else { WHITE };
+        draw_rectangle(self.x, self.y, self.size, self.size, color);
 
         if let Some(n) = self.number {
             draw_text_ex(
