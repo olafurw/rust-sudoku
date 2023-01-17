@@ -1,5 +1,4 @@
 use crate::cell::Cell;
-use crate::cell_font::CellFont;
 use crate::PADDING;
 use crate::context::index_to_2d;
 
@@ -26,7 +25,7 @@ impl Board {
 
     pub fn click(&mut self, x: f32, y: f32) {
         self.clear();
-        
+
         for cell in self.cells.iter_mut() {
             if cell.click(x, y) {
                 break;
@@ -51,11 +50,5 @@ impl Board {
         }
 
         true
-    }
-
-    pub fn draw(&self, font: &CellFont) {
-        for cell in self.cells.iter() {
-            cell.draw(&font.params, font.x_offset, font.y_offset);
-        }
     }
 }

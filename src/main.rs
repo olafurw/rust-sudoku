@@ -10,8 +10,10 @@ mod board;
 mod cell;
 mod context;
 mod cell_font;
+mod draw;
 
 use context::Context;
+use draw::draw_context;
 use macroquad::prelude::*;
 
 pub const PADDING: f32 = 10.0;
@@ -27,7 +29,7 @@ async fn main() {
 
     loop {
         context.update();
-        context.draw();
+        draw_context(&context);
 
         next_frame().await
     }

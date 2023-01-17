@@ -1,14 +1,10 @@
-use macroquad::prelude::*;
-
-use crate::{CELL_COLOR_SELECTED, CELL_COLOR_NORMAL};
-
 #[derive(Clone)]
 pub struct Cell {
-    x: f32,
-    y: f32,
-    size: f32,
-    number: Option<u32>,
-    selected: bool,
+    pub x: f32,
+    pub y: f32,
+    pub size: f32,
+    pub number: Option<u32>,
+    pub selected: bool,
 }
 
 impl Cell {
@@ -35,19 +31,5 @@ impl Cell {
         self.x = x;
         self.y = y;
         self.size = size;
-    }
-
-    pub fn draw(&self, text_params: &TextParams, font_x_offset: f32, font_y_offset: f32) {
-        let color = if self.selected { CELL_COLOR_SELECTED } else { CELL_COLOR_NORMAL };
-        draw_rectangle(self.x, self.y, self.size, self.size, color);
-
-        if let Some(n) = self.number {
-            draw_text_ex(
-                n.to_string().as_str(), 
-                self.x + font_x_offset, 
-                self.y + font_y_offset, 
-                *text_params
-            );
-        }
     }
 }
