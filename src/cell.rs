@@ -1,5 +1,7 @@
 use macroquad::prelude::*;
 
+use crate::{CELL_COLOR_SELECTED, CELL_COLOR_NORMAL};
+
 #[derive(Clone)]
 pub struct Cell {
     x: f32,
@@ -36,7 +38,7 @@ impl Cell {
     }
 
     pub fn draw(&self, text_params: &TextParams, font_x_offset: f32, font_y_offset: f32) {
-        let color = if self.selected { GRAY } else { WHITE };
+        let color = if self.selected { CELL_COLOR_SELECTED } else { CELL_COLOR_NORMAL };
         draw_rectangle(self.x, self.y, self.size, self.size, color);
 
         if let Some(n) = self.number {

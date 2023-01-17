@@ -16,6 +16,8 @@ use macroquad::prelude::*;
 
 pub const PADDING: f32 = 10.0;
 pub const DIGIT_COUNT: usize = 9;
+pub const CELL_COLOR_NORMAL: Color = WHITE;
+pub const CELL_COLOR_SELECTED: Color = Color::new(0.70, 0.85, 1.00, 1.00);
 
 #[macroquad::main("Sudoku")]
 async fn main() {
