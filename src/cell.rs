@@ -22,7 +22,7 @@ impl Cell {
         }
     }
 
-    pub fn clear(&mut self) {
+    pub fn clear_highlight(&mut self) {
         self.selected = false;
         self.emphasize = false;
         self.highlighted = false;
@@ -82,7 +82,7 @@ mod tests {
         let mut cell = Cell::new();
         init_assert(&cell);
 
-        cell.clear();
+        cell.clear_highlight();
         assert_eq!(cell.selected, false);
     }
 

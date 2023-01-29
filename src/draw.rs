@@ -61,6 +61,6 @@ pub fn draw_context(context: &Context) {
 
     draw_board(&context.board, &context.font);
 
-    draw_cell_lines(&context);
-    draw_box_lines(&context);
+    draw_cell_lines(context);
+    draw_box_lines(context);
 }

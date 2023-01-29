@@ -52,6 +52,12 @@ impl Context {
             let (mouse_x, mouse_y) = mouse_position();
             self.board.click(mouse_x, mouse_y);
         }
+
+        let key_pressed = get_char_pressed();
+        if let Some(key @ '1'..='9') = key_pressed {
+            let number = key as u32 - '0' as u32;
+            self.board.number(number);
+        }
     }
 
     pub fn update(&mut self) {

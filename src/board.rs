@@ -6,6 +6,8 @@ pub struct Board {
     pub cells: Vec<Cell>,
     pub board_size: f32,
     pub cell_size: f32,
+    pub selected_index: Option<usize>,
+    pub selected_number: Option<u32>,
 }
 
 impl Board {
@@ -14,40 +16,69 @@ impl Board {
             cells: vec![Cell::new(); 81],
             board_size: 0.0,
             cell_size: 0.0,
+            selected_index: None,
+            selected_number: None,
+        }
+    }
+
+    pub fn clear_highlight(&mut self) {
+        for cell in self.cells.iter_mut() {
+            cell.clear_highlight();
         }
     }
 
     pub fn clear(&mut self) {
-        for cell in self.cells.iter_mut() {
-            cell.clear();
+        self.clear_highlight();
+        self.selected_index = None;
+        self.selected_number = None;
+    }
+
+    pub fn number(&mut self, number: u32) {
+        if self.selected_index.is_none() {
+            return;
         }
+
+        self.cells[self.selected_index.unwrap()].set_number(number);
+        self.selected_number = Some(number);
+        self.highlight();
     }
 
     pub fn click(&mut self, x: f32, y: f32) {
-        self.clear();
+        let mut clicked = (false, None);
+        self.selected_index = None;
 
-        let mut click = (false, None);
-        let mut selected_index = 0;
-
+        // perform a click on each cell to see which one
+        // gets selected
         for (i, cell) in self.cells.iter_mut().enumerate() {
-            click = cell.click(x, y);
-            if click.0 {
-                selected_index = i;
+            clicked = cell.click(x, y);
+            if clicked.0 {
+                self.selected_index = Some(i);
+                self.selected_number = cell.number;
                 break;
             }
         }
 
         // no cell was clicked
-        if !click.0 {
+        if !clicked.0 {
             return;
         }
 
-        let mut highlight_list = vec![selected_index];
+        self.highlight();
+    }
+
+    fn highlight(&mut self) {
+        self.clear_highlight();
+
+        if self.selected_index.is_none() {
+            return;
+        }
+
+        let mut highlight_list = vec![self.selected_index.unwrap()];
 
         // only highlight numbers if the selected cell has a number
-        if click.1 != None {
+        if self.selected_number.is_some() {
             for (i, cell) in self.cells.iter_mut().enumerate() {
-                if cell.number == click.1 {
+                if cell.number == self.selected_number {
                     cell.emphasize = true;
                     highlight_list.push(i);
                 }
@@ -55,9 +86,9 @@ impl Board {
         }
 
         for index in highlight_list {
-            self.highlight_areas(&BOX_INDEXES, index);
-            self.highlight_areas(&ROW_INDEXES, index);
-            self.highlight_areas(&COLUMN_INDEXES, index);
+            self.highlight_areas(BOX_INDEXES, index);
+            self.highlight_areas(ROW_INDEXES, index);
+            self.highlight_areas(COLUMN_INDEXES, index);
         }
     }
 

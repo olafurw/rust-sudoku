@@ -23,7 +23,7 @@ pub const CELL_COLOR_SELECTED: Color = Color::new(1.0, 0.816, 0.698, 1.00);
 pub const CELL_COLOR_EMPHASIZE: Color = Color::new(0.7, 0.85, 1.00, 1.00);
 pub const CELL_COLOR_HIGHLIGHTED: Color = Color::new(0.82, 0.82, 0.82, 1.00);
 
-pub const BOX_INDEXES: &'static [[usize; 9]; 9] = &[
+pub const BOX_INDEXES: &[[usize; 9]; 9] = &[
     [0, 1, 2, 9, 10, 11, 18, 19, 20],
     [3, 4, 5, 12, 13, 14, 21, 22, 23],
     [6, 7, 8, 15, 16, 17, 24, 25, 26],
@@ -35,7 +35,7 @@ pub const BOX_INDEXES: &'static [[usize; 9]; 9] = &[
     [60, 61, 62, 69, 70, 71, 78, 79, 80],
 ];
 
-pub const ROW_INDEXES: &'static [[usize; 9]; 9] = &[
+pub const ROW_INDEXES: &[[usize; 9]; 9] = &[
     [0, 1, 2, 3, 4, 5, 6, 7, 8],
     [9, 10, 11, 12, 13, 14, 15, 16, 17],
     [18, 19, 20, 21, 22, 23, 24, 25, 26],
@@ -47,7 +47,7 @@ pub const ROW_INDEXES: &'static [[usize; 9]; 9] = &[
     [72, 73, 74, 75, 76, 77, 78, 79, 80]
 ];
 
-pub const COLUMN_INDEXES: &'static [[usize; 9]; 9] = &[
+pub const COLUMN_INDEXES: &[[usize; 9]; 9] = &[
     [0, 9, 18, 27, 36, 45, 54, 63, 72],
     [1, 10, 19, 28, 37, 46, 55, 64, 73],
     [2, 11, 20, 29, 38, 47, 56, 65, 74],
