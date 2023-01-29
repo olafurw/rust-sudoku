@@ -3,11 +3,15 @@ use macroquad::prelude::*;
 use crate::{
     cell::Cell, 
     board::Board, cell_font::CellFont, context::Context,
-    CELL_COLOR_SELECTED, CELL_COLOR_NORMAL, PADDING,
+    CELL_COLOR_SELECTED, CELL_COLOR_NORMAL, PADDING, CELL_COLOR_HIGHLIGHTED, CELL_COLOR_EMPHASIZE,
 };
 
 pub fn draw_cell(cell: &Cell, text_params: &TextParams, font_x_offset: f32, font_y_offset: f32) {
-    let color = if cell.selected { CELL_COLOR_SELECTED } else { CELL_COLOR_NORMAL };
+    let color = if cell.selected { CELL_COLOR_SELECTED } 
+                else if cell.emphasize { CELL_COLOR_EMPHASIZE }
+                else if cell.highlighted { CELL_COLOR_HIGHLIGHTED } 
+                else { CELL_COLOR_NORMAL };
+
     draw_rectangle(cell.x, cell.y, cell.size, cell.size, color);
 
     if let Some(n) = cell.number {
