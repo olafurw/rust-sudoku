@@ -1,5 +1,5 @@
 use crate::cell::Cell;
-use crate::{PADDING, BOX_INDEXES, ROW_INDEXES, COLUMN_INDEXES};
+use crate::{PADDING, BOX_INDEXES, ROW_INDEXES, COLUMN_INDEXES, DIGIT_COUNT};
 use crate::context::index_to_xy;
 
 pub struct Board {
@@ -116,7 +116,7 @@ impl Board {
         self.cell_size = self.board_size / 9.0;
 
         for (i, cell) in self.cells.iter_mut().enumerate() {
-            let (x, y) = index_to_xy(i);
+            let (x, y) = index_to_xy(i, DIGIT_COUNT);
             let x_pos = PADDING + (x as f32 * self.cell_size);
             let y_pos = PADDING + (y as f32 * self.cell_size);
 

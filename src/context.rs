@@ -1,11 +1,11 @@
 use crate::board::Board;
-use crate::cell_font::CellFont;
-use crate::{PADDING, DIGIT_COUNT};
+use crate::cell_font::{CellFont, CellPencilFont};
+use crate::PADDING;
 
 use macroquad::prelude::*;
 
-pub fn index_to_xy(index: usize) -> (usize, usize) {
-    (index % DIGIT_COUNT, index / DIGIT_COUNT)
+pub fn index_to_xy(index: usize, width: usize) -> (usize, usize) {
+    (index % width, index / width)
 }
 
 pub fn xy_to_index(x: usize, y: usize, width: usize) -> usize {
@@ -14,6 +14,7 @@ pub fn xy_to_index(x: usize, y: usize, width: usize) -> usize {
 
 pub struct Context {
     pub font: CellFont,
+    pub pencil_font: CellPencilFont,
     pub board: Board,
     pub demo: [[u32; 9]; 9],
 }
@@ -22,6 +23,7 @@ impl Context {
     pub async fn new(font_path: &str) -> Self {
         Context {
             font: CellFont::new(font_path).await,
+            pencil_font: CellPencilFont::new(font_path).await,
             board: Board::new(),
             demo: [
                 [2, 0, 0, 3, 0, 6, 0, 0, 0],
@@ -66,5 +68,6 @@ impl Context {
         let board_size = screen_width() - (2.0 * PADDING);
         self.board.update(board_size);
         self.font.update(self.board.cell_size);
+        self.pencil_font.update(self.board.cell_size);
     }
 }

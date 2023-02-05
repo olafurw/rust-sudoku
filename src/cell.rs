@@ -4,6 +4,7 @@ pub struct Cell {
     pub y: f32,
     pub size: f32,
     pub number: Option<u32>,
+    pub pencil: [Option<u32>; 9],
     pub selected: bool,
     pub emphasize: bool,
     pub highlighted: bool,
@@ -12,13 +13,19 @@ pub struct Cell {
 impl Cell {
     pub fn new() -> Self {
         Cell {
-            x: 0.0, y: 0.0, size: 0.0, number: None, selected: false, emphasize: false, highlighted: false
+            x: 0.0, y: 0.0, 
+            size: 0.0, number: None, 
+            pencil: [None, None, None, None, None, None, None, None, None],
+            selected: false, emphasize: false, highlighted: false
         }
     }
 
     pub fn new_init(x: f32, y: f32, size: f32, number: Option<u32>) -> Self {
         Cell {
-            x, y, size, number, selected: false, emphasize: false, highlighted: false
+            x, y, 
+            size, number, 
+            pencil: [None, None, None, None, None, None, None, None, None],
+            selected: false, emphasize: false, highlighted: false
         }
     }
 
@@ -39,7 +46,42 @@ impl Cell {
         (self.selected, self.number)
     }
 
+    pub fn has_pencil(&self) -> bool {
+        self.pencil.iter().any(|&number| number.is_some())
+    }
+
+    pub fn set_pencil(&mut self, number: u32) {
+        if !(1..=9).contains(&number) {
+            return;
+        }
+
+        self.clear_number();
+        self.pencil[number as usize - 1] = Some(number);
+    }
+
+    pub fn remove_pencil(&mut self, number: u32) {
+        if !(1..=9).contains(&number) {
+            return;
+        }
+
+        self.clear_number();
+        self.pencil[number as usize - 1] = None;
+    }
+
+    pub fn clear_pencil(&mut self) {
+        self.pencil = [None, None, None, None, None, None, None, None, None];
+    }
+
+    pub fn has_number(&self) -> bool {
+        self.number.is_some()
+    }
+
     pub fn set_number(&mut self, number: u32) {
+        if !(1..=9).contains(&number) {
+            return;
+        }
+
+        self.clear_pencil();
         self.number = Some(number);
     }
 
