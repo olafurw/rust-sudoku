@@ -76,6 +76,10 @@ impl Cell {
         self.number.is_some()
     }
 
+    pub fn is_number(&self, number: u32) -> bool {
+        self.number == Some(number)
+    }
+
     pub fn set_number(&mut self, number: u32) {
         if !(1..=9).contains(&number) {
             return;

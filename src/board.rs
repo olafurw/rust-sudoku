@@ -38,9 +38,17 @@ impl Board {
             return;
         }
 
-        self.cells[self.selected_index.unwrap()].set_number(number);
         self.selected_number = Some(number);
-        self.highlight();
+
+        let cell = &mut self.cells[self.selected_index.unwrap()];
+        if cell.is_number(number) {
+            self.highlight();
+            self.pencil_unhighlighted(number);
+        } else {
+            cell.set_number(number);
+            self.highlight();
+            self.clear_pencil(number);
+        }
     }
 
     pub fn click(&mut self, x: f32, y: f32) {
@@ -64,6 +72,28 @@ impl Board {
         }
 
         self.highlight();
+    }
+
+    fn pencil_unhighlighted(&mut self, number: u32) {
+        for cell in self.cells.iter_mut() {
+            if cell.has_number() || cell.highlighted || cell.selected || cell.emphasize {
+                continue;
+            }
+
+            cell.set_pencil(number);
+        }
+    }
+
+    fn clear_pencil(&mut self, number: u32) {
+        for cell in self.cells.iter_mut() {
+            if cell.has_number() || cell.selected || cell.emphasize {
+                continue;
+            }
+
+            if cell.highlighted {
+                cell.remove_pencil(number);
+            }
+        }
     }
 
     fn highlight(&mut self) {
