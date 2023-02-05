@@ -73,12 +73,15 @@ impl Board {
             return;
         }
 
-        let mut highlight_list = vec![self.selected_index.unwrap()];
+        let sel_index = self.selected_index.unwrap();
+        self.cells[sel_index].selected = true;
+        
+        let mut highlight_list = vec![sel_index];
 
         // only highlight numbers if the selected cell has a number
         if self.selected_number.is_some() {
             for (i, cell) in self.cells.iter_mut().enumerate() {
-                if cell.number == self.selected_number {
+                if i != sel_index && cell.number == self.selected_number {
                     cell.emphasize = true;
                     highlight_list.push(i);
                 }
