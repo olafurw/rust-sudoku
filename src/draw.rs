@@ -113,4 +113,7 @@ pub fn draw_context(context: &Context) {
 
     draw_cell_lines(context);
     draw_box_lines(context);
+
+    let ui_position = if context.portrait { vec2(10.0, context.game_area as f32) } else { vec2(context.game_area as f32, 10.0) };
+    println!("{}, {}", ui_position.x, ui_position.y);
 }

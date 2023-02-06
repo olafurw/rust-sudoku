@@ -68,6 +68,7 @@ impl Board {
 
         // no cell was clicked
         if !clicked.0 {
+            self.clear_highlight();
             return;
         }
 

@@ -1,8 +1,11 @@
+use std::cmp::min;
+
 use crate::board::Board;
 use crate::cell_font::{CellFont, CellPencilFont};
 use crate::PADDING;
 
 use macroquad::prelude::*;
+use macroquad::ui::Skin;
 
 pub fn index_to_xy(index: usize, width: usize) -> (usize, usize) {
     (index % width, index / width)
@@ -14,17 +17,25 @@ pub fn xy_to_index(x: usize, y: usize, width: usize) -> usize {
 
 pub struct Context {
     pub font: CellFont,
+    pub skin: Skin,
     pub pencil_font: CellPencilFont,
     pub board: Board,
+    pub game_area: u32,
+    pub board_size: f32,
+    pub portrait: bool,
     pub demo: [[u32; 9]; 9],
 }
 
 impl Context {
-    pub async fn new(font_path: &str) -> Self {
+    pub async fn new(font_path: &str, skin: Skin) -> Self {
         Context {
             font: CellFont::new(font_path).await,
+            skin,
             pencil_font: CellPencilFont::new(font_path).await,
             board: Board::new(),
+            game_area: 0,
+            board_size: 0.0,
+            portrait: true,
             demo: [
                 [2, 0, 0, 3, 0, 6, 0, 0, 0],
                 [6, 0, 5, 9, 0, 0, 4, 0, 8],
@@ -65,8 +76,15 @@ impl Context {
     pub fn update(&mut self) {
         self.handle_input();
 
-        let board_size = screen_width() - (2.0 * PADDING);
-        self.board.update(board_size);
+        let height = screen_height();
+        let width = screen_width();
+
+        self.portrait = height >= width;
+
+        self.game_area = min(height as u32, width as u32);
+        self.board_size = self.game_area as f32 - (2.0 * PADDING);
+
+        self.board.update(self.board_size);
         self.font.update(self.board.cell_size);
         self.pencil_font.update(self.board.cell_size);
     }

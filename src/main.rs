@@ -14,7 +14,7 @@ mod draw;
 
 use context::Context;
 use draw::draw_context;
-use macroquad::prelude::*;
+use macroquad::{prelude::*, ui::{Skin, hash, root_ui, widgets}};
 
 pub const PADDING: f32 = 10.0;
 pub const DIGIT_COUNT: usize = 9;
@@ -61,7 +61,48 @@ pub const COLUMN_INDEXES: &[[usize; 9]; 9] = &[
 
 #[macroquad::main("Sudoku")]
 async fn main() {
-    let mut context = Context::new("arial.ttf").await;
+    let skin = {
+        let button_style = root_ui()
+            .style_builder()
+            .background(Image::from_file_with_format(
+                include_bytes!("../button_normal.png"),
+                None,
+            ))
+            .background_margin(RectOffset::new(15.0, 15.0, 15.0, 15.0))
+            .background_hovered(Image::from_file_with_format(
+                include_bytes!("../button_normal_hover.png"),
+                None,
+            ))
+            .background_clicked(Image::from_file_with_format(
+                include_bytes!("../button_normal_clicked.png"),
+                None,
+            ))
+            .font(include_bytes!("../arial.ttf"))
+            .unwrap()
+            .text_color(Color::from_rgba(255, 255, 255, 255))
+            .text_color_hovered(Color::from_rgba(255, 255, 255, 255))
+            .text_color_clicked(Color::from_rgba(255, 255, 255, 255))
+            .font_size(40)
+            .build();
+
+        let window_style = root_ui()
+            .style_builder()
+            .background(Image::from_file_with_format(
+                include_bytes!("../window_background_2.png"),
+                None,
+            ))
+            .background_margin(RectOffset::new(0.0, 0.0, 0.0, 0.0))
+            .margin(RectOffset::new(0.0, 0.0, 0.0, 0.0))
+            .build();
+        
+        Skin {
+            button_style,
+            window_style,
+            ..root_ui().default_skin()
+        }
+    };
+
+    let mut context = Context::new("arial.ttf", skin.clone()).await;
 
     request_new_screen_size(576.0, 1080.0);
 
