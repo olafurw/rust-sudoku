@@ -1,6 +1,6 @@
 use crate::cell::Cell;
-use crate::{PADDING, BOX_INDEXES, ROW_INDEXES, COLUMN_INDEXES, DIGIT_COUNT};
 use crate::context::index_to_xy;
+use crate::{BOX_INDEXES, COLUMN_INDEXES, DIGIT_COUNT, PADDING, ROW_INDEXES};
 
 pub struct Board {
     pub cells: Vec<Cell>,
@@ -105,7 +105,7 @@ impl Board {
 
         let sel_index = self.selected_index.unwrap();
         self.cells[sel_index].selected = true;
-        
+
         let mut highlight_list = vec![sel_index];
 
         // only highlight numbers if the selected cell has a number
@@ -131,12 +131,12 @@ impl Board {
                 for index in index_row.iter() {
                     self.cells[*index].highlighted = true;
                 }
-    
+
                 break;
             }
         }
     }
-    
+
     pub fn update(&mut self, board_size: f32) -> bool {
         if self.board_size as i32 == board_size as i32 {
             return false;

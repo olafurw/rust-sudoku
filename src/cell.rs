@@ -13,19 +13,27 @@ pub struct Cell {
 impl Cell {
     pub fn new() -> Self {
         Cell {
-            x: 0.0, y: 0.0, 
-            size: 0.0, number: None, 
+            x: 0.0,
+            y: 0.0,
+            size: 0.0,
+            number: None,
             pencil: [None, None, None, None, None, None, None, None, None],
-            selected: false, emphasize: false, highlighted: false
+            selected: false,
+            emphasize: false,
+            highlighted: false,
         }
     }
 
     pub fn new_init(x: f32, y: f32, size: f32, number: Option<u32>) -> Self {
         Cell {
-            x, y, 
-            size, number, 
+            x,
+            y,
+            size,
+            number,
             pencil: [None, None, None, None, None, None, None, None, None],
-            selected: false, emphasize: false, highlighted: false
+            selected: false,
+            emphasize: false,
+            highlighted: false,
         }
     }
 
@@ -38,8 +46,7 @@ impl Cell {
     pub fn click(&mut self, x: f32, y: f32) -> (bool, Option<u32>) {
         self.selected = false;
 
-        if x >= self.x && x <= self.x + self.size
-        && y >= self.y && y <= self.y + self.size {
+        if x >= self.x && x <= self.x + self.size && y >= self.y && y <= self.y + self.size {
             self.selected = true;
         }
 

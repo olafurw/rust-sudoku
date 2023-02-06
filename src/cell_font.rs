@@ -1,5 +1,5 @@
+use macroquad::prelude::*;
 use macroquad::text::TextParams;
-use macroquad::{prelude::*};
 
 fn cell_to_font_size(font: &Font, cell_size: f32) -> u16 {
     if cell_size < 1.0 {
@@ -36,7 +36,14 @@ impl CellFont {
         let measure = measure_text("9", Some(font), 48, 1.0);
         CellFont {
             font,
-            params: TextParams { font, font_size: 48, font_scale: 1.0, font_scale_aspect: 1.0, rotation: 0.0, color: BLACK },
+            params: TextParams {
+                font,
+                font_size: 48,
+                font_scale: 1.0,
+                font_scale_aspect: 1.0,
+                rotation: 0.0,
+                color: BLACK,
+            },
             x_offset: 0.0,
             y_offset: 0.0,
             height: measure.height,
@@ -71,7 +78,14 @@ impl CellPencilFont {
         let measure = measure_text("9", Some(font), 48, 1.0);
         CellPencilFont {
             font,
-            params: TextParams { font, font_size: 48, font_scale: 1.0, font_scale_aspect: 1.0, rotation: 0.0, color: BLACK },
+            params: TextParams {
+                font,
+                font_size: 48,
+                font_scale: 1.0,
+                font_scale_aspect: 1.0,
+                rotation: 0.0,
+                color: BLACK,
+            },
             x_offset: 0.0,
             y_offset: 0.0,
             height: measure.height,
