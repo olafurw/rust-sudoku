@@ -1,10 +1,7 @@
 // TODO
 //
-// create draw trait and seperate them into their own file
-// board, cell_font, cell should only be state update stuff, not drawing
-// board should also respect the height of the screen to allow for input buttons
-// clicking should select cell and highlight areas
-// selecting a cell with a value should highlight same values
+// validation
+// more unit tests
 
 mod board;
 mod cell;

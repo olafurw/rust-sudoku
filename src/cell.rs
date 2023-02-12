@@ -116,7 +116,7 @@ mod tests {
         assert_eq!(cell.y, 0.0);
         assert_eq!(cell.size, 0.0);
         assert_eq!(cell.number, None);
-        assert_eq!(cell.selected, false);
+        assert!(!cell.selected);
     }
 
     fn click_assert(cell: &mut Cell, x: f32, y: f32, number: Option<u32>, expected: bool) {
@@ -183,5 +183,40 @@ mod tests {
         cell_number.clear_number();
         click_assert(&mut cell_number, 41.0, 41.0, None, true);
         click_assert(&mut cell_number, 11.0, 11.0, None, false);
+    }
+
+    #[test]
+    fn pencil_test() {
+        let mut cell = Cell::new_init(0.0, 0.0, 32.0, None);
+        assert!(!cell.has_pencil());
+
+        cell.clear_pencil();
+        assert!(!cell.has_pencil());
+
+        cell.remove_pencil(1);
+        assert!(!cell.has_pencil());
+
+        cell.set_pencil(1);
+        assert!(cell.has_pencil());
+        assert_eq!(cell.pencil[0], Some(1));
+
+        cell.remove_pencil(1);
+        assert!(!cell.has_pencil());
+
+        cell.set_pencil(1);
+        assert!(cell.has_pencil());
+        cell.clear_pencil();
+        assert!(!cell.has_pencil());
+
+        for i in 0..9 {
+            assert!(!cell.has_pencil());
+            
+            cell.set_pencil(i + 1);
+            assert!(cell.has_pencil());
+            assert_eq!(cell.pencil[i as usize], Some(i + 1));
+
+            cell.remove_pencil(i + 1);
+            assert_eq!(cell.pencil[i as usize], None);
+        }
     }
 }
