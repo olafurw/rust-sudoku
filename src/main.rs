@@ -1,6 +1,6 @@
 // TODO
 //
-// validation
+// actual undo, with action stack
 // more unit tests
 
 mod board;
@@ -11,7 +11,7 @@ mod draw;
 
 use context::Context;
 use draw::draw_context;
-use macroquad::{prelude::*, ui::{Skin, hash, root_ui, widgets}};
+use macroquad::{prelude::*, ui::{Skin, root_ui}};
 
 pub const PADDING: f32 = 10.0;
 pub const DIGIT_COUNT: usize = 9;

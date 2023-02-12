@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use crate::cell::Cell;
 use crate::context::index_to_xy;
 use crate::{BOX_INDEXES, COLUMN_INDEXES, DIGIT_COUNT, PADDING, ROW_INDEXES};
@@ -8,6 +10,7 @@ pub struct Board {
     pub cell_size: f32,
     pub selected_index: Option<usize>,
     pub selected_number: Option<u32>,
+    pub undo_number: Option<Option<u32>>,
 }
 
 impl Board {
@@ -18,6 +21,7 @@ impl Board {
             cell_size: 0.0,
             selected_index: None,
             selected_number: None,
+            undo_number: None,
         }
     }
 
@@ -39,16 +43,41 @@ impl Board {
         }
 
         self.selected_number = Some(number);
+        self.handle_if_pencil(number);
+        self.handle_if_insert(number);
 
-        let cell = &mut self.cells[self.selected_index.unwrap()];
-        if cell.is_number(number) {
-            self.highlight();
-            self.pencil_unhighlighted(number);
-        } else {
-            cell.set_number(number);
+        if self.is_valid() {
             self.highlight();
             self.clear_pencil(number);
+            return;
         }
+
+        // ok we're not valid, let's undo the work we did
+        if self.undo_number.is_some() {
+            let cell = &mut self.cells[self.selected_index.unwrap()];
+            cell.number = self.undo_number.unwrap();
+            self.undo_number = None;
+        }
+    }
+
+    fn handle_if_pencil(&mut self, number: u32) {
+        let cell = &self.cells[self.selected_index.unwrap()];
+        if !cell.is_number(number) {
+            return;
+        }
+
+        self.highlight();
+        self.pencil_unhighlighted(number);
+    }
+
+    fn handle_if_insert(&mut self, number: u32) {
+        let cell = &mut self.cells[self.selected_index.unwrap()];
+        if cell.is_number(number) {
+            return;
+        }
+
+        self.undo_number = Some(cell.number);
+        cell.set_number(number);
     }
 
     pub fn click(&mut self, x: f32, y: f32) {
@@ -95,6 +124,43 @@ impl Board {
                 cell.remove_pencil(number);
             }
         }
+    }
+
+    fn is_valid(&self) -> bool {
+        for range in BOX_INDEXES {
+            if !self.is_range_valid(range) {
+                return false;
+            }
+        }
+
+        for range in ROW_INDEXES {
+            if !self.is_range_valid(range) {
+                return false;
+            }
+        }
+
+        for range in COLUMN_INDEXES {
+            if !self.is_range_valid(range) {
+                return false;
+            }
+        }
+
+        true
+    }
+
+    fn is_range_valid(&self, range: &[usize; 9]) -> bool {
+        let mut values = HashSet::new();
+
+        for index in range {
+            if let Some(number) = self.cells[*index].number {
+                if values.contains(&number) {
+                    return false;
+                }
+                values.insert(number);
+            }
+        }
+
+        true
     }
 
     fn highlight(&mut self) {
