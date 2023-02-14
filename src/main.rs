@@ -15,10 +15,10 @@ use macroquad::{prelude::*, ui::{Skin, root_ui}};
 
 pub const PADDING: f32 = 10.0;
 pub const DIGIT_COUNT: usize = 9;
-pub const CELL_COLOR_NORMAL: Color = WHITE;
-pub const CELL_COLOR_SELECTED: Color = Color::new(1.0, 0.816, 0.698, 1.00);
-pub const CELL_COLOR_EMPHASIZE: Color = Color::new(0.7, 0.85, 1.00, 1.00);
-pub const CELL_COLOR_HIGHLIGHTED: Color = Color::new(0.82, 0.82, 0.82, 1.00);
+pub const CELL_COLOR_NORMAL: Color = color_u8!(255, 255, 255, 255);
+pub const CELL_COLOR_SELECTED: Color = color_u8!(255, 208, 177, 255);
+pub const CELL_COLOR_EMPHASIZE: Color = color_u8!(178, 216, 255, 255);
+pub const CELL_COLOR_HIGHLIGHTED: Color = color_u8!(209, 209, 209, 255);
 
 pub const BOX_INDEXES: &[[usize; 9]; 9] = &[
     [0, 1, 2, 9, 10, 11, 18, 19, 20],

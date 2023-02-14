@@ -37,6 +37,14 @@ impl Board {
         self.selected_number = None;
     }
 
+    pub fn clear_number(&mut self) {
+        if self.selected_index.is_none() {
+            return;
+        }
+
+        self.cells[self.selected_index.unwrap()].clear_number();
+    }
+
     pub fn number(&mut self, number: u32) {
         if self.selected_index.is_none() {
             return;

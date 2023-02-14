@@ -82,11 +82,11 @@ fn draw_cell_lines(context: &Context) {
 }
 
 fn draw_box_lines(context: &Context) {
-    for x in 1..3 {
+    for x in 0..4 {
         let line_width = context.board.board_size * 0.005;
         let line_width = if line_width < 1.0 { 1.0 } else { line_width };
 
-        let offset = PADDING + ((x as f32 * (3.0 * context.board.cell_size)) - (line_width / 2.0));
+        let offset = (PADDING + ((x as f32 * (3.0 * context.board.cell_size)) - (line_width / 2.0)));
         draw_line(
             offset,
             PADDING,
@@ -96,7 +96,7 @@ fn draw_box_lines(context: &Context) {
             BLACK,
         );
         draw_line(
-            PADDING,
+            PADDING - line_width,
             offset,
             context.board.board_size + PADDING,
             offset,
@@ -107,7 +107,7 @@ fn draw_box_lines(context: &Context) {
 }
 
 pub fn draw_context(context: &Context) {
-    clear_background(LIGHTGRAY);
+    clear_background(WHITE);
 
     draw_board(&context.board, &context.font, &context.pencil_font);
 

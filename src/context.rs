@@ -56,6 +56,7 @@ impl Context {
                 for (x, col) in row.iter().enumerate() {
                     if *col != 0 {
                         self.board.cells[xy_to_index(x, y, 9)].set_number(*col);
+                        self.board.cells[xy_to_index(x, y, 9)].initial = true;
                     }
                 }
             }
@@ -66,8 +67,15 @@ impl Context {
             self.board.click(mouse_x, mouse_y);
         }
 
-        let key_pressed = get_char_pressed();
-        if let Some(key @ '1'..='9') = key_pressed {
+        let key_pressed = get_last_key_pressed();
+        if let Some(key) = key_pressed {
+            if key == KeyCode::Delete {
+                self.board.clear_number();
+            }
+        }
+
+        let char_pressed = get_char_pressed();
+        if let Some(key @ '1'..='9') = char_pressed {
             let number = key as u32 - '0' as u32;
             self.board.number(number);
         }

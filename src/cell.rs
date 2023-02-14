@@ -8,6 +8,7 @@ pub struct Cell {
     pub selected: bool,
     pub emphasize: bool,
     pub highlighted: bool,
+    pub initial: bool,
 }
 
 impl Cell {
@@ -21,6 +22,7 @@ impl Cell {
             selected: false,
             emphasize: false,
             highlighted: false,
+            initial: false,
         }
     }
 
@@ -34,6 +36,7 @@ impl Cell {
             selected: false,
             emphasize: false,
             highlighted: false,
+            initial: false,
         }
     }
 
@@ -97,6 +100,10 @@ impl Cell {
     }
 
     pub fn clear_number(&mut self) {
+        if self.initial {
+            return;
+        }
+        
         self.number = None;
     }
 
