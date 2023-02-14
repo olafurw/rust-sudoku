@@ -86,7 +86,7 @@ fn draw_box_lines(context: &Context) {
         let line_width = context.board.board_size * 0.005;
         let line_width = if line_width < 1.0 { 1.0 } else { line_width };
 
-        let offset = (PADDING + ((x as f32 * (3.0 * context.board.cell_size)) - (line_width / 2.0)));
+        let offset = PADDING + ((x as f32 * (3.0 * context.board.cell_size)) - (line_width / 2.0));
         draw_line(
             offset,
             PADDING,

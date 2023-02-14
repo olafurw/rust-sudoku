@@ -103,7 +103,7 @@ impl Cell {
         if self.initial {
             return;
         }
-        
+
         self.number = None;
     }
 
@@ -143,7 +143,7 @@ mod tests {
         init_assert(&cell);
 
         cell.clear_highlight();
-        assert_eq!(cell.selected, false);
+        assert!(!cell.selected);
     }
 
     #[test]
