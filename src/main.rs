@@ -77,7 +77,7 @@ async fn main() {
                 include_bytes!("../button_normal_clicked.png"),
                 None,
             ))
-            .font(include_bytes!("../arial.ttf"))
+            .font(include_bytes!("../liberation-sans.ttf"))
             .unwrap()
             .text_color(Color::from_rgba(255, 255, 255, 255))
             .text_color_hovered(Color::from_rgba(255, 255, 255, 255))
@@ -102,7 +102,7 @@ async fn main() {
         }
     };
 
-    let mut context = Context::new("arial.ttf", skin.clone()).await;
+    let mut context = Context::new("liberation-sans.ttf", skin.clone()).await;
 
     request_new_screen_size(576.0, 1080.0);
 
