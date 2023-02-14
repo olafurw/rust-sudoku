@@ -91,7 +91,7 @@ impl Cell {
     }
 
     pub fn set_number(&mut self, number: u32) {
-        if !(1..=9).contains(&number) {
+        if self.initial || !(1..=9).contains(&number) {
             return;
         }
 

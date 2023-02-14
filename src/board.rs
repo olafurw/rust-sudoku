@@ -45,8 +45,20 @@ impl Board {
         self.cells[self.selected_index.unwrap()].clear_number();
     }
 
+    fn is_number_initial(&self) -> bool {
+        if self.selected_index.is_none() {
+            return false;
+        }
+
+        self.cells[self.selected_index.unwrap()].initial
+    }
+
     pub fn number(&mut self, number: u32) {
         if self.selected_index.is_none() {
+            return;
+        }
+
+        if self.is_number_initial() {
             return;
         }
 
