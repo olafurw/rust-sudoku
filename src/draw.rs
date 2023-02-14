@@ -8,7 +8,7 @@ use crate::{
     CELL_COLOR_EMPHASIZE, CELL_COLOR_HIGHLIGHTED, CELL_COLOR_NORMAL, CELL_COLOR_SELECTED, PADDING,
 };
 
-pub fn draw_cell(cell: &Cell, font: &CellFont, pencil_font: &CellPencilFont) {
+pub fn draw_cell(cell: &Cell, initial_font: &CellFont, font: &CellFont, pencil_font: &CellPencilFont) {
     let color = if cell.selected {
         CELL_COLOR_SELECTED
     } else if cell.emphasize {
@@ -27,7 +27,7 @@ pub fn draw_cell(cell: &Cell, font: &CellFont, pencil_font: &CellPencilFont) {
                 n.to_string().as_str(),
                 cell.x + font.x_offset,
                 cell.y + font.y_offset,
-                font.params,
+                if cell.initial { initial_font.params } else { font.params },
             );
         }
     } else if cell.has_pencil() {
@@ -46,9 +46,9 @@ pub fn draw_cell(cell: &Cell, font: &CellFont, pencil_font: &CellPencilFont) {
     }
 }
 
-pub fn draw_board(board: &Board, font: &CellFont, pencil_font: &CellPencilFont) {
+pub fn draw_board(board: &Board, initial_font: &CellFont, font: &CellFont, pencil_font: &CellPencilFont) {
     for cell in board.cells.iter() {
-        draw_cell(cell, font, pencil_font);
+        draw_cell(cell, initial_font, font, pencil_font);
     }
 }
 
@@ -109,7 +109,7 @@ fn draw_box_lines(context: &Context) {
 pub fn draw_context(context: &Context) {
     clear_background(WHITE);
 
-    draw_board(&context.board, &context.font, &context.pencil_font);
+    draw_board(&context.board, &context.initial_font, &context.font, &context.pencil_font);
 
     draw_cell_lines(context);
     draw_box_lines(context);

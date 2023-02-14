@@ -31,7 +31,7 @@ pub struct CellFont {
 }
 
 impl CellFont {
-    pub async fn new(font_path: &str) -> Self {
+    pub async fn new(font_path: &str, color: Color) -> Self {
         let font = load_ttf_font(font_path).await.unwrap();
         let measure = measure_text("9", Some(font), 48, 1.0);
         CellFont {
@@ -42,7 +42,7 @@ impl CellFont {
                 font_scale: 1.0,
                 font_scale_aspect: 1.0,
                 rotation: 0.0,
-                color: BLACK,
+                color,
             },
             x_offset: 0.0,
             y_offset: 0.0,

@@ -2,7 +2,7 @@ use std::cmp::min;
 
 use crate::board::Board;
 use crate::cell_font::{CellFont, CellPencilFont};
-use crate::PADDING;
+use crate::{PADDING, CELL_TEXT_INITIAL_COLOR, CELL_TEXT_COLOR};
 
 use macroquad::prelude::*;
 use macroquad::ui::Skin;
@@ -16,6 +16,7 @@ pub fn xy_to_index(x: usize, y: usize, width: usize) -> usize {
 }
 
 pub struct Context {
+    pub initial_font: CellFont,
     pub font: CellFont,
     pub skin: Skin,
     pub pencil_font: CellPencilFont,
@@ -29,7 +30,8 @@ pub struct Context {
 impl Context {
     pub async fn new(font_path: &str, skin: Skin) -> Self {
         Context {
-            font: CellFont::new(font_path).await,
+            initial_font: CellFont::new(font_path, CELL_TEXT_INITIAL_COLOR).await,
+            font: CellFont::new(font_path, CELL_TEXT_COLOR).await,
             skin,
             pencil_font: CellPencilFont::new(font_path).await,
             board: Board::new(),
@@ -93,6 +95,7 @@ impl Context {
         self.board_size = self.game_area as f32 - (2.0 * PADDING);
 
         self.board.update(self.board_size);
+        self.initial_font.update(self.board.cell_size);
         self.font.update(self.board.cell_size);
         self.pencil_font.update(self.board.cell_size);
     }

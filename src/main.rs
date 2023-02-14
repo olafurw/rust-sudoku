@@ -20,6 +20,9 @@ pub const CELL_COLOR_SELECTED: Color = color_u8!(255, 208, 177, 255);
 pub const CELL_COLOR_EMPHASIZE: Color = color_u8!(178, 216, 255, 255);
 pub const CELL_COLOR_HIGHLIGHTED: Color = color_u8!(209, 209, 209, 255);
 
+pub const CELL_TEXT_COLOR: Color = color_u8!(44, 96, 142, 255);
+pub const CELL_TEXT_INITIAL_COLOR: Color = color_u8!(0, 0, 0, 255);
+
 pub const BOX_INDEXES: &[[usize; 9]; 9] = &[
     [0, 1, 2, 9, 10, 11, 18, 19, 20],
     [3, 4, 5, 12, 13, 14, 21, 22, 23],
