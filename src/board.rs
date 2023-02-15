@@ -12,8 +12,8 @@ pub struct Board {
     pub board_size: f32,
     pub cell_size: f32,
     pub selected_index: Option<usize>,
-    pub selected_number: Option<u32>,
-    pub undo_number: Option<Option<u32>>,
+    pub selected_number: Option<u8>,
+    pub undo_number: Option<Option<u8>>,
 }
 
 impl Board {
@@ -52,7 +52,7 @@ impl Board {
         self.cell_state[self.selected_index.unwrap()].initial
     }
 
-    pub fn number(&mut self, number: u32) {
+    pub fn number(&mut self, number: u8) {
         if self.selected_index.is_none() {
             return;
         }
@@ -80,7 +80,7 @@ impl Board {
         }
     }
 
-    fn handle_if_pencil(&mut self, number: u32) {
+    fn handle_if_pencil(&mut self, number: u8) {
         let cell = &self.cell_state[self.selected_index.unwrap()];
         if !cell.is_number(number) {
             return;
@@ -90,7 +90,7 @@ impl Board {
         self.pencil_unhighlighted(number);
     }
 
-    fn handle_if_insert(&mut self, number: u32) {
+    fn handle_if_insert(&mut self, number: u8) {
         let cell = &mut self.cell_state[self.selected_index.unwrap()];
         if cell.is_number(number) {
             return;
@@ -126,7 +126,7 @@ impl Board {
         self.highlight();
     }
 
-    fn pencil_unhighlighted(&mut self, number: u32) {
+    fn pencil_unhighlighted(&mut self, number: u8) {
         for cell in self.cell_state.iter_mut() {
             if cell.has_number() || cell.selection != CellSelection::None {
                 continue;
@@ -136,7 +136,7 @@ impl Board {
         }
     }
 
-    fn clear_pencil(&mut self, number: u32) {
+    fn clear_pencil(&mut self, number: u8) {
         for cell in self.cell_state.iter_mut() {
             if cell.has_number() || cell.selection == CellSelection::Selected || cell.selection == CellSelection::Emphasized {
                 continue;

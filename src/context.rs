@@ -22,7 +22,7 @@ pub struct Context {
     pub game_square: u32,
     pub board_size: f32,
     pub portrait: bool,
-    pub demo: [[u32; 9]; 9],
+    pub demo: [[u8; 9]; 9],
 }
 
 impl Context {
@@ -75,7 +75,7 @@ impl Context {
 
         let char_pressed = get_char_pressed();
         if let Some(key @ '1'..='9') = char_pressed {
-            let number = key as u32 - '0' as u32;
+            let number = key as u8 - 48; // 48 = '0'
             self.board.number(number);
         }
     }

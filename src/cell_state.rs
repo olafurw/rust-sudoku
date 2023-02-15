@@ -8,8 +8,8 @@ pub enum CellSelection {
 
 #[derive(Clone, Copy)]
 pub struct CellState {
-    pub number: Option<u32>,
-    pub pencil: [Option<u32>; 9],
+    pub number: Option<u8>,
+    pub pencil: [Option<u8>; 9],
     pub selection: CellSelection,
     pub initial: bool,
 }
@@ -38,7 +38,7 @@ impl CellState {
         self.pencil.iter().any(|&number| number.is_some())
     }
 
-    pub fn set_pencil(&mut self, number: u32) {
+    pub fn set_pencil(&mut self, number: u8) {
         if !(1..=9).contains(&number) {
             return;
         }
@@ -47,7 +47,7 @@ impl CellState {
         self.pencil[number as usize - 1] = Some(number);
     }
 
-    pub fn remove_pencil(&mut self, number: u32) {
+    pub fn remove_pencil(&mut self, number: u8) {
         if !(1..=9).contains(&number) {
             return;
         }
@@ -64,11 +64,11 @@ impl CellState {
         self.number.is_some()
     }
 
-    pub fn is_number(&self, number: u32) -> bool {
+    pub fn is_number(&self, number: u8) -> bool {
         self.number == Some(number)
     }
 
-    pub fn set_number(&mut self, number: u32) {
+    pub fn set_number(&mut self, number: u8) {
         if self.initial || !(1..=9).contains(&number) {
             return;
         }
