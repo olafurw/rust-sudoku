@@ -1,14 +1,26 @@
-#[derive(Clone)]
+#[derive(Clone, Copy, PartialEq)]
+pub enum CellSelection {
+    None,
+    Selected,
+    Emphasized,
+    Highlighted,
+}
+
+#[derive(Clone, Copy)]
 pub struct Cell {
     pub x: f32,
     pub y: f32,
     pub size: f32,
     pub number: Option<u32>,
     pub pencil: [Option<u32>; 9],
-    pub selected: bool,
-    pub emphasize: bool,
-    pub highlighted: bool,
+    pub selection: CellSelection,
     pub initial: bool,
+}
+
+impl Default for Cell {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Cell {
@@ -19,41 +31,23 @@ impl Cell {
             size: 0.0,
             number: None,
             pencil: [None, None, None, None, None, None, None, None, None],
-            selected: false,
-            emphasize: false,
-            highlighted: false,
+            selection: CellSelection::None,
             initial: false,
         }
     }
 
-    pub fn new_init(x: f32, y: f32, size: f32, number: Option<u32>) -> Self {
-        Cell {
-            x,
-            y,
-            size,
-            number,
-            pencil: [None, None, None, None, None, None, None, None, None],
-            selected: false,
-            emphasize: false,
-            highlighted: false,
-            initial: false,
-        }
-    }
-
-    pub fn clear_highlight(&mut self) {
-        self.selected = false;
-        self.emphasize = false;
-        self.highlighted = false;
+    pub fn clear_selection(&mut self) {
+        self.selection = CellSelection::None;
     }
 
     pub fn click(&mut self, x: f32, y: f32) -> (bool, Option<u32>) {
-        self.selected = false;
+        self.selection = CellSelection::None;
 
         if x >= self.x && x <= self.x + self.size && y >= self.y && y <= self.y + self.size {
-            self.selected = true;
+            self.selection = CellSelection::Selected;
         }
 
-        (self.selected, self.number)
+        (self.selection == CellSelection::Selected, self.number)
     }
 
     pub fn has_pencil(&self) -> bool {
@@ -116,19 +110,20 @@ impl Cell {
 
 #[cfg(test)]
 mod tests {
-    use crate::cell::Cell;
+    use crate::cell::{Cell, CellSelection};
 
     fn init_assert(cell: &Cell) {
         assert_eq!(cell.x, 0.0);
         assert_eq!(cell.y, 0.0);
         assert_eq!(cell.size, 0.0);
         assert_eq!(cell.number, None);
-        assert!(!cell.selected);
+        assert!(cell.selection == CellSelection::None);
     }
 
-    fn click_assert(cell: &mut Cell, x: f32, y: f32, number: Option<u32>, expected: bool) {
+    fn click_assert(cell: &mut Cell, x: f32, y: f32, number: Option<u32>, selection: CellSelection) {
+        let expected = if selection == CellSelection::Selected { true } else { false };
         assert_eq!(cell.click(x, y), (expected, number));
-        assert_eq!(cell.selected, expected);
+        assert!(cell.selection == selection);
     }
 
     #[test]
@@ -142,8 +137,8 @@ mod tests {
         let mut cell = Cell::new();
         init_assert(&cell);
 
-        cell.clear_highlight();
-        assert!(!cell.selected);
+        cell.clear_selection();
+        assert!(cell.selection == CellSelection::None);
     }
 
     #[test]
@@ -151,50 +146,54 @@ mod tests {
         let mut cell = Cell::new();
         init_assert(&cell);
 
-        click_assert(&mut cell, 1.0, 1.0, None, false);
+        click_assert(&mut cell, 1.0, 1.0, None, CellSelection::None);
         cell.update(0.0, 0.0, 32.0);
-        click_assert(&mut cell, 1.0, 1.0, None, true);
-        click_assert(&mut cell, 32.0, 32.0, None, true);
-        click_assert(&mut cell, 32.1, 32.1, None, false);
+        click_assert(&mut cell, 1.0, 1.0, None, CellSelection::Selected);
+        click_assert(&mut cell, 32.0, 32.0, None, CellSelection::Selected);
+        click_assert(&mut cell, 32.1, 32.1, None, CellSelection::None);
 
         cell.update(0.0, 0.0, 64.0);
-        click_assert(&mut cell, 1.0, 1.0, None, true);
-        click_assert(&mut cell, 32.0, 32.0, None, true);
-        click_assert(&mut cell, 32.1, 32.1, None, true);
-        click_assert(&mut cell, 64.0, 64.0, None, true);
-        click_assert(&mut cell, 64.01, 64.01, None, false);
+        click_assert(&mut cell, 1.0, 1.0, None, CellSelection::Selected);
+        click_assert(&mut cell, 32.0, 32.0, None, CellSelection::Selected);
+        click_assert(&mut cell, 32.1, 32.1, None, CellSelection::Selected);
+        click_assert(&mut cell, 64.0, 64.0, None, CellSelection::Selected);
+        click_assert(&mut cell, 64.01, 64.01, None, CellSelection::None);
 
         cell.update(32.0, 32.0, 32.0);
-        click_assert(&mut cell, 0.0, 0.0, None, false);
-        click_assert(&mut cell, 1.0, 1.0, None, false);
-        click_assert(&mut cell, 31.99, 31.99, None, false);
-        click_assert(&mut cell, 32.0, 32.0, None, true);
-        click_assert(&mut cell, 32.1, 32.1, None, true);
-        click_assert(&mut cell, 64.0, 64.0, None, true);
-        click_assert(&mut cell, 64.01, 64.01, None, false);
+        click_assert(&mut cell, 0.0, 0.0, None, CellSelection::None);
+        click_assert(&mut cell, 1.0, 1.0, None, CellSelection::None);
+        click_assert(&mut cell, 31.99, 31.99, None, CellSelection::None);
+        click_assert(&mut cell, 32.0, 32.0, None, CellSelection::Selected);
+        click_assert(&mut cell, 32.1, 32.1, None, CellSelection::Selected);
+        click_assert(&mut cell, 64.0, 64.0, None, CellSelection::Selected);
+        click_assert(&mut cell, 64.01, 64.01, None, CellSelection::None);
     }
 
     #[test]
     fn cell_click_value() {
-        let mut cell_none = Cell::new_init(32.0, 32.0, 32.0, None);
-        click_assert(&mut cell_none, 41.0, 41.0, None, true);
+        let mut cell_none = Cell::new();
+        cell_none.update(32.0, 32.0, 32.0);
+        click_assert(&mut cell_none, 41.0, 41.0, None, CellSelection::Selected);
 
-        let mut cell_number = Cell::new_init(32.0, 32.0, 32.0, Some(1));
-        click_assert(&mut cell_number, 41.0, 41.0, Some(1), true);
-        click_assert(&mut cell_number, 11.0, 11.0, Some(1), false);
+        let mut cell_number = Cell::new();
+        cell_number.update(32.0, 32.0, 32.0);
+        cell_number.set_number(1);
+        click_assert(&mut cell_number, 41.0, 41.0, Some(1), CellSelection::Selected);
+        click_assert(&mut cell_number, 11.0, 11.0, Some(1), CellSelection::None);
 
         cell_number.set_number(9);
-        click_assert(&mut cell_number, 41.0, 41.0, Some(9), true);
-        click_assert(&mut cell_number, 11.0, 11.0, Some(9), false);
+        click_assert(&mut cell_number, 41.0, 41.0, Some(9), CellSelection::Selected);
+        click_assert(&mut cell_number, 11.0, 11.0, Some(9), CellSelection::None);
 
         cell_number.clear_number();
-        click_assert(&mut cell_number, 41.0, 41.0, None, true);
-        click_assert(&mut cell_number, 11.0, 11.0, None, false);
+        click_assert(&mut cell_number, 41.0, 41.0, None, CellSelection::Selected);
+        click_assert(&mut cell_number, 11.0, 11.0, None, CellSelection::None);
     }
 
     #[test]
     fn pencil_test() {
-        let mut cell = Cell::new_init(0.0, 0.0, 32.0, None);
+        let mut cell = Cell::new();
+        cell.update(0.0, 0.0, 32.0);
         assert!(!cell.has_pencil());
 
         cell.clear_pencil();

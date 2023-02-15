@@ -2,18 +2,18 @@ use macroquad::prelude::*;
 
 use crate::{
     board::Board,
-    cell::Cell,
+    cell::{Cell, CellSelection},
     cell_font::{CellFont, CellPencilFont},
     context::{index_to_xy, Context},
     CELL_COLOR_EMPHASIZE, CELL_COLOR_HIGHLIGHTED, CELL_COLOR_NORMAL, CELL_COLOR_SELECTED, PADDING,
 };
 
 pub fn draw_cell(cell: &Cell, initial_font: &CellFont, font: &CellFont, pencil_font: &CellPencilFont) {
-    let color = if cell.selected {
+    let color = if cell.selection == CellSelection::Selected {
         CELL_COLOR_SELECTED
-    } else if cell.emphasize {
+    } else if cell.selection == CellSelection::Emphasized {
         CELL_COLOR_EMPHASIZE
-    } else if cell.highlighted {
+    } else if cell.selection == CellSelection::Highlighted {
         CELL_COLOR_HIGHLIGHTED
     } else {
         CELL_COLOR_NORMAL

@@ -11,14 +11,14 @@ mod draw;
 
 use context::Context;
 use draw::draw_context;
-use macroquad::{prelude::*, ui::{Skin, root_ui}};
+use macroquad::prelude::*;
 
 pub const PADDING: f32 = 10.0;
 pub const DIGIT_COUNT: usize = 9;
 pub const CELL_COLOR_NORMAL: Color = color_u8!(255, 255, 255, 255);
 pub const CELL_COLOR_SELECTED: Color = color_u8!(255, 208, 177, 255);
 pub const CELL_COLOR_EMPHASIZE: Color = color_u8!(178, 216, 255, 255);
-pub const CELL_COLOR_HIGHLIGHTED: Color = color_u8!(209, 209, 209, 255);
+pub const CELL_COLOR_HIGHLIGHTED: Color = color_u8!(219, 219, 219, 255);
 
 pub const CELL_TEXT_COLOR: Color = color_u8!(44, 96, 142, 255);
 pub const CELL_TEXT_INITIAL_COLOR: Color = color_u8!(0, 0, 0, 255);
@@ -61,48 +61,7 @@ pub const COLUMN_INDEXES: &[[usize; 9]; 9] = &[
 
 #[macroquad::main("Sudoku")]
 async fn main() {
-    let skin = {
-        let button_style = root_ui()
-            .style_builder()
-            .background(Image::from_file_with_format(
-                include_bytes!("../button_normal.png"),
-                None,
-            ))
-            .background_margin(RectOffset::new(15.0, 15.0, 15.0, 15.0))
-            .background_hovered(Image::from_file_with_format(
-                include_bytes!("../button_normal_hover.png"),
-                None,
-            ))
-            .background_clicked(Image::from_file_with_format(
-                include_bytes!("../button_normal_clicked.png"),
-                None,
-            ))
-            .font(include_bytes!("../liberation-sans.ttf"))
-            .unwrap()
-            .text_color(Color::from_rgba(255, 255, 255, 255))
-            .text_color_hovered(Color::from_rgba(255, 255, 255, 255))
-            .text_color_clicked(Color::from_rgba(255, 255, 255, 255))
-            .font_size(40)
-            .build();
-
-        let window_style = root_ui()
-            .style_builder()
-            .background(Image::from_file_with_format(
-                include_bytes!("../window_background_2.png"),
-                None,
-            ))
-            .background_margin(RectOffset::new(0.0, 0.0, 0.0, 0.0))
-            .margin(RectOffset::new(0.0, 0.0, 0.0, 0.0))
-            .build();
-        
-        Skin {
-            button_style,
-            window_style,
-            ..root_ui().default_skin()
-        }
-    };
-
-    let mut context = Context::new("liberation-sans.ttf", skin.clone()).await;
+    let mut context = Context::new("liberation-sans.ttf").await;
 
     request_new_screen_size(576.0, 1080.0);
 

@@ -1,11 +1,11 @@
 use std::collections::HashSet;
 
-use crate::cell::Cell;
+use crate::cell::{Cell, CellSelection};
 use crate::context::index_to_xy;
 use crate::{BOX_INDEXES, COLUMN_INDEXES, DIGIT_COUNT, PADDING, ROW_INDEXES};
 
 pub struct Board {
-    pub cells: Vec<Cell>,
+    pub cells: [Cell; 81],
     pub board_size: f32,
     pub cell_size: f32,
     pub selected_index: Option<usize>,
@@ -16,7 +16,7 @@ pub struct Board {
 impl Board {
     pub fn new() -> Self {
         Board {
-            cells: vec![Cell::new(); 81],
+            cells: [Default::default(); 81],
             board_size: 0.0,
             cell_size: 0.0,
             selected_index: None,
@@ -27,14 +27,8 @@ impl Board {
 
     pub fn clear_highlight(&mut self) {
         for cell in self.cells.iter_mut() {
-            cell.clear_highlight();
+            cell.clear_selection();
         }
-    }
-
-    pub fn clear(&mut self) {
-        self.clear_highlight();
-        self.selected_index = None;
-        self.selected_number = None;
     }
 
     pub fn clear_number(&mut self) {
@@ -59,6 +53,7 @@ impl Board {
         }
 
         if self.is_number_initial() {
+            self.handle_if_pencil(number);
             return;
         }
 
@@ -126,7 +121,7 @@ impl Board {
 
     fn pencil_unhighlighted(&mut self, number: u32) {
         for cell in self.cells.iter_mut() {
-            if cell.has_number() || cell.highlighted || cell.selected || cell.emphasize {
+            if cell.has_number() || cell.selection != CellSelection::None {
                 continue;
             }
 
@@ -136,11 +131,11 @@ impl Board {
 
     fn clear_pencil(&mut self, number: u32) {
         for cell in self.cells.iter_mut() {
-            if cell.has_number() || cell.selected || cell.emphasize {
+            if cell.has_number() || cell.selection == CellSelection::Selected || cell.selection == CellSelection::Emphasized {
                 continue;
             }
 
-            if cell.highlighted {
+            if cell.selection == CellSelection::Highlighted {
                 cell.remove_pencil(number);
             }
         }
@@ -191,7 +186,7 @@ impl Board {
         }
 
         let sel_index = self.selected_index.unwrap();
-        self.cells[sel_index].selected = true;
+        self.cells[sel_index].selection = CellSelection::Selected;
 
         let mut highlight_list = vec![sel_index];
 
@@ -199,7 +194,7 @@ impl Board {
         if self.selected_number.is_some() {
             for (i, cell) in self.cells.iter_mut().enumerate() {
                 if i != sel_index && cell.number == self.selected_number {
-                    cell.emphasize = true;
+                    cell.selection = CellSelection::Emphasized;
                     highlight_list.push(i);
                 }
             }
@@ -216,7 +211,10 @@ impl Board {
         for index_row in area.iter() {
             if index_row.contains(&selected_index) {
                 for index in index_row.iter() {
-                    self.cells[*index].highlighted = true;
+                    let selection = &mut self.cells[*index].selection;
+                    if *selection == CellSelection::None {
+                        *selection = CellSelection::Highlighted;
+                    }
                 }
 
                 break;

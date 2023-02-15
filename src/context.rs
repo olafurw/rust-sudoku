@@ -5,7 +5,6 @@ use crate::cell_font::{CellFont, CellPencilFont};
 use crate::{PADDING, CELL_TEXT_INITIAL_COLOR, CELL_TEXT_COLOR};
 
 use macroquad::prelude::*;
-use macroquad::ui::Skin;
 
 pub fn index_to_xy(index: usize, width: usize) -> (usize, usize) {
     (index % width, index / width)
@@ -18,24 +17,22 @@ pub fn xy_to_index(x: usize, y: usize, width: usize) -> usize {
 pub struct Context {
     pub initial_font: CellFont,
     pub font: CellFont,
-    pub skin: Skin,
     pub pencil_font: CellPencilFont,
     pub board: Board,
-    pub game_area: u32,
+    pub game_square: u32,
     pub board_size: f32,
     pub portrait: bool,
     pub demo: [[u32; 9]; 9],
 }
 
 impl Context {
-    pub async fn new(font_path: &str, skin: Skin) -> Self {
+    pub async fn new(font_path: &str) -> Self {
         Context {
             initial_font: CellFont::new(font_path, CELL_TEXT_INITIAL_COLOR).await,
             font: CellFont::new(font_path, CELL_TEXT_COLOR).await,
-            skin,
             pencil_font: CellPencilFont::new(font_path).await,
             board: Board::new(),
-            game_area: 0,
+            game_square: 0,
             board_size: 0.0,
             portrait: true,
             demo: [
@@ -91,8 +88,8 @@ impl Context {
 
         self.portrait = height >= width;
 
-        self.game_area = min(height as u32, width as u32);
-        self.board_size = self.game_area as f32 - (2.0 * PADDING);
+        self.game_square = min(height as u32, width as u32);
+        self.board_size = self.game_square as f32 - (2.0 * PADDING);
 
         self.board.update(self.board_size);
         self.initial_font.update(self.board.cell_size);
