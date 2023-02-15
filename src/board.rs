@@ -1,5 +1,4 @@
 use std::collections::HashSet;
-use std::mem::size_of;
 
 use crate::cell_location::CellLocation;
 use crate::cell_state::{CellState, CellSelection};
@@ -8,26 +7,45 @@ use crate::{BOX_INDEXES, COLUMN_INDEXES, DIGIT_COUNT, PADDING, ROW_INDEXES};
 
 pub struct Board {
     pub cell_state: [CellState; 81],
+    pub cell_state_history: Vec<[CellState; 81]>,
     pub cell_location: [CellLocation; 81],
     pub board_size: f32,
     pub cell_size: f32,
     pub selected_index: Option<usize>,
+    pub selected_index_history: Vec<Option<usize>>,
     pub selected_number: Option<u8>,
-    pub undo_number: Option<Option<u8>>,
+    pub selected_number_history: Vec<Option<u8>>,
 }
 
 impl Board {
     pub fn new() -> Self {
-        println!("{}", size_of::<CellState>());
         Board {
             cell_state: [Default::default(); 81],
+            cell_state_history: vec![],
             cell_location: [Default::default(); 81],
             board_size: 0.0,
             cell_size: 0.0,
             selected_index: None,
+            selected_index_history: vec![],
             selected_number: None,
-            undo_number: None,
+            selected_number_history: vec![],
         }
+    }
+
+    pub fn undo(&mut self) {
+        if self.cell_state_history.is_empty() {
+            return;
+        }
+
+        self.cell_state = self.cell_state_history.pop().unwrap();
+        self.selected_index = self.selected_index_history.pop().unwrap();
+        self.selected_number = self.selected_number_history.pop().unwrap();
+    }
+
+    pub fn add_undo_point(&mut self) {
+        self.cell_state_history.push(self.cell_state);
+        self.selected_index_history.push(self.selected_index);
+        self.selected_number_history.push(self.selected_number);
     }
 
     pub fn clear_cell_selection(&mut self) {
@@ -58,36 +76,37 @@ impl Board {
         }
 
         if self.is_number_initial() {
-            self.handle_if_pencil(number);
+            self.add_undo_point();
+            if !self.handle_if_pencil(number) {
+                self.undo();
+            }
             return;
         }
+
+        self.add_undo_point();
 
         self.selected_number = Some(number);
         self.handle_if_pencil(number);
         self.handle_if_insert(number);
 
-        if self.is_valid() {
-            self.highlight();
-            self.clear_pencil(number);
-            return;
-        }
-
-        // ok we're not valid, let's undo the work we did
-        if self.undo_number.is_some() {
-            let cell = &mut self.cell_state[self.selected_index.unwrap()];
-            cell.number = self.undo_number.unwrap();
-            self.undo_number = None;
-        }
-    }
-
-    fn handle_if_pencil(&mut self, number: u8) {
-        let cell = &self.cell_state[self.selected_index.unwrap()];
-        if !cell.is_number(number) {
+        if !self.is_valid() {
+            self.undo();
             return;
         }
 
         self.highlight();
+        self.clear_pencil(number);
+    }
+
+    fn handle_if_pencil(&mut self, number: u8) -> bool {
+        let cell = &self.cell_state[self.selected_index.unwrap()];
+        if !cell.is_number(number) {
+            return false;
+        }
+
+        self.highlight();
         self.pencil_unhighlighted(number);
+        true
     }
 
     fn handle_if_insert(&mut self, number: u8) {
@@ -96,7 +115,6 @@ impl Board {
             return;
         }
 
-        self.undo_number = Some(cell.number);
         cell.set_number(number);
     }
 

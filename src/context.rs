@@ -70,6 +70,8 @@ impl Context {
         if let Some(key) = key_pressed {
             if key == KeyCode::Delete {
                 self.board.clear_number();
+            } else if key == KeyCode::U {
+                self.board.undo();
             }
         }
 
