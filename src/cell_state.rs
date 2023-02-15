@@ -39,7 +39,7 @@ impl CellState {
     }
 
     pub fn set_pencil(&mut self, number: u8) {
-        if !(1..=9).contains(&number) {
+        if self.initial || !(1..=9).contains(&number) {
             return;
         }
 
@@ -48,7 +48,7 @@ impl CellState {
     }
 
     pub fn remove_pencil(&mut self, number: u8) {
-        if !(1..=9).contains(&number) {
+        if self.initial || !(1..=9).contains(&number) {
             return;
         }
 
@@ -66,6 +66,15 @@ impl CellState {
 
     pub fn is_number(&self, number: u8) -> bool {
         self.number == Some(number)
+    }
+
+    pub fn set_initial_number(&mut self, number: u8) {
+        if self.initial || !(1..=9).contains(&number) {
+            return;
+        }
+
+        self.set_number(number);
+        self.initial = true;
     }
 
     pub fn set_number(&mut self, number: u8) {
@@ -111,6 +120,32 @@ mod tests {
     }
 
     #[test]
+    fn number_test() {
+        let mut cell = CellState::new();
+        assert!(!cell.has_number());
+        assert!(!cell.is_number(1));
+
+        cell.set_number(1);
+        assert!(cell.has_number());
+        assert!(cell.is_number(1));
+        assert!(!cell.is_number(2));
+
+        cell.clear_number();
+        assert!(!cell.has_number());
+        assert!(!cell.is_number(1));
+
+        cell.set_initial_number(1);
+        assert!(cell.has_number());
+        assert!(cell.is_number(1));
+        assert!(!cell.is_number(2));
+
+        cell.clear_number();
+        assert!(cell.has_number());
+        assert!(cell.is_number(1));
+        assert!(!cell.is_number(2));
+    }
+
+    #[test]
     fn pencil_test() {
         let mut cell = CellState::new();
         assert!(!cell.has_pencil());
@@ -132,6 +167,16 @@ mod tests {
         assert!(cell.has_pencil());
         cell.clear_pencil();
         assert!(!cell.has_pencil());
+
+        cell.set_number(1);
+        assert!(cell.has_number());
+        assert!(!cell.has_pencil());
+
+        cell.set_pencil(1);
+        assert!(!cell.has_number());
+        assert!(cell.has_pencil());
+
+        cell.clear_pencil();
 
         for i in 0..9 {
             assert!(!cell.has_pencil());

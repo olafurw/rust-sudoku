@@ -266,3 +266,11 @@ impl Board {
         true
     }
 }
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn cell_init() {
+        
+    }
+}
