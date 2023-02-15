@@ -1,0 +1,147 @@
+#[derive(Clone, Copy, PartialEq)]
+pub enum CellSelection {
+    None,
+    Selected,
+    Emphasized,
+    Highlighted,
+}
+
+#[derive(Clone, Copy)]
+pub struct CellState {
+    pub number: Option<u32>,
+    pub pencil: [Option<u32>; 9],
+    pub selection: CellSelection,
+    pub initial: bool,
+}
+
+impl Default for CellState {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+impl CellState {
+    pub fn new() -> Self {
+        CellState {
+            number: None,
+            pencil: [None, None, None, None, None, None, None, None, None],
+            selection: CellSelection::None,
+            initial: false,
+        }
+    }
+
+    pub fn clear_selection(&mut self) {
+        self.selection = CellSelection::None;
+    }
+
+    pub fn has_pencil(&self) -> bool {
+        self.pencil.iter().any(|&number| number.is_some())
+    }
+
+    pub fn set_pencil(&mut self, number: u32) {
+        if !(1..=9).contains(&number) {
+            return;
+        }
+
+        self.clear_number();
+        self.pencil[number as usize - 1] = Some(number);
+    }
+
+    pub fn remove_pencil(&mut self, number: u32) {
+        if !(1..=9).contains(&number) {
+            return;
+        }
+
+        self.clear_number();
+        self.pencil[number as usize - 1] = None;
+    }
+
+    pub fn clear_pencil(&mut self) {
+        self.pencil = [None, None, None, None, None, None, None, None, None];
+    }
+
+    pub fn has_number(&self) -> bool {
+        self.number.is_some()
+    }
+
+    pub fn is_number(&self, number: u32) -> bool {
+        self.number == Some(number)
+    }
+
+    pub fn set_number(&mut self, number: u32) {
+        if self.initial || !(1..=9).contains(&number) {
+            return;
+        }
+
+        self.clear_pencil();
+        self.number = Some(number);
+    }
+
+    pub fn clear_number(&mut self) {
+        if self.initial {
+            return;
+        }
+
+        self.number = None;
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::cell_state::{CellState, CellSelection};
+
+    fn init_assert(cell: &CellState) {
+        assert_eq!(cell.number, None);
+        assert!(cell.selection == CellSelection::None);
+    }
+
+    #[test]
+    fn cell_init() {
+        let cell = CellState::new();
+        init_assert(&cell);
+    }
+
+    #[test]
+    fn cell_clear() {
+        let mut cell = CellState::new();
+        init_assert(&cell);
+
+        cell.clear_selection();
+        assert!(cell.selection == CellSelection::None);
+    }
+
+    #[test]
+    fn pencil_test() {
+        let mut cell = CellState::new();
+        assert!(!cell.has_pencil());
+
+        cell.clear_pencil();
+        assert!(!cell.has_pencil());
+
+        cell.remove_pencil(1);
+        assert!(!cell.has_pencil());
+
+        cell.set_pencil(1);
+        assert!(cell.has_pencil());
+        assert_eq!(cell.pencil[0], Some(1));
+
+        cell.remove_pencil(1);
+        assert!(!cell.has_pencil());
+
+        cell.set_pencil(1);
+        assert!(cell.has_pencil());
+        cell.clear_pencil();
+        assert!(!cell.has_pencil());
+
+        for i in 0..9 {
+            assert!(!cell.has_pencil());
+            
+            cell.set_pencil(i + 1);
+            assert!(cell.has_pencil());
+            assert_eq!(cell.pencil[i as usize], Some(i + 1));
+
+            cell.remove_pencil(i + 1);
+            assert_eq!(cell.pencil[i as usize], None);
+        }
+    }
+}

@@ -54,8 +54,8 @@ impl Context {
             for (y, row) in self.demo.iter().enumerate() {
                 for (x, col) in row.iter().enumerate() {
                     if *col != 0 {
-                        self.board.cells[xy_to_index(x, y, 9)].set_number(*col);
-                        self.board.cells[xy_to_index(x, y, 9)].initial = true;
+                        self.board.cell_state[xy_to_index(x, y, 9)].set_number(*col);
+                        self.board.cell_state[xy_to_index(x, y, 9)].initial = true;
                     }
                 }
             }

@@ -2,43 +2,45 @@ use macroquad::prelude::*;
 
 use crate::{
     board::Board,
-    cell::{Cell, CellSelection},
+    cell_state::{CellState, CellSelection},
     cell_font::{CellFont, CellPencilFont},
     context::{index_to_xy, Context},
-    CELL_COLOR_EMPHASIZE, CELL_COLOR_HIGHLIGHTED, CELL_COLOR_NORMAL, CELL_COLOR_SELECTED, PADDING,
+    CELL_COLOR_EMPHASIZE, CELL_COLOR_HIGHLIGHTED, CELL_COLOR_NORMAL, CELL_COLOR_SELECTED, 
+    PADDING,
+    cell_location::CellLocation,
 };
 
-pub fn draw_cell(cell: &Cell, initial_font: &CellFont, font: &CellFont, pencil_font: &CellPencilFont) {
-    let color = if cell.selection == CellSelection::Selected {
+pub fn draw_cell(cell_state: &CellState, call_location: &CellLocation, initial_font: &CellFont, font: &CellFont, pencil_font: &CellPencilFont) {
+    let color = if cell_state.selection == CellSelection::Selected {
         CELL_COLOR_SELECTED
-    } else if cell.selection == CellSelection::Emphasized {
+    } else if cell_state.selection == CellSelection::Emphasized {
         CELL_COLOR_EMPHASIZE
-    } else if cell.selection == CellSelection::Highlighted {
+    } else if cell_state.selection == CellSelection::Highlighted {
         CELL_COLOR_HIGHLIGHTED
     } else {
         CELL_COLOR_NORMAL
     };
 
-    draw_rectangle(cell.x, cell.y, cell.size, cell.size, color);
+    draw_rectangle(call_location.x, call_location.y, call_location.size, call_location.size, color);
 
-    if cell.has_number() {
-        if let Some(n) = cell.number {
+    if cell_state.has_number() {
+        if let Some(n) = cell_state.number {
             draw_text_ex(
                 n.to_string().as_str(),
-                cell.x + font.x_offset,
-                cell.y + font.y_offset,
-                if cell.initial { initial_font.params } else { font.params },
+                call_location.x + font.x_offset,
+                call_location.y + font.y_offset,
+                if cell_state.initial { initial_font.params } else { font.params },
             );
         }
-    } else if cell.has_pencil() {
-        for (i, pencil) in cell.pencil.iter().enumerate() {
+    } else if cell_state.has_pencil() {
+        for (i, pencil) in cell_state.pencil.iter().enumerate() {
             if let Some(n) = pencil {
                 let (x, y) = index_to_xy(i, 3);
 
                 draw_text_ex(
                     n.to_string().as_str(),
-                    cell.x + pencil_font.x_offset + (pencil_font.box_size * x as f32),
-                    cell.y + pencil_font.y_offset + (pencil_font.box_size * y as f32),
+                    call_location.x + pencil_font.x_offset + (pencil_font.box_size * x as f32),
+                    call_location.y + pencil_font.y_offset + (pencil_font.box_size * y as f32),
                     pencil_font.params,
                 );
             }
@@ -47,8 +49,12 @@ pub fn draw_cell(cell: &Cell, initial_font: &CellFont, font: &CellFont, pencil_f
 }
 
 pub fn draw_board(board: &Board, initial_font: &CellFont, font: &CellFont, pencil_font: &CellPencilFont) {
-    for cell in board.cells.iter() {
-        draw_cell(cell, initial_font, font, pencil_font);
+    for i in 0..81 {
+        draw_cell(
+            &board.cell_state[i], 
+            &board.cell_location[i], 
+            initial_font, font, pencil_font
+        );
     }
 }
 

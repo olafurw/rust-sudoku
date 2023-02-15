@@ -1,11 +1,14 @@
 use std::collections::HashSet;
+use std::mem::size_of;
 
-use crate::cell::{Cell, CellSelection};
+use crate::cell_location::CellLocation;
+use crate::cell_state::{CellState, CellSelection};
 use crate::context::index_to_xy;
 use crate::{BOX_INDEXES, COLUMN_INDEXES, DIGIT_COUNT, PADDING, ROW_INDEXES};
 
 pub struct Board {
-    pub cells: [Cell; 81],
+    pub cell_state: [CellState; 81],
+    pub cell_location: [CellLocation; 81],
     pub board_size: f32,
     pub cell_size: f32,
     pub selected_index: Option<usize>,
@@ -15,8 +18,10 @@ pub struct Board {
 
 impl Board {
     pub fn new() -> Self {
+        println!("{}", size_of::<CellState>());
         Board {
-            cells: [Default::default(); 81],
+            cell_state: [Default::default(); 81],
+            cell_location: [Default::default(); 81],
             board_size: 0.0,
             cell_size: 0.0,
             selected_index: None,
@@ -25,8 +30,8 @@ impl Board {
         }
     }
 
-    pub fn clear_highlight(&mut self) {
-        for cell in self.cells.iter_mut() {
+    pub fn clear_cell_selection(&mut self) {
+        for cell in self.cell_state.iter_mut() {
             cell.clear_selection();
         }
     }
@@ -36,7 +41,7 @@ impl Board {
             return;
         }
 
-        self.cells[self.selected_index.unwrap()].clear_number();
+        self.cell_state[self.selected_index.unwrap()].clear_number();
     }
 
     fn is_number_initial(&self) -> bool {
@@ -44,7 +49,7 @@ impl Board {
             return false;
         }
 
-        self.cells[self.selected_index.unwrap()].initial
+        self.cell_state[self.selected_index.unwrap()].initial
     }
 
     pub fn number(&mut self, number: u32) {
@@ -69,14 +74,14 @@ impl Board {
 
         // ok we're not valid, let's undo the work we did
         if self.undo_number.is_some() {
-            let cell = &mut self.cells[self.selected_index.unwrap()];
+            let cell = &mut self.cell_state[self.selected_index.unwrap()];
             cell.number = self.undo_number.unwrap();
             self.undo_number = None;
         }
     }
 
     fn handle_if_pencil(&mut self, number: u32) {
-        let cell = &self.cells[self.selected_index.unwrap()];
+        let cell = &self.cell_state[self.selected_index.unwrap()];
         if !cell.is_number(number) {
             return;
         }
@@ -86,7 +91,7 @@ impl Board {
     }
 
     fn handle_if_insert(&mut self, number: u32) {
-        let cell = &mut self.cells[self.selected_index.unwrap()];
+        let cell = &mut self.cell_state[self.selected_index.unwrap()];
         if cell.is_number(number) {
             return;
         }
@@ -96,14 +101,16 @@ impl Board {
     }
 
     pub fn click(&mut self, x: f32, y: f32) {
-        let mut clicked = (false, None);
+        let mut clicked = false;
         self.selected_index = None;
 
         // perform a click on each cell to see which one
         // gets selected
-        for (i, cell) in self.cells.iter_mut().enumerate() {
-            clicked = cell.click(x, y);
-            if clicked.0 {
+        for i in 0..81 {
+            let loc = &self.cell_location[i];
+            clicked = loc.click(x, y);
+            if clicked {
+                let cell = &self.cell_state[i];
                 self.selected_index = Some(i);
                 self.selected_number = cell.number;
                 break;
@@ -111,8 +118,8 @@ impl Board {
         }
 
         // no cell was clicked
-        if !clicked.0 {
-            self.clear_highlight();
+        if !clicked {
+            self.clear_cell_selection();
             return;
         }
 
@@ -120,7 +127,7 @@ impl Board {
     }
 
     fn pencil_unhighlighted(&mut self, number: u32) {
-        for cell in self.cells.iter_mut() {
+        for cell in self.cell_state.iter_mut() {
             if cell.has_number() || cell.selection != CellSelection::None {
                 continue;
             }
@@ -130,7 +137,7 @@ impl Board {
     }
 
     fn clear_pencil(&mut self, number: u32) {
-        for cell in self.cells.iter_mut() {
+        for cell in self.cell_state.iter_mut() {
             if cell.has_number() || cell.selection == CellSelection::Selected || cell.selection == CellSelection::Emphasized {
                 continue;
             }
@@ -167,7 +174,7 @@ impl Board {
         let mut values = HashSet::new();
 
         for index in range {
-            if let Some(number) = self.cells[*index].number {
+            if let Some(number) = self.cell_state[*index].number {
                 if values.contains(&number) {
                     return false;
                 }
@@ -179,20 +186,20 @@ impl Board {
     }
 
     fn highlight(&mut self) {
-        self.clear_highlight();
+        self.clear_cell_selection();
 
         if self.selected_index.is_none() {
             return;
         }
 
         let sel_index = self.selected_index.unwrap();
-        self.cells[sel_index].selection = CellSelection::Selected;
+        self.cell_state[sel_index].selection = CellSelection::Selected;
 
         let mut highlight_list = vec![sel_index];
 
         // only highlight numbers if the selected cell has a number
         if self.selected_number.is_some() {
-            for (i, cell) in self.cells.iter_mut().enumerate() {
+            for (i, cell) in self.cell_state.iter_mut().enumerate() {
                 if i != sel_index && cell.number == self.selected_number {
                     cell.selection = CellSelection::Emphasized;
                     highlight_list.push(i);
@@ -211,7 +218,7 @@ impl Board {
         for index_row in area.iter() {
             if index_row.contains(&selected_index) {
                 for index in index_row.iter() {
-                    let selection = &mut self.cells[*index].selection;
+                    let selection = &mut self.cell_state[*index].selection;
                     if *selection == CellSelection::None {
                         *selection = CellSelection::Highlighted;
                     }
@@ -230,7 +237,7 @@ impl Board {
         self.board_size = board_size;
         self.cell_size = self.board_size / 9.0;
 
-        for (i, cell) in self.cells.iter_mut().enumerate() {
+        for (i, cell) in self.cell_location.iter_mut().enumerate() {
             let (x, y) = index_to_xy(i, DIGIT_COUNT);
             let x_pos = PADDING + (x as f32 * self.cell_size);
             let y_pos = PADDING + (y as f32 * self.cell_size);

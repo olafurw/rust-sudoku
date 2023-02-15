@@ -4,7 +4,8 @@
 // more unit tests
 
 mod board;
-mod cell;
+mod cell_state;
+mod cell_location;
 mod cell_font;
 mod context;
 mod draw;
