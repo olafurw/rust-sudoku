@@ -1,6 +1,8 @@
 use macroquad::prelude::*;
 use macroquad::text::TextParams;
 
+use crate::ICON_UNDO;
+
 fn cell_to_font_size(font: &Font, cell_size: f32) -> u16 {
     if cell_size < 1.0 {
         return 1;
@@ -105,5 +107,39 @@ impl CellPencilFont {
 
         self.x_offset = (self.box_size / 2.0) - (self.width / 2.0) + (padding / 2.0);
         self.y_offset = (self.box_size / 2.0) + (self.height / 2.0) + (padding / 2.0);
+    }
+}
+
+pub struct IconFont {
+    pub params: TextParams,
+    pub font: Font,
+    pub height: f32,
+    pub width: f32,
+}
+
+impl IconFont {
+    pub async fn new(font_path: &str, color: Color) -> Self {
+        let font = load_ttf_font(font_path).await.unwrap();
+        let measure = measure_text(ICON_UNDO, Some(font), 48, 1.0);
+        IconFont {
+            font,
+            params: TextParams {
+                font,
+                font_size: 48,
+                font_scale: 1.0,
+                font_scale_aspect: 1.0,
+                rotation: 0.0,
+                color,
+            },
+            height: measure.height,
+            width: measure.width,
+        }
+    }
+
+    pub fn update(&mut self, cell_size: f32) {
+        self.params.font_size = cell_to_font_size(&self.font, cell_size);
+        let measure = measure_text(ICON_UNDO, Some(self.font), self.params.font_size, 1.0);
+        self.width = measure.width;
+        self.height = measure.height;
     }
 }

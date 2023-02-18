@@ -6,7 +6,7 @@
 mod board;
 mod cell_state;
 mod cell_location;
-mod cell_font;
+mod fonts;
 mod context;
 mod draw;
 
@@ -60,9 +60,12 @@ pub const COLUMN_INDEXES: &[[usize; 9]; 9] = &[
     [8, 17, 26, 35, 44, 53, 62, 71, 80],
 ];
 
+pub const ICON_UNDO: &str = "\u{f0e2}";
+pub const ICON_PEN: &str = "\u{f304}";
+
 #[macroquad::main("Sudoku")]
 async fn main() {
-    let mut context = Context::new("liberation-sans.ttf").await;
+    let mut context = Context::new("liberation-sans.ttf", "fa-solid-900.ttf").await;
 
     request_new_screen_size(576.0, 1080.0);
 

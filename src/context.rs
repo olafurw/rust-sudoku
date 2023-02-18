@@ -1,7 +1,7 @@
 use std::cmp::min;
 
 use crate::board::Board;
-use crate::cell_font::{CellFont, CellPencilFont};
+use crate::fonts::{CellFont, CellPencilFont, IconFont};
 use crate::{PADDING, CELL_TEXT_INITIAL_COLOR, CELL_TEXT_COLOR};
 
 use macroquad::prelude::*;
@@ -17,6 +17,7 @@ pub fn xy_to_index(x: usize, y: usize, width: usize) -> usize {
 pub struct Context {
     pub initial_font: CellFont,
     pub font: CellFont,
+    pub icon_font: IconFont,
     pub pencil_font: CellPencilFont,
     pub board: Board,
     pub game_square: u32,
@@ -26,10 +27,11 @@ pub struct Context {
 }
 
 impl Context {
-    pub async fn new(font_path: &str) -> Self {
+    pub async fn new(font_path: &str, icon_font_path: &str) -> Self {
         Context {
             initial_font: CellFont::new(font_path, CELL_TEXT_INITIAL_COLOR).await,
             font: CellFont::new(font_path, CELL_TEXT_COLOR).await,
+            icon_font: IconFont::new(icon_font_path, BLACK).await,
             pencil_font: CellPencilFont::new(font_path).await,
             board: Board::new(),
             game_square: 0,

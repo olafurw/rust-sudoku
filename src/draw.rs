@@ -3,7 +3,7 @@ use macroquad::prelude::*;
 use crate::{
     board::Board,
     cell_state::{CellState, CellSelection},
-    cell_font::{CellFont, CellPencilFont},
+    fonts::{CellFont, CellPencilFont},
     context::{index_to_xy, Context},
     CELL_COLOR_EMPHASIZE, CELL_COLOR_HIGHLIGHTED, CELL_COLOR_NORMAL, CELL_COLOR_SELECTED, 
     PADDING,
