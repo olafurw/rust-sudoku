@@ -24,7 +24,7 @@ pub struct Context {
     pub board: Board,
     pub menu: Menu,
     pub game_padding: f32,
-    pub game_square: u32,
+    pub game_square: f32,
     pub board_size: f32,
     pub portrait: bool,
     pub demo: [[u8; 9]; 9],
@@ -41,7 +41,7 @@ impl Context {
             board: Board::new(),
             menu: Menu::new(),
             game_padding: 0.0,
-            game_square: 0,
+            game_square: 0.0,
             board_size: 0.0,
             portrait: true,
             demo: [
@@ -72,6 +72,7 @@ impl Context {
         if is_mouse_button_pressed(MouseButton::Left) {
             let (mouse_x, mouse_y) = mouse_position();
             self.board.click(mouse_x, mouse_y);
+            self.menu.click(mouse_x, mouse_y);
         }
 
         let key_pressed = get_last_key_pressed();
@@ -97,15 +98,16 @@ impl Context {
         let width = screen_width();
 
         self.portrait = height >= width;
-        self.game_square = min(height as u32, width as u32);
+        self.game_square = min(height as u32, width as u32) as f32;
 
-        self.game_padding = self.game_square as f32 * 0.02;
-        self.board_size = self.game_square as f32 - (2.0 * self.game_padding);
+        self.game_padding = self.game_square * 0.02;
+        self.board_size = self.game_square - (2.0 * self.game_padding);
 
-        self.board.update(self.board_size, self.game_padding);
+        self.board.update(self.board_size, self.game_padding, self.portrait);
         self.initial_font.update(self.board.cell_size);
         self.font.update(self.board.cell_size);
         self.pencil_font.update(self.board.cell_size);
         self.menu_number_font.update(self.board_size);
+        self.menu.update(self.board_size, self.game_padding, self.portrait);
     }
 }

@@ -7,6 +7,7 @@ mod board;
 mod cell_state;
 mod cell_location;
 mod menu;
+mod menu_number;
 mod fonts;
 mod context;
 mod draw;

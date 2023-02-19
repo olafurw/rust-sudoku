@@ -112,15 +112,25 @@ fn draw_box_lines(context: &Context) {
 }
 
 fn draw_menu(context: &Context) {
-    let start_y = context.game_square as f32 + context.menu_number_font.height + (context.menu_number_font.height / 2.0);
-    let menu_width = context.board_size;
+    let font_x_offset = context.menu_number_font.width / 2.0;
+    let font_y_offset = context.menu_number_font.height + (context.menu_number_font.height / 3.0);
 
-    for i in 1..=9 {
+    for (i, number) in context.menu.numbers.iter().enumerate() {
+        let digit = i + 1;
         draw_text_ex(
-            i.to_string().as_str(),
-            context.game_padding + (context.menu_number_font.width / 2.0) + ((i - 1) as f32 * (menu_width / 9.0)),
-            start_y,
+            digit.to_string().as_str(),
+            number.x + font_x_offset,
+            number.y + font_y_offset,
             context.menu_number_font.params
+        );
+
+        draw_rectangle_lines(
+            number.x, 
+            number.y, 
+            number.size, 
+            number.size, 
+            3.0,
+            BLACK
         );
     }
 }

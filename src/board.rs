@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use crate::cell_location::CellLocation;
 use crate::cell_state::{CellState, CellSelection};
-use crate::context::index_to_xy;
+use crate::context::{index_to_xy, Context};
 use crate::{BOX_INDEXES, COLUMN_INDEXES, DIGIT_COUNT, ROW_INDEXES};
 
 pub struct Board {
@@ -10,6 +10,8 @@ pub struct Board {
     pub cell_state_history: Vec<[CellState; 81]>,
     pub cell_location: [CellLocation; 81],
     pub board_size: f32,
+    pub game_padding: f32,
+    pub portrait: bool,
     pub cell_size: f32,
     pub selected_index: Option<usize>,
     pub selected_index_history: Vec<Option<usize>>,
@@ -24,6 +26,8 @@ impl Board {
             cell_state_history: vec![],
             cell_location: [Default::default(); 81],
             board_size: 0.0,
+            game_padding: 0.0,
+            portrait: true,
             cell_size: 0.0,
             selected_index: None,
             selected_index_history: vec![],
@@ -119,6 +123,12 @@ impl Board {
     }
 
     pub fn click(&mut self, x: f32, y: f32) {
+        // Don't need to process clicks if we know they're outside the board
+        if (self.portrait && y >= self.board_size + self.game_padding)
+        || (!self.portrait && x >= self.board_size + self.game_padding) {
+            return;
+        }
+
         let mut clicked = false;
         self.selected_index = None;
 
@@ -137,7 +147,6 @@ impl Board {
 
         // no cell was clicked
         if !clicked {
-            self.clear_cell_selection();
             return;
         }
 
@@ -247,18 +256,20 @@ impl Board {
         }
     }
 
-    pub fn update(&mut self, board_size: f32, game_padding: f32) -> bool {
+    pub fn update(&mut self, board_size: f32, game_padding: f32, portrait: bool) -> bool {
         if self.board_size as i32 == board_size as i32 {
             return false;
         }
-
+        
         self.board_size = board_size;
+        self.game_padding = game_padding;
+        self.portrait = portrait;
         self.cell_size = self.board_size / 9.0;
 
         for (i, cell) in self.cell_location.iter_mut().enumerate() {
             let (x, y) = index_to_xy(i, DIGIT_COUNT);
-            let x_pos = game_padding + (x as f32 * self.cell_size);
-            let y_pos = game_padding + (y as f32 * self.cell_size);
+            let x_pos = self.game_padding + (x as f32 * self.cell_size);
+            let y_pos = self.game_padding + (y as f32 * self.cell_size);
 
             cell.update(x_pos, y_pos, self.cell_size);
         }
