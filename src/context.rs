@@ -2,7 +2,8 @@ use std::cmp::min;
 
 use crate::board::Board;
 use crate::fonts::{CellFont, CellPencilFont, IconFont};
-use crate::{PADDING, CELL_TEXT_INITIAL_COLOR, CELL_TEXT_COLOR};
+use crate::menu::Menu;
+use crate::{CELL_TEXT_INITIAL_COLOR, CELL_TEXT_COLOR};
 
 use macroquad::prelude::*;
 
@@ -20,6 +21,8 @@ pub struct Context {
     pub icon_font: IconFont,
     pub pencil_font: CellPencilFont,
     pub board: Board,
+    pub menu: Menu,
+    pub game_padding: f32,
     pub game_square: u32,
     pub board_size: f32,
     pub portrait: bool,
@@ -34,6 +37,8 @@ impl Context {
             icon_font: IconFont::new(icon_font_path, BLACK).await,
             pencil_font: CellPencilFont::new(font_path).await,
             board: Board::new(),
+            menu: Menu::new(),
+            game_padding: 0.0,
             game_square: 0,
             board_size: 0.0,
             portrait: true,
@@ -90,11 +95,12 @@ impl Context {
         let width = screen_width();
 
         self.portrait = height >= width;
-
         self.game_square = min(height as u32, width as u32);
-        self.board_size = self.game_square as f32 - (2.0 * PADDING);
 
-        self.board.update(self.board_size);
+        self.game_padding = self.game_square as f32 * 0.02;
+        self.board_size = self.game_square as f32 - (2.0 * self.game_padding);
+
+        self.board.update(self.board_size, self.game_padding);
         self.initial_font.update(self.board.cell_size);
         self.font.update(self.board.cell_size);
         self.pencil_font.update(self.board.cell_size);

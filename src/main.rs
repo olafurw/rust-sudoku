@@ -6,6 +6,7 @@
 mod board;
 mod cell_state;
 mod cell_location;
+mod menu;
 mod fonts;
 mod context;
 mod draw;
@@ -14,7 +15,6 @@ use context::Context;
 use draw::draw_context;
 use macroquad::prelude::*;
 
-pub const PADDING: f32 = 10.0;
 pub const DIGIT_COUNT: usize = 9;
 pub const CELL_COLOR_NORMAL: Color = color_u8!(255, 255, 255, 255);
 pub const CELL_COLOR_SELECTED: Color = color_u8!(255, 208, 177, 255);

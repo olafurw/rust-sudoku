@@ -6,7 +6,6 @@ use crate::{
     fonts::{CellFont, CellPencilFont},
     context::{index_to_xy, Context},
     CELL_COLOR_EMPHASIZE, CELL_COLOR_HIGHLIGHTED, CELL_COLOR_NORMAL, CELL_COLOR_SELECTED, 
-    PADDING,
     cell_location::CellLocation,
 };
 
@@ -67,19 +66,19 @@ fn draw_cell_lines(context: &Context) {
         let line_width = context.board.board_size * 0.0025;
         let line_width = if line_width < 0.5 { 0.5 } else { line_width };
 
-        let offset = PADDING + ((x as f32 * context.board.cell_size) - (line_width / 2.0));
+        let offset = context.game_padding + ((x as f32 * context.board.cell_size) - (line_width / 2.0));
         draw_line(
             offset,
-            PADDING,
+            context.game_padding,
             offset,
-            context.board.board_size + PADDING,
+            context.board.board_size + context.game_padding,
             line_width,
             GRAY,
         );
         draw_line(
-            PADDING,
+            context.game_padding,
             offset,
-            context.board.board_size + PADDING,
+            context.board.board_size + context.game_padding,
             offset,
             line_width,
             GRAY,
@@ -92,19 +91,19 @@ fn draw_box_lines(context: &Context) {
         let line_width = context.board.board_size * 0.005;
         let line_width = if line_width < 1.0 { 1.0 } else { line_width };
 
-        let offset = PADDING + ((x as f32 * (3.0 * context.board.cell_size)) - (line_width / 2.0));
+        let offset = context.game_padding + ((x as f32 * (3.0 * context.board.cell_size)) - (line_width / 2.0));
         draw_line(
             offset,
-            PADDING,
+            context.game_padding,
             offset,
-            context.board.board_size + PADDING,
+            context.board.board_size + context.game_padding,
             line_width,
             BLACK,
         );
         draw_line(
-            PADDING - line_width,
+            context.game_padding - line_width,
             offset,
-            context.board.board_size + PADDING,
+            context.board.board_size + context.game_padding,
             offset,
             line_width,
             BLACK,

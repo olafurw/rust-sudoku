@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use crate::cell_location::CellLocation;
 use crate::cell_state::{CellState, CellSelection};
 use crate::context::index_to_xy;
-use crate::{BOX_INDEXES, COLUMN_INDEXES, DIGIT_COUNT, PADDING, ROW_INDEXES};
+use crate::{BOX_INDEXES, COLUMN_INDEXES, DIGIT_COUNT, ROW_INDEXES};
 
 pub struct Board {
     pub cell_state: [CellState; 81],
@@ -247,7 +247,7 @@ impl Board {
         }
     }
 
-    pub fn update(&mut self, board_size: f32) -> bool {
+    pub fn update(&mut self, board_size: f32, game_padding: f32) -> bool {
         if self.board_size as i32 == board_size as i32 {
             return false;
         }
@@ -257,8 +257,8 @@ impl Board {
 
         for (i, cell) in self.cell_location.iter_mut().enumerate() {
             let (x, y) = index_to_xy(i, DIGIT_COUNT);
-            let x_pos = PADDING + (x as f32 * self.cell_size);
-            let y_pos = PADDING + (y as f32 * self.cell_size);
+            let x_pos = game_padding + (x as f32 * self.cell_size);
+            let y_pos = game_padding + (y as f32 * self.cell_size);
 
             cell.update(x_pos, y_pos, self.cell_size);
         }
