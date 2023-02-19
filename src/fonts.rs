@@ -110,6 +110,42 @@ impl CellPencilFont {
     }
 }
 
+pub struct MenuNumberFont {
+    pub params: TextParams,
+    pub font: Font,
+    pub height: f32,
+    pub width: f32,
+}
+
+impl MenuNumberFont {
+    pub async fn new(font_path: &str) -> Self {
+        let font = load_ttf_font(font_path).await.unwrap();
+        let measure = measure_text(ICON_UNDO, Some(font), 48, 1.0);
+        MenuNumberFont {
+            font,
+            params: TextParams {
+                font,
+                font_size: 48,
+                font_scale: 1.0,
+                font_scale_aspect: 1.0,
+                rotation: 0.0,
+                color: BLACK,
+            },
+            height: measure.height,
+            width: measure.width,
+        }
+    }
+
+    pub fn update(&mut self, board_size: f32) {
+        let number_square = board_size / 9.0;
+        self.params.font_size = cell_to_font_size(&self.font, number_square);
+        
+        let measure = measure_text("9", Some(self.font), self.params.font_size, 1.0);
+        self.width = measure.width;
+        self.height = measure.height;
+    }
+}
+
 pub struct IconFont {
     pub params: TextParams,
     pub font: Font,

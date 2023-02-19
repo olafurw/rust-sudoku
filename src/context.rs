@@ -1,7 +1,7 @@
 use std::cmp::min;
 
 use crate::board::Board;
-use crate::fonts::{CellFont, CellPencilFont, IconFont};
+use crate::fonts::{CellFont, CellPencilFont, IconFont, MenuNumberFont};
 use crate::menu::Menu;
 use crate::{CELL_TEXT_INITIAL_COLOR, CELL_TEXT_COLOR};
 
@@ -20,6 +20,7 @@ pub struct Context {
     pub font: CellFont,
     pub icon_font: IconFont,
     pub pencil_font: CellPencilFont,
+    pub menu_number_font: MenuNumberFont,
     pub board: Board,
     pub menu: Menu,
     pub game_padding: f32,
@@ -36,6 +37,7 @@ impl Context {
             font: CellFont::new(font_path, CELL_TEXT_COLOR).await,
             icon_font: IconFont::new(icon_font_path, BLACK).await,
             pencil_font: CellPencilFont::new(font_path).await,
+            menu_number_font: MenuNumberFont::new(font_path).await,
             board: Board::new(),
             menu: Menu::new(),
             game_padding: 0.0,
@@ -104,5 +106,6 @@ impl Context {
         self.initial_font.update(self.board.cell_size);
         self.font.update(self.board.cell_size);
         self.pencil_font.update(self.board.cell_size);
+        self.menu_number_font.update(self.board_size);
     }
 }

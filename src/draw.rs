@@ -111,6 +111,20 @@ fn draw_box_lines(context: &Context) {
     }
 }
 
+fn draw_menu(context: &Context) {
+    let start_y = context.game_square as f32 + context.menu_number_font.height + (context.menu_number_font.height / 2.0);
+    let menu_width = context.board_size;
+
+    for i in 1..=9 {
+        draw_text_ex(
+            i.to_string().as_str(),
+            context.game_padding + (context.menu_number_font.width / 2.0) + ((i - 1) as f32 * (menu_width / 9.0)),
+            start_y,
+            context.menu_number_font.params
+        );
+    }
+}
+
 pub fn draw_context(context: &Context) {
     clear_background(WHITE);
 
@@ -118,4 +132,6 @@ pub fn draw_context(context: &Context) {
 
     draw_cell_lines(context);
     draw_box_lines(context);
+
+    draw_menu(context);
 }
