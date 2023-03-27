@@ -1,19 +1,19 @@
 #[derive(Clone, Copy)]
-pub struct MenuNumber {
+pub struct MenuItem {
     pub x: f32,
     pub y: f32,
     pub size: f32,
 }
 
-impl Default for MenuNumber {
+impl Default for MenuItem {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl MenuNumber {
+impl MenuItem {
     pub fn new() -> Self {
-        MenuNumber {
+        MenuItem {
             x: 0.0,
             y: 0.0,
             size: 0.0,

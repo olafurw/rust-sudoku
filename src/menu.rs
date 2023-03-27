@@ -1,10 +1,11 @@
-use crate::menu_number::MenuNumber;
+use crate::menu_item::MenuItem;
 
 pub struct Menu {
     pub board_size: f32,
     pub game_padding: f32,
     pub portrait: bool,
-    pub numbers: [MenuNumber; 9],
+    pub numbers: [MenuItem; 9],
+    pub pencil_mode: MenuItem,
 }
 
 impl Menu {
@@ -14,6 +15,7 @@ impl Menu {
             game_padding: 0.0,
             portrait: true,
             numbers: [Default::default(); 9],
+            pencil_mode: Default::default()
         }
     }
 
@@ -30,6 +32,8 @@ impl Menu {
             number.update(start_x, start_y, number_box);
             start_x += number_box;
         }
+
+        self.pencil_mode.update(100.0, 100.0, number_box);
     }
 
     pub fn click(&self, x: f32, y: f32) -> Option<u8> {

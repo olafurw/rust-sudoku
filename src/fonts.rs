@@ -1,26 +1,56 @@
 use macroquad::prelude::*;
 use macroquad::text::TextParams;
 
-use crate::ICON_UNDO;
+use crate::{ICON_UNDO, ICON_PENCIL};
 
-fn cell_to_font_size(font: &Font, cell_size: f32) -> u16 {
+// todo, write unit and performance test for this.
+fn recurse_measure_font_size(
+    font: &Option<Font>, text: &str, cell_size: f32,
+    start_size: u16, end_size: u16, step_size: usize) -> u16 {
+
+    let mut old_size: u16 = 0;
+    for test_size in (start_size..end_size).step_by(step_size) {
+        let measurement = measure_text(text, *font, test_size, 1.0);
+
+        // we want to use 60% of a cell size
+        let ratio = measurement.height / cell_size; 
+        if ratio > 0.6 && ratio < 0.61 {
+            return test_size;
+        }
+
+        if ratio > 0.6 {
+            if step_size < 2 {
+                return test_size;
+            }
+
+            let new_step_size = (step_size as f32 / 2.0).ceil() as usize;
+            return recurse_measure_font_size(font, text, cell_size, old_size, test_size, new_step_size);
+        }
+
+        old_size = test_size;
+    }
+
+    if step_size == 1 {
+        return old_size;
+    }
+
+    let new_step_size = (step_size as f32 / 2.0).ceil() as usize;
+    recurse_measure_font_size(font, text, cell_size, old_size, end_size, new_step_size)
+}
+
+fn cell_to_font_size(font: &Font, cell_size: f32, text: &str) -> u16 {
     if cell_size < 1.0 {
         return 1;
     }
 
-    let mut font_size = 1;
-    let font = Some(*font);
+    let start_size: u16 = 0;
+    let end_size: u16 = 400;
+    let step_size: usize = 100;
 
-    // todo: turn into binary search
-    for test_size in 1..200 {
-        let measurement = measure_text("9", font, test_size, 1.0);
-        if measurement.height / cell_size > 0.6 {
-            font_size = test_size;
-            break;
-        }
-    }
-
-    font_size
+    recurse_measure_font_size(
+        &Some(*font), text, cell_size, 
+        start_size, end_size, step_size
+    )
 }
 
 pub struct CellFont {
@@ -54,7 +84,7 @@ impl CellFont {
     }
 
     pub fn update(&mut self, cell_size: f32) {
-        self.params.font_size = cell_to_font_size(&self.font, cell_size);
+        self.params.font_size = cell_to_font_size(&self.font, cell_size, "9");
         let measure = measure_text("9", Some(self.font), self.params.font_size, 1.0);
         self.width = measure.width;
         self.height = measure.height;
@@ -100,7 +130,7 @@ impl CellPencilFont {
         let padding = cell_size * 0.1;
         self.box_size = (cell_size - padding) / 3.0;
 
-        self.params.font_size = cell_to_font_size(&self.font, self.box_size);
+        self.params.font_size = cell_to_font_size(&self.font, self.box_size, "9");
         let measure = measure_text("9", Some(self.font), self.params.font_size, 1.0);
         self.width = measure.width;
         self.height = measure.height;
@@ -138,7 +168,7 @@ impl MenuNumberFont {
 
     pub fn update(&mut self, board_size: f32) {
         let number_square = board_size / 9.0;
-        self.params.font_size = cell_to_font_size(&self.font, number_square);
+        self.params.font_size = cell_to_font_size(&self.font, number_square, "9");
         
         let measure = measure_text("9", Some(self.font), self.params.font_size, 1.0);
         self.width = measure.width;
@@ -156,7 +186,7 @@ pub struct IconFont {
 impl IconFont {
     pub async fn new(font_path: &str, color: Color) -> Self {
         let font = load_ttf_font(font_path).await.unwrap();
-        let measure = measure_text(ICON_UNDO, Some(font), 48, 1.0);
+        let measure = measure_text(ICON_PENCIL, Some(font), 48, 1.0);
         IconFont {
             font,
             params: TextParams {
@@ -173,8 +203,8 @@ impl IconFont {
     }
 
     pub fn update(&mut self, cell_size: f32) {
-        self.params.font_size = cell_to_font_size(&self.font, cell_size);
-        let measure = measure_text(ICON_UNDO, Some(self.font), self.params.font_size, 1.0);
+        self.params.font_size = cell_to_font_size(&self.font, cell_size, ICON_PENCIL);
+        let measure = measure_text(ICON_PENCIL, Some(self.font), self.params.font_size, 1.0);
         self.width = measure.width;
         self.height = measure.height;
     }

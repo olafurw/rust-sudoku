@@ -1,4 +1,5 @@
 use std::cmp::min;
+use std::time::Instant;
 
 use crate::board::Board;
 use crate::fonts::{CellFont, CellPencilFont, IconFont, MenuNumberFont};
@@ -25,6 +26,7 @@ pub struct Context {
     pub menu: Menu,
     pub game_padding: f32,
     pub game_square: f32,
+    pub old_game_square: u32,
     pub board_size: f32,
     pub portrait: bool,
     pub demo: [[u8; 9]; 9],
@@ -42,6 +44,7 @@ impl Context {
             menu: Menu::new(),
             game_padding: 0.0,
             game_square: 0.0,
+            old_game_square: 0,
             board_size: 0.0,
             portrait: true,
             demo: [
@@ -103,6 +106,11 @@ impl Context {
         self.portrait = height >= width;
         self.game_square = min(height as u32, width as u32) as f32;
 
+        if self.game_square as u32 == self.old_game_square {
+            return;
+        }
+        self.old_game_square = self.game_square as u32;
+
         self.game_padding = self.game_square * 0.02;
         self.board_size = self.game_square - (2.0 * self.game_padding);
 
@@ -111,6 +119,7 @@ impl Context {
         self.font.update(self.board.cell_size);
         self.pencil_font.update(self.board.cell_size);
         self.menu_number_font.update(self.board_size);
+        self.icon_font.update(self.board_size);
         self.menu.update(self.board_size, self.game_padding, self.portrait);
     }
 }

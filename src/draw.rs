@@ -6,7 +6,7 @@ use crate::{
     fonts::{CellFont, CellPencilFont},
     context::{index_to_xy, Context},
     CELL_COLOR_EMPHASIZE, CELL_COLOR_HIGHLIGHTED, CELL_COLOR_NORMAL, CELL_COLOR_SELECTED, 
-    cell_location::CellLocation,
+    cell_location::CellLocation, ICON_PENCIL, ICON_PENCIL_SLASH,
 };
 
 pub fn draw_cell(cell_state: &CellState, call_location: &CellLocation, initial_font: &CellFont, font: &CellFont, pencil_font: &CellPencilFont) {
@@ -133,6 +133,13 @@ fn draw_menu(context: &Context) {
             BLACK
         );
     }
+
+    draw_text_ex(
+        ICON_PENCIL, 
+        context.menu.pencil_mode.x,
+        context.menu.pencil_mode.y,
+        context.icon_font.params
+    );
 }
 
 pub fn draw_context(context: &Context) {
