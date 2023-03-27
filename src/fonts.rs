@@ -3,39 +3,27 @@ use macroquad::text::TextParams;
 
 use crate::{ICON_UNDO, ICON_PENCIL};
 
-// todo, write unit and performance test for this.
-fn recurse_measure_font_size(
-    font: &Option<Font>, text: &str, cell_size: f32,
-    start_size: u16, end_size: u16, step_size: usize) -> u16 {
-
+fn find_best_font_size(font: &Option<Font>, text: &str, cell_size: f32) -> u16 {
     let mut old_size: u16 = 0;
-    for test_size in (start_size..end_size).step_by(step_size) {
-        let measurement = measure_text(text, *font, test_size, 1.0);
+    let mut start_size: u16 = 1;
+    let mut end_size: u16 = 100;
 
-        // we want to use 60% of a cell size
-        let ratio = measurement.height / cell_size; 
+    while start_size <= end_size {
+        let test_size = (start_size + end_size) / 2;
+        let measurement = measure_text(text, *font, test_size, 1.0);
+        let ratio = measurement.height / cell_size;
+
         if ratio > 0.6 && ratio < 0.61 {
             return test_size;
+        } else if ratio > 0.6 {
+            end_size = test_size - 1;
+        } else {
+            start_size = test_size + 1;
+            old_size = test_size;
         }
-
-        if ratio > 0.6 {
-            if step_size < 2 {
-                return test_size;
-            }
-
-            let new_step_size = (step_size as f32 / 2.0).ceil() as usize;
-            return recurse_measure_font_size(font, text, cell_size, old_size, test_size, new_step_size);
-        }
-
-        old_size = test_size;
     }
 
-    if step_size == 1 {
-        return old_size;
-    }
-
-    let new_step_size = (step_size as f32 / 2.0).ceil() as usize;
-    recurse_measure_font_size(font, text, cell_size, old_size, end_size, new_step_size)
+    old_size
 }
 
 fn cell_to_font_size(font: &Font, cell_size: f32, text: &str) -> u16 {
@@ -43,13 +31,8 @@ fn cell_to_font_size(font: &Font, cell_size: f32, text: &str) -> u16 {
         return 1;
     }
 
-    let start_size: u16 = 0;
-    let end_size: u16 = 400;
-    let step_size: usize = 100;
-
-    recurse_measure_font_size(
-        &Some(*font), text, cell_size, 
-        start_size, end_size, step_size
+    find_best_font_size(
+        &Some(*font), text, cell_size,
     )
 }
 
