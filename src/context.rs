@@ -1,5 +1,4 @@
 use std::cmp::min;
-use std::time::Instant;
 
 use crate::board::Board;
 use crate::fonts::{CellFont, CellPencilFont, IconFont, MenuNumberFont};
@@ -114,8 +113,6 @@ impl Context {
         self.game_padding = self.game_square * 0.02;
         self.board_size = self.game_square - (2.0 * self.game_padding);
 
-        let start = Instant::now();
-
         self.board
             .update(self.board_size, self.game_padding, self.portrait);
         self.initial_font.update(self.board.cell_size);
@@ -125,9 +122,5 @@ impl Context {
         self.icon_font.update(self.board.cell_size);
         self.menu
             .update(self.board_size, self.game_padding, self.portrait);
-
-        let end = Instant::now();
-        let delta = end.duration_since(start).as_micros() as f64 / 1000.0;
-        println!("{delta}");
     }
 }
