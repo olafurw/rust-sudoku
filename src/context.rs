@@ -72,7 +72,10 @@ impl Context {
         if is_mouse_button_pressed(MouseButton::Left) {
             let (mouse_x, mouse_y) = mouse_position();
             self.board.click(mouse_x, mouse_y);
-            self.menu.click(mouse_x, mouse_y);
+            if let Some(number) = self.menu.click(mouse_x, mouse_y) {
+                self.board.number(number);
+                return;
+            }
         }
 
         let key_pressed = get_last_key_pressed();

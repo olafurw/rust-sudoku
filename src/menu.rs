@@ -32,13 +32,13 @@ impl Menu {
         }
     }
 
-    pub fn click(&self, x: f32, y: f32) -> bool {
+    pub fn click(&self, x: f32, y: f32) -> Option<u8> {
         for (i, number) in self.numbers.iter().enumerate() {
             if number.click(x, y) {
-                return true;
+                return Some((i + 1) as u8);
             }
         }
 
-        false
+        None
     }
 }

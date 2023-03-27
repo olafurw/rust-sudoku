@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use crate::cell_location::CellLocation;
 use crate::cell_state::{CellState, CellSelection};
-use crate::context::{index_to_xy, Context};
+use crate::context::index_to_xy;
 use crate::{BOX_INDEXES, COLUMN_INDEXES, DIGIT_COUNT, ROW_INDEXES};
 
 pub struct Board {
@@ -64,6 +64,7 @@ impl Board {
         }
 
         self.cell_state[self.selected_index.unwrap()].clear_number();
+        self.clear_cell_selection();
     }
 
     fn is_number_initial(&self) -> bool {
