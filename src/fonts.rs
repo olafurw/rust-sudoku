@@ -166,9 +166,8 @@ impl MenuNumberFont {
         }
     }
 
-    pub fn update(&mut self, board_size: f32) {
-        let number_square = board_size / 9.0;
-        self.params.font_size = cell_to_font_size(&self.font, number_square, "9");
+    pub fn update(&mut self, cell_size: f32) {
+        self.params.font_size = cell_to_font_size(&self.font, cell_size, "9");
         
         let measure = measure_text("9", Some(self.font), self.params.font_size, 1.0);
         self.width = measure.width;

@@ -118,8 +118,8 @@ impl Context {
         self.initial_font.update(self.board.cell_size);
         self.font.update(self.board.cell_size);
         self.pencil_font.update(self.board.cell_size);
-        self.menu_number_font.update(self.board_size);
-        self.icon_font.update(self.board_size);
+        self.menu_number_font.update(self.board.cell_size);
+        self.icon_font.update(self.board.cell_size);
         self.menu.update(self.board_size, self.game_padding, self.portrait);
     }
 }
