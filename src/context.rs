@@ -4,7 +4,7 @@ use std::time::Instant;
 use crate::board::Board;
 use crate::fonts::{CellFont, CellPencilFont, IconFont, MenuNumberFont};
 use crate::menu::Menu;
-use crate::{CELL_TEXT_INITIAL_COLOR, CELL_TEXT_COLOR};
+use crate::{CELL_TEXT_COLOR, CELL_TEXT_INITIAL_COLOR};
 
 use macroquad::prelude::*;
 
@@ -116,13 +116,15 @@ impl Context {
 
         let start = Instant::now();
 
-        self.board.update(self.board_size, self.game_padding, self.portrait);
+        self.board
+            .update(self.board_size, self.game_padding, self.portrait);
         self.initial_font.update(self.board.cell_size);
         self.font.update(self.board.cell_size);
         self.pencil_font.update(self.board.cell_size);
         self.menu_number_font.update(self.board.cell_size);
         self.icon_font.update(self.board.cell_size);
-        self.menu.update(self.board_size, self.game_padding, self.portrait);
+        self.menu
+            .update(self.board_size, self.game_padding, self.portrait);
 
         let end = Instant::now();
         let delta = end.duration_since(start).as_micros() as f64 / 1000.0;

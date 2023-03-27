@@ -15,7 +15,7 @@ impl Menu {
             game_padding: 0.0,
             portrait: true,
             numbers: [Default::default(); 9],
-            pencil_mode: Default::default()
+            pencil_mode: Default::default(),
         }
     }
 

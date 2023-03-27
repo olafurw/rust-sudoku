@@ -97,7 +97,7 @@ impl CellState {
 
 #[cfg(test)]
 mod tests {
-    use crate::cell_state::{CellState, CellSelection};
+    use crate::cell_state::{CellSelection, CellState};
 
     fn init_assert(cell: &CellState) {
         assert_eq!(cell.number, None);
@@ -180,7 +180,7 @@ mod tests {
 
         for i in 0..9 {
             assert!(!cell.has_pencil());
-            
+
             cell.set_pencil(i + 1);
             assert!(cell.has_pencil());
             assert_eq!(cell.pencil[i as usize], Some(i + 1));

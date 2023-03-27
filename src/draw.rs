@@ -2,14 +2,21 @@ use macroquad::prelude::*;
 
 use crate::{
     board::Board,
-    cell_state::{CellState, CellSelection},
-    fonts::{CellFont, CellPencilFont},
+    cell_location::CellLocation,
+    cell_state::{CellSelection, CellState},
     context::{index_to_xy, Context},
-    CELL_COLOR_EMPHASIZE, CELL_COLOR_HIGHLIGHTED, CELL_COLOR_NORMAL, CELL_COLOR_SELECTED, 
-    cell_location::CellLocation, ICON_PENCIL, ICON_PENCIL_SLASH,
+    fonts::{CellFont, CellPencilFont},
+    CELL_COLOR_EMPHASIZE, CELL_COLOR_HIGHLIGHTED, CELL_COLOR_NORMAL, CELL_COLOR_SELECTED,
+    ICON_PENCIL,
 };
 
-pub fn draw_cell(cell_state: &CellState, call_location: &CellLocation, initial_font: &CellFont, font: &CellFont, pencil_font: &CellPencilFont) {
+pub fn draw_cell(
+    cell_state: &CellState,
+    call_location: &CellLocation,
+    initial_font: &CellFont,
+    font: &CellFont,
+    pencil_font: &CellPencilFont,
+) {
     let color = if cell_state.selection == CellSelection::Selected {
         CELL_COLOR_SELECTED
     } else if cell_state.selection == CellSelection::Emphasized {
@@ -20,7 +27,13 @@ pub fn draw_cell(cell_state: &CellState, call_location: &CellLocation, initial_f
         CELL_COLOR_NORMAL
     };
 
-    draw_rectangle(call_location.x, call_location.y, call_location.size, call_location.size, color);
+    draw_rectangle(
+        call_location.x,
+        call_location.y,
+        call_location.size,
+        call_location.size,
+        color,
+    );
 
     if cell_state.has_number() {
         if let Some(n) = cell_state.number {
@@ -28,7 +41,11 @@ pub fn draw_cell(cell_state: &CellState, call_location: &CellLocation, initial_f
                 n.to_string().as_str(),
                 call_location.x + font.x_offset,
                 call_location.y + font.y_offset,
-                if cell_state.initial { initial_font.params } else { font.params },
+                if cell_state.initial {
+                    initial_font.params
+                } else {
+                    font.params
+                },
             );
         }
     } else if cell_state.has_pencil() {
@@ -47,12 +64,19 @@ pub fn draw_cell(cell_state: &CellState, call_location: &CellLocation, initial_f
     }
 }
 
-pub fn draw_board(board: &Board, initial_font: &CellFont, font: &CellFont, pencil_font: &CellPencilFont) {
+pub fn draw_board(
+    board: &Board,
+    initial_font: &CellFont,
+    font: &CellFont,
+    pencil_font: &CellPencilFont,
+) {
     for i in 0..81 {
         draw_cell(
-            &board.cell_state[i], 
-            &board.cell_location[i], 
-            initial_font, font, pencil_font
+            &board.cell_state[i],
+            &board.cell_location[i],
+            initial_font,
+            font,
+            pencil_font,
         );
     }
 }
@@ -66,7 +90,8 @@ fn draw_cell_lines(context: &Context) {
         let line_width = context.board.board_size * 0.0025;
         let line_width = if line_width < 0.5 { 0.5 } else { line_width };
 
-        let offset = context.game_padding + ((x as f32 * context.board.cell_size) - (line_width / 2.0));
+        let offset =
+            context.game_padding + ((x as f32 * context.board.cell_size) - (line_width / 2.0));
         draw_line(
             offset,
             context.game_padding,
@@ -91,7 +116,8 @@ fn draw_box_lines(context: &Context) {
         let line_width = context.board.board_size * 0.005;
         let line_width = if line_width < 1.0 { 1.0 } else { line_width };
 
-        let offset = context.game_padding + ((x as f32 * (3.0 * context.board.cell_size)) - (line_width / 2.0));
+        let offset = context.game_padding
+            + ((x as f32 * (3.0 * context.board.cell_size)) - (line_width / 2.0));
         draw_line(
             offset,
             context.game_padding,
@@ -121,31 +147,29 @@ fn draw_menu(context: &Context) {
             digit.to_string().as_str(),
             number.x + font_x_offset,
             number.y + font_y_offset,
-            context.menu_number_font.params
+            context.menu_number_font.params,
         );
 
-        draw_rectangle_lines(
-            number.x, 
-            number.y, 
-            number.size, 
-            number.size, 
-            3.0,
-            BLACK
-        );
+        draw_rectangle_lines(number.x, number.y, number.size, number.size, 3.0, BLACK);
     }
 
     draw_text_ex(
-        ICON_PENCIL, 
+        ICON_PENCIL,
         context.menu.pencil_mode.x,
         context.menu.pencil_mode.y,
-        context.icon_font.params
+        context.icon_font.params,
     );
 }
 
 pub fn draw_context(context: &Context) {
     clear_background(WHITE);
 
-    draw_board(&context.board, &context.initial_font, &context.font, &context.pencil_font);
+    draw_board(
+        &context.board,
+        &context.initial_font,
+        &context.font,
+        &context.pencil_font,
+    );
 
     draw_cell_lines(context);
     draw_box_lines(context);

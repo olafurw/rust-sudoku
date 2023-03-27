@@ -1,16 +1,15 @@
 // TODO
 //
-// actual undo, with action stack
-// more unit tests
+// clicking on numbers should highlight the clicked on number
 
 mod board;
-mod cell_state;
 mod cell_location;
-mod menu;
-mod menu_item;
-mod fonts;
+mod cell_state;
 mod context;
 mod draw;
+mod fonts;
+mod menu;
+mod menu_item;
 
 use context::Context;
 use draw::draw_context;

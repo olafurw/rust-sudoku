@@ -1,7 +1,7 @@
 use macroquad::prelude::*;
 use macroquad::text::TextParams;
 
-use crate::{ICON_UNDO, ICON_PENCIL};
+use crate::{ICON_PENCIL, ICON_UNDO};
 
 fn find_best_font_size(font: &Option<Font>, text: &str, cell_size: f32) -> u16 {
     let mut old_size: u16 = 0;
@@ -31,9 +31,7 @@ fn cell_to_font_size(font: &Font, cell_size: f32, text: &str) -> u16 {
         return 1;
     }
 
-    find_best_font_size(
-        &Some(*font), text, cell_size,
-    )
+    find_best_font_size(&Some(*font), text, cell_size)
 }
 
 pub struct CellFont {
@@ -151,7 +149,7 @@ impl MenuNumberFont {
 
     pub fn update(&mut self, cell_size: f32) {
         self.params.font_size = cell_to_font_size(&self.font, cell_size, "9");
-        
+
         let measure = measure_text("9", Some(self.font), self.params.font_size, 1.0);
         self.width = measure.width;
         self.height = measure.height;

@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 use crate::cell_location::CellLocation;
-use crate::cell_state::{CellState, CellSelection};
+use crate::cell_state::{CellSelection, CellState};
 use crate::context::index_to_xy;
 use crate::{BOX_INDEXES, COLUMN_INDEXES, DIGIT_COUNT, ROW_INDEXES};
 
@@ -126,7 +126,8 @@ impl Board {
     pub fn click(&mut self, x: f32, y: f32) {
         // Don't need to process clicks if we know they're outside the board
         if (self.portrait && y >= self.board_size + self.game_padding)
-        || (!self.portrait && x >= self.board_size + self.game_padding) {
+            || (!self.portrait && x >= self.board_size + self.game_padding)
+        {
             return;
         }
 
@@ -166,7 +167,10 @@ impl Board {
 
     fn clear_pencil(&mut self, number: u8) {
         for cell in self.cell_state.iter_mut() {
-            if cell.has_number() || cell.selection == CellSelection::Selected || cell.selection == CellSelection::Emphasized {
+            if cell.has_number()
+                || cell.selection == CellSelection::Selected
+                || cell.selection == CellSelection::Emphasized
+            {
                 continue;
             }
 
@@ -261,7 +265,7 @@ impl Board {
         if self.board_size as i32 == board_size as i32 {
             return false;
         }
-        
+
         self.board_size = board_size;
         self.game_padding = game_padding;
         self.portrait = portrait;
@@ -282,7 +286,5 @@ impl Board {
 #[cfg(test)]
 mod tests {
     #[test]
-    fn cell_init() {
-        
-    }
+    fn cell_init() {}
 }

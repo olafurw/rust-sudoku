@@ -33,14 +33,14 @@ impl CellLocation {
 
 #[cfg(test)]
 mod tests {
-    use crate::cell_location::{CellLocation};
+    use crate::cell_location::CellLocation;
 
     fn init_assert(cell: &CellLocation) {
         assert_eq!(cell.x, 0.0);
         assert_eq!(cell.y, 0.0);
         assert_eq!(cell.size, 0.0);
     }
-    
+
     #[test]
     fn cell_init() {
         let cell = CellLocation::new();
@@ -57,14 +57,14 @@ mod tests {
         assert_eq!(cell.click(1.0, 1.0), true);
         assert_eq!(cell.click(32.0, 32.0), true);
         assert_eq!(cell.click(32.1, 32.1), false);
-        
+
         cell.update(0.0, 0.0, 64.0);
         assert_eq!(cell.click(1.0, 1.0), true);
         assert_eq!(cell.click(32.0, 32.0), true);
         assert_eq!(cell.click(32.1, 32.1), true);
         assert_eq!(cell.click(64.0, 64.0), true);
         assert_eq!(cell.click(64.01, 64.01), false);
-        
+
         cell.update(32.0, 32.0, 32.0);
         assert_eq!(cell.click(0.0, 0.0), false);
         assert_eq!(cell.click(1.0, 1.0), false);
