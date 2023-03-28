@@ -52,26 +52,26 @@ mod tests {
         let mut cell = CellLocation::new();
         init_assert(&cell);
 
-        assert_eq!(cell.click(1.0, 1.0), false);
+        assert!(!cell.click(1.0, 1.0));
         cell.update(0.0, 0.0, 32.0);
-        assert_eq!(cell.click(1.0, 1.0), true);
-        assert_eq!(cell.click(32.0, 32.0), true);
-        assert_eq!(cell.click(32.1, 32.1), false);
+        assert!(cell.click(1.0, 1.0));
+        assert!(cell.click(32.0, 32.0));
+        assert!(!cell.click(32.1, 32.1));
 
         cell.update(0.0, 0.0, 64.0);
-        assert_eq!(cell.click(1.0, 1.0), true);
-        assert_eq!(cell.click(32.0, 32.0), true);
-        assert_eq!(cell.click(32.1, 32.1), true);
-        assert_eq!(cell.click(64.0, 64.0), true);
-        assert_eq!(cell.click(64.01, 64.01), false);
+        assert!(cell.click(1.0, 1.0));
+        assert!(cell.click(32.0, 32.0));
+        assert!(cell.click(32.1, 32.1));
+        assert!(cell.click(64.0, 64.0));
+        assert!(!cell.click(64.01, 64.01));
 
         cell.update(32.0, 32.0, 32.0);
-        assert_eq!(cell.click(0.0, 0.0), false);
-        assert_eq!(cell.click(1.0, 1.0), false);
-        assert_eq!(cell.click(31.99, 31.99), false);
-        assert_eq!(cell.click(32.0, 32.0), true);
-        assert_eq!(cell.click(32.1, 32.1), true);
-        assert_eq!(cell.click(64.0, 64.0), true);
-        assert_eq!(cell.click(64.01, 64.01), false);
+        assert!(!cell.click(0.0, 0.0));
+        assert!(!cell.click(1.0, 1.0));
+        assert!(!cell.click(31.99, 31.99));
+        assert!(cell.click(32.0, 32.0));
+        assert!(cell.click(32.1, 32.1));
+        assert!(cell.click(64.0, 64.0));
+        assert!(!cell.click(64.01, 64.01));
     }
 }

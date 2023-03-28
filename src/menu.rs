@@ -33,7 +33,7 @@ impl Menu {
             start_x += number_box;
         }
 
-        self.pencil_mode.update(100.0, 100.0, number_box);
+        self.pencil_mode.update(self.game_padding + 200.0, start_y + 200.0, number_box);
     }
 
     pub fn click(&self, x: f32, y: f32) -> Option<u8> {

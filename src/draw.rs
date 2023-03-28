@@ -153,11 +153,21 @@ fn draw_menu(context: &Context) {
         draw_rectangle_lines(number.x, number.y, number.size, number.size, 3.0, BLACK);
     }
 
+    let icon_x_offset = (context.icon_font.width - context.menu.pencil_mode.size).abs() / 2.0;
+    let icon_y_offset = (context.icon_font.height - context.menu.pencil_mode.size).abs() / 2.0;
+
     draw_text_ex(
         ICON_PENCIL,
-        context.menu.pencil_mode.x,
-        context.menu.pencil_mode.y,
+        context.menu.pencil_mode.x + icon_x_offset,
+        context.menu.pencil_mode.y + icon_y_offset + context.icon_font.height + (icon_x_offset / 2.0),
         context.icon_font.params,
+    );
+    draw_rectangle_lines(
+        context.menu.pencil_mode.x, 
+        context.menu.pencil_mode.y, 
+        context.menu.pencil_mode.size,
+        context.menu.pencil_mode.size,
+        3.0, RED
     );
 }
 

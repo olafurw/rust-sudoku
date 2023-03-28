@@ -1,7 +1,7 @@
 use macroquad::prelude::*;
 use macroquad::text::TextParams;
 
-use crate::{ICON_PENCIL, ICON_UNDO};
+use crate::{ICON_PENCIL, ICON_UNDO, ICON_PENCIL_SLASH};
 
 fn find_best_font_size(font: &Option<Font>, text: &str, cell_size: f32) -> u16 {
     let mut old_size: u16 = 0;
@@ -166,7 +166,7 @@ pub struct IconFont {
 impl IconFont {
     pub async fn new(font_path: &str, color: Color) -> Self {
         let font = load_ttf_font(font_path).await.unwrap();
-        let measure = measure_text(ICON_PENCIL, Some(font), 48, 1.0);
+        let measure = measure_text(ICON_PENCIL_SLASH, Some(font), 48, 1.0);
         IconFont {
             font,
             params: TextParams {
@@ -183,8 +183,8 @@ impl IconFont {
     }
 
     pub fn update(&mut self, cell_size: f32) {
-        self.params.font_size = cell_to_font_size(&self.font, cell_size, ICON_PENCIL);
-        let measure = measure_text(ICON_PENCIL, Some(self.font), self.params.font_size, 1.0);
+        self.params.font_size = cell_to_font_size(&self.font, cell_size, ICON_PENCIL_SLASH);
+        let measure = measure_text(ICON_PENCIL_SLASH, Some(self.font), self.params.font_size, 1.0);
         self.width = measure.width;
         self.height = measure.height;
     }

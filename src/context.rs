@@ -106,14 +106,12 @@ impl Context {
         self.game_padding = self.game_square * 0.02;
         self.board_size = self.game_square - (2.0 * self.game_padding);
 
-        self.board
-            .update(self.board_size, self.game_padding, self.portrait);
+        self.board.update(self.board_size, self.game_padding, self.portrait);
         self.initial_font.update(self.board.cell_size);
         self.font.update(self.board.cell_size);
         self.pencil_font.update(self.board.cell_size);
         self.menu_number_font.update(self.board.cell_size);
         self.icon_font.update(self.board.cell_size);
-        self.menu
-            .update(self.board_size, self.game_padding, self.portrait);
+        self.menu.update(self.board_size, self.game_padding, self.portrait);
     }
 }
