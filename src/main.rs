@@ -10,6 +10,7 @@ mod draw;
 mod fonts;
 mod menu;
 mod menu_item;
+mod index;
 
 use context::Context;
 use draw::draw_context;

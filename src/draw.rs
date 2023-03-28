@@ -4,10 +4,10 @@ use crate::{
     board::Board,
     cell_location::CellLocation,
     cell_state::{CellSelection, CellState},
-    context::{index_to_xy, Context},
+    context::Context,
     fonts::{CellFont, CellPencilFont},
     CELL_COLOR_EMPHASIZE, CELL_COLOR_HIGHLIGHTED, CELL_COLOR_NORMAL, CELL_COLOR_SELECTED,
-    ICON_PENCIL,
+    ICON_PENCIL, index::index_to_xy,
 };
 
 pub fn draw_cell(

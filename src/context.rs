@@ -2,18 +2,11 @@ use std::cmp::min;
 
 use crate::board::Board;
 use crate::fonts::{CellFont, CellPencilFont, IconFont, MenuNumberFont};
+use crate::index::xy_to_index;
 use crate::menu::Menu;
 use crate::{CELL_TEXT_COLOR, CELL_TEXT_INITIAL_COLOR};
 
 use macroquad::prelude::*;
-
-pub fn index_to_xy(index: usize, width: usize) -> (usize, usize) {
-    (index % width, index / width)
-}
-
-pub fn xy_to_index(x: usize, y: usize, width: usize) -> usize {
-    width * y + x
-}
 
 pub struct Context {
     pub initial_font: CellFont,

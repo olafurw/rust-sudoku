@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use crate::cell_location::CellLocation;
 use crate::cell_state::{CellSelection, CellState};
-use crate::context::index_to_xy;
+use crate::index::index_to_xy;
 use crate::{BOX_INDEXES, COLUMN_INDEXES, DIGIT_COUNT, ROW_INDEXES};
 
 pub struct Board {
