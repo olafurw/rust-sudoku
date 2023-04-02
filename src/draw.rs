@@ -7,7 +7,7 @@ use crate::{
     context::Context,
     fonts::{CellFont, CellPencilFont},
     CELL_COLOR_EMPHASIZE, CELL_COLOR_HIGHLIGHTED, CELL_COLOR_NORMAL, CELL_COLOR_SELECTED,
-    ICON_PENCIL, index::index_to_xy, ICON_PENCIL_SLASH,
+    ICON_PENCIL, index::index_to_xy, ICON_PENCIL_SLASH, ICON_UNDO,
 };
 
 pub fn draw_cell(
@@ -149,8 +149,6 @@ fn draw_menu(context: &Context) {
             number.y + font_y_offset,
             context.menu_number_font.params,
         );
-
-        draw_rectangle_lines(number.x, number.y, number.size, number.size, 3.0, BLACK);
     }
 
     let icon_x_offset = (context.icon_font.width - context.menu.pencil.size).abs() / 2.0;
@@ -167,12 +165,12 @@ fn draw_menu(context: &Context) {
         context.menu.pencil.y + icon_y_offset + context.icon_font.height + (icon_x_offset / 2.0),
         context.icon_font.params,
     );
-    draw_rectangle_lines(
-        context.menu.pencil.x, 
-        context.menu.pencil.y, 
-        context.menu.pencil.size,
-        context.menu.pencil.size,
-        3.0, RED
+
+    draw_text_ex(
+        ICON_UNDO,
+        context.menu.undo.x + icon_x_offset,
+        context.menu.undo.y + icon_y_offset + context.icon_font.height + (icon_x_offset / 2.0),
+        context.icon_font.params,
     );
 }
 

@@ -61,7 +61,7 @@ pub const COLUMN_INDEXES: &[[usize; 9]; 9] = &[
     [8, 17, 26, 35, 44, 53, 62, 71, 80],
 ];
 
-pub const ICON_UNDO: &str = "\u{f0e2}";
+pub const ICON_UNDO: &str = "\u{e166}";
 pub const ICON_PENCIL: &str = "\u{e3c9}";
 pub const ICON_PENCIL_SLASH: &str = "\u{e950}";
 

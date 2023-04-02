@@ -72,6 +72,8 @@ impl Context {
                     self.board.number(menu_action as u8);
                 } else if menu_action == MenuActions::Pencil {
                     self.board.toggle_pencil_mode();
+                } else if menu_action == MenuActions::Undo {
+                    self.board.undo();
                 }
                 return;
             }
@@ -84,12 +86,14 @@ impl Context {
             } else if key == KeyCode::U {
                 self.board.undo();
             }
+            return;
         }
 
         let char_pressed = get_char_pressed();
         if let Some(key @ '1'..='9') = char_pressed {
             let number = key as u8 - 48; // 48 = '0'
             self.board.number(number);
+
         }
     }
 
