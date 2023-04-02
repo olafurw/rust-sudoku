@@ -5,10 +5,16 @@ use crate::cell_state::{CellSelection, CellState};
 use crate::index::index_to_xy;
 use crate::{BOX_INDEXES, COLUMN_INDEXES, DIGIT_COUNT, ROW_INDEXES};
 
+pub enum BoardMode {
+    Normal,
+    Pencil,
+}
+
 pub struct Board {
     pub cell_state: [CellState; 81],
     pub cell_state_history: Vec<[CellState; 81]>,
     pub cell_location: [CellLocation; 81],
+    pub mode: BoardMode,
     pub board_size: f32,
     pub game_padding: f32,
     pub portrait: bool,
@@ -25,6 +31,7 @@ impl Board {
             cell_state: [Default::default(); 81],
             cell_state_history: vec![],
             cell_location: [Default::default(); 81],
+            mode: BoardMode::Normal,
             board_size: 0.0,
             game_padding: 0.0,
             portrait: true,
@@ -33,6 +40,13 @@ impl Board {
             selected_index_history: vec![],
             selected_number: None,
             selected_number_history: vec![],
+        }
+    }
+
+    pub fn toggle_pencil_mode(&mut self) {
+        match self.mode {
+            BoardMode::Normal => self.mode = BoardMode::Pencil,
+            BoardMode::Pencil => self.mode = BoardMode::Normal,
         }
     }
 

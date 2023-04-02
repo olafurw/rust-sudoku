@@ -3,7 +3,7 @@ use std::cmp::min;
 use crate::board::Board;
 use crate::fonts::{CellFont, CellPencilFont, IconFont, MenuNumberFont};
 use crate::index::xy_to_index;
-use crate::menu::Menu;
+use crate::menu::{Menu, is_menu_action_number, MenuActions};
 use crate::{CELL_TEXT_COLOR, CELL_TEXT_INITIAL_COLOR};
 
 use macroquad::prelude::*;
@@ -67,8 +67,12 @@ impl Context {
         if is_mouse_button_pressed(MouseButton::Left) {
             let (mouse_x, mouse_y) = mouse_position();
             self.board.click(mouse_x, mouse_y);
-            if let Some(number) = self.menu.click(mouse_x, mouse_y) {
-                self.board.number(number);
+            if let Some(menu_action) = self.menu.click(mouse_x, mouse_y) {
+                if is_menu_action_number(menu_action) {
+                    self.board.number(menu_action as u8);
+                } else if menu_action == MenuActions::Pencil {
+                    self.board.toggle_pencil_mode();
+                }
                 return;
             }
         }

@@ -1,11 +1,46 @@
 use crate::menu_item::MenuItem;
 
+#[repr(u8)]
+#[derive(Copy, Clone, Eq, PartialEq, Debug)]
+pub enum MenuActions {
+    One = 1,
+    Two = 2,
+    Three = 3,
+    Four = 4,
+    Five = 5,
+    Six = 6,
+    Seven = 7,
+    Eight = 8,
+    Nine = 9,
+    Pencil = 10,
+}
+
+fn menu_action_from_u8(value: u8) -> Option<MenuActions> {
+    match value {
+        1 => Some(MenuActions::One),
+        2 => Some(MenuActions::Two),
+        3 => Some(MenuActions::Three),
+        4 => Some(MenuActions::Four),
+        5 => Some(MenuActions::Five),
+        6 => Some(MenuActions::Six),
+        7 => Some(MenuActions::Seven),
+        8 => Some(MenuActions::Eight),
+        9 => Some(MenuActions::Nine),
+        _ => None,
+    }
+}
+
+pub fn is_menu_action_number(action: MenuActions) -> bool {
+    let number = action as u8;
+    (1..=9).contains(&number)
+}
+
 pub struct Menu {
     pub board_size: f32,
     pub game_padding: f32,
     pub portrait: bool,
     pub numbers: [MenuItem; 9],
-    pub pencil_mode: MenuItem,
+    pub pencil: MenuItem,
 }
 
 impl Menu {
@@ -15,7 +50,7 @@ impl Menu {
             game_padding: 0.0,
             portrait: true,
             numbers: [Default::default(); 9],
-            pencil_mode: Default::default(),
+            pencil: Default::default(),
         }
     }
 
@@ -33,14 +68,18 @@ impl Menu {
             start_x += number_box;
         }
 
-        self.pencil_mode.update(self.game_padding + 200.0, start_y + 200.0, number_box);
+        self.pencil.update(self.game_padding + 200.0, start_y + 200.0, number_box);
     }
 
-    pub fn click(&self, x: f32, y: f32) -> Option<u8> {
+    pub fn click(&self, x: f32, y: f32) -> Option<MenuActions> {
         for (i, number) in self.numbers.iter().enumerate() {
             if number.click(x, y) {
-                return Some((i + 1) as u8);
+                return menu_action_from_u8((i + 1) as u8);
             }
+        }
+
+        if self.pencil.click(x, y) {
+            return Some(MenuActions::Pencil);
         }
 
         None

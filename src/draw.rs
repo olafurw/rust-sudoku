@@ -1,13 +1,13 @@
 use macroquad::prelude::*;
 
 use crate::{
-    board::Board,
+    board::{Board, BoardMode},
     cell_location::CellLocation,
     cell_state::{CellSelection, CellState},
     context::Context,
     fonts::{CellFont, CellPencilFont},
     CELL_COLOR_EMPHASIZE, CELL_COLOR_HIGHLIGHTED, CELL_COLOR_NORMAL, CELL_COLOR_SELECTED,
-    ICON_PENCIL, index::index_to_xy,
+    ICON_PENCIL, index::index_to_xy, ICON_PENCIL_SLASH,
 };
 
 pub fn draw_cell(
@@ -153,20 +153,25 @@ fn draw_menu(context: &Context) {
         draw_rectangle_lines(number.x, number.y, number.size, number.size, 3.0, BLACK);
     }
 
-    let icon_x_offset = (context.icon_font.width - context.menu.pencil_mode.size).abs() / 2.0;
-    let icon_y_offset = (context.icon_font.height - context.menu.pencil_mode.size).abs() / 2.0;
+    let icon_x_offset = (context.icon_font.width - context.menu.pencil.size).abs() / 2.0;
+    let icon_y_offset = (context.icon_font.height - context.menu.pencil.size).abs() / 2.0;
 
+    let icon = match context.board.mode {
+        BoardMode::Pencil => ICON_PENCIL,
+        BoardMode::Normal => ICON_PENCIL_SLASH,
+    };
+    
     draw_text_ex(
-        ICON_PENCIL,
-        context.menu.pencil_mode.x + icon_x_offset,
-        context.menu.pencil_mode.y + icon_y_offset + context.icon_font.height + (icon_x_offset / 2.0),
+        icon,
+        context.menu.pencil.x + icon_x_offset,
+        context.menu.pencil.y + icon_y_offset + context.icon_font.height + (icon_x_offset / 2.0),
         context.icon_font.params,
     );
     draw_rectangle_lines(
-        context.menu.pencil_mode.x, 
-        context.menu.pencil_mode.y, 
-        context.menu.pencil_mode.size,
-        context.menu.pencil_mode.size,
+        context.menu.pencil.x, 
+        context.menu.pencil.y, 
+        context.menu.pencil.size,
+        context.menu.pencil.size,
         3.0, RED
     );
 }

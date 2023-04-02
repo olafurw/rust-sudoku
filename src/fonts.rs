@@ -1,10 +1,13 @@
 use macroquad::prelude::*;
 use macroquad::text::TextParams;
 
-use crate::{ICON_PENCIL, ICON_UNDO, ICON_PENCIL_SLASH};
+use crate::{ICON_UNDO, ICON_PENCIL_SLASH, board::BoardMode, ICON_PENCIL};
 
 fn find_best_font_size(font: &Option<Font>, text: &str, cell_size: f32) -> u16 {
-    let mut old_size: u16 = 0;
+    if cell_size < 1.0 {
+        return 1;
+    }
+
     let mut start_size: u16 = 1;
     let mut end_size: u16 = 100;
 
@@ -19,19 +22,10 @@ fn find_best_font_size(font: &Option<Font>, text: &str, cell_size: f32) -> u16 {
             end_size = test_size - 1;
         } else {
             start_size = test_size + 1;
-            old_size = test_size;
         }
     }
 
-    old_size
-}
-
-fn cell_to_font_size(font: &Font, cell_size: f32, text: &str) -> u16 {
-    if cell_size < 1.0 {
-        return 1;
-    }
-
-    find_best_font_size(&Some(*font), text, cell_size)
+    start_size
 }
 
 pub struct CellFont {
@@ -65,7 +59,7 @@ impl CellFont {
     }
 
     pub fn update(&mut self, cell_size: f32) {
-        self.params.font_size = cell_to_font_size(&self.font, cell_size, "9");
+        self.params.font_size = find_best_font_size(&Some(self.font), "9", cell_size);
         let measure = measure_text("9", Some(self.font), self.params.font_size, 1.0);
         self.width = measure.width;
         self.height = measure.height;
@@ -111,7 +105,7 @@ impl CellPencilFont {
         let padding = cell_size * 0.1;
         self.box_size = (cell_size - padding) / 3.0;
 
-        self.params.font_size = cell_to_font_size(&self.font, self.box_size, "9");
+        self.params.font_size = find_best_font_size(&Some(self.font), "9", self.box_size);
         let measure = measure_text("9", Some(self.font), self.params.font_size, 1.0);
         self.width = measure.width;
         self.height = measure.height;
@@ -148,7 +142,7 @@ impl MenuNumberFont {
     }
 
     pub fn update(&mut self, cell_size: f32) {
-        self.params.font_size = cell_to_font_size(&self.font, cell_size, "9");
+        self.params.font_size = find_best_font_size(&Some(self.font), "9", cell_size);
 
         let measure = measure_text("9", Some(self.font), self.params.font_size, 1.0);
         self.width = measure.width;
@@ -183,7 +177,7 @@ impl IconFont {
     }
 
     pub fn update(&mut self, cell_size: f32) {
-        self.params.font_size = cell_to_font_size(&self.font, cell_size, ICON_PENCIL_SLASH);
+        self.params.font_size = find_best_font_size(&Some(self.font), ICON_PENCIL, cell_size);
         let measure = measure_text(ICON_PENCIL_SLASH, Some(self.font), self.params.font_size, 1.0);
         self.width = measure.width;
         self.height = measure.height;
