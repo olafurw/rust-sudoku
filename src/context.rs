@@ -3,7 +3,7 @@ use std::cmp::min;
 use crate::board::Board;
 use crate::fonts::{CellFont, CellPencilFont, IconFont, MenuNumberFont};
 use crate::index::xy_to_index;
-use crate::menu::{Menu, is_menu_action_number, MenuActions};
+use crate::menu::{is_menu_action_number, Menu, MenuActions};
 use crate::{CELL_TEXT_COLOR, CELL_TEXT_INITIAL_COLOR};
 
 use macroquad::prelude::*;
@@ -93,7 +93,6 @@ impl Context {
         if let Some(key @ '1'..='9') = char_pressed {
             let number = key as u8 - 48; // 48 = '0'
             self.board.number(number);
-
         }
     }
 
@@ -114,12 +113,14 @@ impl Context {
         self.game_padding = self.game_square * 0.02;
         self.board_size = self.game_square - (2.0 * self.game_padding);
 
-        self.board.update(self.board_size, self.game_padding, self.portrait);
+        self.board
+            .update(self.board_size, self.game_padding, self.portrait);
         self.initial_font.update(self.board.cell_size);
         self.font.update(self.board.cell_size);
         self.pencil_font.update(self.board.cell_size);
         self.menu_number_font.update(self.board.cell_size);
         self.icon_font.update(self.board.cell_size);
-        self.menu.update(self.board_size, self.game_padding, self.portrait);
+        self.menu
+            .update(self.board_size, self.game_padding, self.portrait);
     }
 }

@@ -7,10 +7,12 @@ mod cell_location;
 mod cell_state;
 mod context;
 mod draw;
+mod draw_board;
+mod draw_menu;
 mod fonts;
+mod index;
 mod menu;
 mod menu_item;
-mod index;
 
 use context::Context;
 use draw::draw_context;

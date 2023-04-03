@@ -72,8 +72,13 @@ impl Menu {
         }
 
         let second_row_y = number_box + (number_box / 2.0);
-        self.undo.update(self.game_padding, menu_y + second_row_y, number_box);
-        self.pencil.update(self.game_padding + number_box, menu_y + second_row_y, number_box);
+        self.undo
+            .update(self.game_padding, menu_y + second_row_y, number_box);
+        self.pencil.update(
+            self.game_padding + number_box,
+            menu_y + second_row_y,
+            number_box,
+        );
     }
 
     pub fn click(&self, x: f32, y: f32) -> Option<MenuActions> {

@@ -30,6 +30,5 @@ mod tests {
         assert_eq!(xy_to_index(1, 0, 9), 1);
         assert_eq!(xy_to_index(0, 1, 9), 9);
         assert_eq!(xy_to_index(2, 2, 9), 20);
-        
     }
 }
