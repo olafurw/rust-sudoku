@@ -26,7 +26,7 @@ pub fn draw_board(context: &Context) {
     draw_box_lines(context);
 }
 
-pub fn draw_cell(
+fn draw_cell(
     cell_state: &CellState,
     call_location: &CellLocation,
     initial_font: &CellFont,
@@ -80,7 +80,7 @@ pub fn draw_cell(
     }
 }
 
-pub fn draw_board_cells(
+fn draw_board_cells(
     board: &Board,
     initial_font: &CellFont,
     font: &CellFont,

@@ -1,7 +1,7 @@
 use macroquad::prelude::*;
 use macroquad::text::TextParams;
 
-use crate::{board::BoardMode, ICON_PENCIL, ICON_PENCIL_SLASH, ICON_UNDO};
+use crate::{ICON_PENCIL, ICON_PENCIL_SLASH, ICON_UNDO};
 
 fn find_best_font_size(font: &Option<Font>, text: &str, cell_size: f32) -> u16 {
     if cell_size < 1.0 {
