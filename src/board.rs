@@ -56,8 +56,18 @@ impl Board {
         }
 
         self.cell_state = self.cell_state_history.pop().unwrap();
-        self.selected_index = self.selected_index_history.pop().unwrap();
-        self.selected_number = self.selected_number_history.pop().unwrap();
+        self.selected_index_history.pop();
+        self.selected_number_history.pop();
+
+        if self.selected_index_history.is_empty() {
+            self.selected_index = None;
+            self.selected_number = None;
+        } else {
+            self.selected_index = *self.selected_index_history.last().unwrap();
+            self.selected_number = *self.selected_number_history.last().unwrap();
+        }
+
+        self.highlight();
     }
 
     pub fn add_undo_point(&mut self) {
@@ -102,9 +112,9 @@ impl Board {
             return;
         }
 
+        self.selected_number = Some(number);
         self.add_undo_point();
 
-        self.selected_number = Some(number);
         self.handle_if_pencil(number);
         self.handle_if_insert(number);
 
