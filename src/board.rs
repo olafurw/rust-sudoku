@@ -5,6 +5,7 @@ use crate::cell_state::{CellSelection, CellState};
 use crate::index::index_to_xy;
 use crate::{BOX_INDEXES, COLUMN_INDEXES, DIGIT_COUNT, ROW_INDEXES};
 
+#[derive(PartialEq)]
 pub enum BoardMode {
     Normal,
     Pencil,
@@ -155,28 +156,41 @@ impl Board {
             return;
         }
 
-        let mut clicked = false;
-        self.selected_index = None;
+        let mut clicked_index = None;
 
         // perform a click on each cell to see which one
         // gets selected
         for i in 0..81 {
             let loc = &self.cell_location[i];
-            clicked = loc.click(x, y);
+            let clicked = loc.click(x, y);
             if clicked {
-                let cell = &self.cell_state[i];
-                self.selected_index = Some(i);
-                self.selected_number = cell.number;
+                clicked_index = Some(i);
                 break;
             }
         }
 
         // no cell was clicked
-        if !clicked {
+        if clicked_index.is_none() {
+            self.selected_index = None;
             return;
         }
 
-        self.highlight();
+        let clicked_index = clicked_index.unwrap();
+
+        let cell = &self.cell_state[clicked_index];
+        if self.mode == BoardMode::Pencil && self.selected_number.is_some() && !cell.has_number() {
+            if cell.selection == CellSelection::None {
+                self.cell_state[clicked_index].set_pencil(self.selected_number.unwrap());
+            }
+        } else {
+            let cell = &self.cell_state[clicked_index];
+            self.selected_index = Some(clicked_index);
+            self.selected_number = cell.number;
+        }
+
+        if self.mode == BoardMode::Normal || self.selected_number.is_some() {
+            self.highlight();
+        }
     }
 
     fn pencil_unhighlighted(&mut self, number: u8) {
