@@ -181,6 +181,7 @@ impl Board {
         if self.mode == BoardMode::Pencil && self.selected_number.is_some() && !cell.has_number() {
             if cell.selection == CellSelection::None {
                 self.cell_state[clicked_index].set_pencil(self.selected_number.unwrap());
+                self.add_undo_point();
             }
         } else {
             let cell = &self.cell_state[clicked_index];
