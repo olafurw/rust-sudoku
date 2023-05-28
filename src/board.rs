@@ -5,7 +5,7 @@ use crate::cell_state::{CellSelection, CellState};
 use crate::index::index_to_xy;
 use crate::{BOX_INDEXES, COLUMN_INDEXES, DIGIT_COUNT, ROW_INDEXES};
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Clone, Copy)]
 pub enum BoardMode {
     Normal,
     Pencil,
@@ -16,6 +16,7 @@ pub struct Board {
     pub cell_state_history: Vec<[CellState; 81]>,
     pub cell_location: [CellLocation; 81],
     pub mode: BoardMode,
+    pub mode_history: Vec<BoardMode>,
     pub board_size: f32,
     pub game_padding: f32,
     pub portrait: bool,
@@ -33,6 +34,7 @@ impl Board {
             cell_state_history: vec![],
             cell_location: [Default::default(); 81],
             mode: BoardMode::Normal,
+            mode_history: vec![],
             board_size: 0.0,
             game_padding: 0.0,
             portrait: true,
@@ -42,6 +44,10 @@ impl Board {
             selected_number: None,
             selected_number_history: vec![],
         }
+    }
+
+    fn is_cell_selected(&self) -> bool {
+        self.selected_index.is_some()
     }
 
     pub fn toggle_pencil_mode(&mut self) {
@@ -57,6 +63,7 @@ impl Board {
         }
 
         self.cell_state = self.cell_state_history.pop().unwrap();
+        self.mode = self.mode_history.pop().unwrap();
         self.selected_index_history.pop();
         self.selected_number_history.pop();
 
@@ -73,6 +80,7 @@ impl Board {
 
     pub fn add_undo_point(&mut self) {
         self.cell_state_history.push(self.cell_state);
+        self.mode_history.push(self.mode);
         self.selected_index_history.push(self.selected_index);
         self.selected_number_history.push(self.selected_number);
     }
@@ -84,7 +92,7 @@ impl Board {
     }
 
     pub fn clear_number(&mut self) {
-        if self.selected_index.is_none() {
+        if !self.is_cell_selected() {
             return;
         }
 
@@ -92,31 +100,14 @@ impl Board {
         self.clear_cell_selection();
     }
 
-    fn is_number_initial(&self) -> bool {
-        if self.selected_index.is_none() {
-            return false;
-        }
-
-        self.cell_state[self.selected_index.unwrap()].initial
-    }
-
     pub fn number(&mut self, number: u8) {
-        if self.selected_index.is_none() {
-            return;
-        }
-
-        if self.is_number_initial() {
-            self.add_undo_point();
-            if !self.handle_if_pencil(number) {
-                self.undo();
-            }
+        if !self.is_cell_selected() {
             return;
         }
 
         self.selected_number = Some(number);
         self.add_undo_point();
 
-        self.handle_if_pencil(number);
         self.handle_if_insert(number);
 
         if !self.is_valid() {
@@ -126,17 +117,6 @@ impl Board {
 
         self.highlight();
         self.clear_pencil(number);
-    }
-
-    fn handle_if_pencil(&mut self, number: u8) -> bool {
-        let cell = &self.cell_state[self.selected_index.unwrap()];
-        if !cell.is_number(number) {
-            return false;
-        }
-
-        self.highlight();
-        self.pencil_unhighlighted(number);
-        true
     }
 
     fn handle_if_insert(&mut self, number: u8) {
@@ -180,8 +160,8 @@ impl Board {
         let cell = &self.cell_state[clicked_index];
         if self.mode == BoardMode::Pencil && self.selected_number.is_some() && !cell.has_number() {
             if cell.selection == CellSelection::None {
-                self.cell_state[clicked_index].set_pencil(self.selected_number.unwrap());
                 self.add_undo_point();
+                self.cell_state[clicked_index].set_pencil(self.selected_number.unwrap());
             }
         } else {
             let cell = &self.cell_state[clicked_index];
@@ -191,16 +171,6 @@ impl Board {
 
         if self.mode == BoardMode::Normal || self.selected_number.is_some() {
             self.highlight();
-        }
-    }
-
-    fn pencil_unhighlighted(&mut self, number: u8) {
-        for cell in self.cell_state.iter_mut() {
-            if cell.has_number() || cell.selection != CellSelection::None {
-                continue;
-            }
-
-            cell.set_pencil(number);
         }
     }
 
@@ -259,7 +229,7 @@ impl Board {
     fn highlight(&mut self) {
         self.clear_cell_selection();
 
-        if self.selected_index.is_none() {
+        if !self.is_cell_selected() {
             return;
         }
 
