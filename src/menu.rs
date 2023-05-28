@@ -57,11 +57,7 @@ impl Menu {
         }
     }
 
-    pub fn update(&mut self, board_size: f32, game_padding: f32, portrait: bool) {
-        self.board_size = board_size;
-        self.game_padding = game_padding;
-        self.portrait = portrait;
-
+    fn update_portrait(&mut self) {
         let number_box = self.board_size / 9.0;
         let mut start_x = self.game_padding;
         let menu_y = self.board_size + (2.0 * self.game_padding);
@@ -79,6 +75,38 @@ impl Menu {
             menu_y + second_row_y,
             number_box,
         );
+    }
+
+    fn update_landscape(&mut self) {
+        let number_box = self.board_size / 9.0;
+        let menu_x = self.board_size + (2.0 * self.game_padding);
+        let mut start_y = self.game_padding;
+
+        for number in self.numbers.iter_mut() {
+            number.update(menu_x, start_y, number_box);
+            start_y += number_box;
+        }
+
+        let second_row_x = number_box + (number_box / 2.0);
+        self.undo
+            .update(menu_x + second_row_x, self.game_padding, number_box);
+        self.pencil.update(
+            menu_x + second_row_x,
+            self.game_padding + number_box,
+            number_box,
+        );
+    }
+
+    pub fn update(&mut self, board_size: f32, game_padding: f32, portrait: bool) {
+        self.board_size = board_size;
+        self.game_padding = game_padding;
+        self.portrait = portrait;
+
+        if self.portrait {
+            self.update_portrait();
+        } else {
+            self.update_landscape();
+        }
     }
 
     pub fn click(&self, x: f32, y: f32) -> Option<MenuActions> {
