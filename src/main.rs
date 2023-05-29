@@ -79,6 +79,8 @@ async fn main() {
     rand::srand(macroquad::miniquad::date::now() as _);
     let mut context = Context::new("liberation-sans.ttf", "material-font.ttf").await;
 
+    request_new_screen_size(800.0, 1080.0);
+
     loop {
         context.update();
         draw_context(&context);
