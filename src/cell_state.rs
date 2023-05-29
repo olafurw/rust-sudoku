@@ -38,6 +38,10 @@ impl CellState {
         self.pencil.iter().any(|&number| number.is_some())
     }
 
+    pub fn has_this_pencil(&self, number: u8) -> bool {
+        self.pencil[number as usize - 1].is_some()
+    }
+
     pub fn set_pencil(&mut self, number: u8) {
         if self.initial || !(1..=9).contains(&number) {
             return;

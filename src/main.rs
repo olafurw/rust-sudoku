@@ -4,9 +4,9 @@
 // add text under the menu
 // hightlight mode switcher
 // move the menu to the other side in landscape
-// if there isn't space for the menu in portrait, shrink the game board (and center it)
+// when shrinking due to space missing, center the game board
 // add WAY more tests
-// clicking a note again should remove it
+// clicking a note again with the same number should remove it
 
 mod board;
 mod cell_location;

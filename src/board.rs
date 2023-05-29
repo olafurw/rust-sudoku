@@ -173,9 +173,13 @@ impl Board {
 
         let cell = &self.cell_state[clicked_index];
         if self.mode == BoardMode::Pencil && self.selected_number.is_some() && !cell.has_number() {
-            if cell.selection == CellSelection::None {
+            let pencil_number = self.selected_number.unwrap();
+            if cell.has_this_pencil(pencil_number) {
                 self.add_undo_point();
-                self.cell_state[clicked_index].set_pencil(self.selected_number.unwrap());
+                self.cell_state[clicked_index].remove_pencil(pencil_number);
+            } else if cell.selection == CellSelection::None {
+                self.add_undo_point();
+                self.cell_state[clicked_index].set_pencil(pencil_number);
             }
         } else {
             let cell = &self.cell_state[clicked_index];
