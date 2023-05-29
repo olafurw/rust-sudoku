@@ -10,6 +10,7 @@ mod draw;
 mod draw_board;
 mod draw_menu;
 mod fonts;
+mod generate;
 mod index;
 mod menu;
 mod menu_item;
@@ -69,6 +70,7 @@ pub const ICON_PENCIL_SLASH: &str = "\u{e950}";
 
 #[macroquad::main("Sudoku")]
 async fn main() {
+    rand::srand(macroquad::miniquad::date::now() as _);
     let mut context = Context::new("liberation-sans.ttf", "material-font.ttf").await;
 
     request_new_screen_size(576.0, 1080.0);

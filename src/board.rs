@@ -5,7 +5,7 @@ use crate::cell_state::{CellSelection, CellState};
 use crate::index::index_to_xy;
 use crate::{BOX_INDEXES, COLUMN_INDEXES, DIGIT_COUNT, ROW_INDEXES};
 
-#[derive(PartialEq, Clone, Copy)]
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub enum BoardMode {
     Normal,
     Pencil,
@@ -245,6 +245,9 @@ impl Board {
                     cell.selection = CellSelection::Emphasized;
                     highlight_list.push(i);
                 }
+                if i != sel_index && cell.has_number() {
+                    cell.selection = CellSelection::Highlighted;
+                }
             }
         }
 
@@ -295,5 +298,5 @@ impl Board {
 #[cfg(test)]
 mod tests {
     #[test]
-    fn cell_init() {}
+    fn test_new_board() {}
 }
