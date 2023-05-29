@@ -1,6 +1,12 @@
 // TODO
 //
 // make the menu numbers a little prettier
+// add text under the menu
+// hightlight mode switcher
+// move the menu to the other side in landscape
+// if there isn't space for the menu in portrait, shrink the game board (and center it)
+// add WAY more tests
+// clicking a note again should remove it
 
 mod board;
 mod cell_location;
@@ -72,8 +78,6 @@ pub const ICON_PENCIL_SLASH: &str = "\u{e950}";
 async fn main() {
     rand::srand(macroquad::miniquad::date::now() as _);
     let mut context = Context::new("liberation-sans.ttf", "material-font.ttf").await;
-
-    request_new_screen_size(412.0, 915.0);
 
     loop {
         context.update();
