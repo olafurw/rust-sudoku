@@ -28,7 +28,7 @@ pub fn draw_board(context: &Context) {
 
 fn draw_cell(
     cell_state: &CellState,
-    call_location: &CellLocation,
+    cell_location: &CellLocation,
     initial_font: &CellFont,
     font: &CellFont,
     pencil_font: &CellPencilFont,
@@ -44,10 +44,10 @@ fn draw_cell(
     };
 
     draw_rectangle(
-        call_location.x,
-        call_location.y,
-        call_location.size,
-        call_location.size,
+        cell_location.x,
+        cell_location.y,
+        cell_location.size,
+        cell_location.size,
         color,
     );
 
@@ -55,8 +55,8 @@ fn draw_cell(
         if let Some(n) = cell_state.number {
             draw_text_ex(
                 n.to_string().as_str(),
-                call_location.x + font.x_offset,
-                call_location.y + font.y_offset,
+                cell_location.x + font.x_offset,
+                cell_location.y + font.y_offset,
                 if cell_state.initial {
                     initial_font.params
                 } else {
@@ -71,8 +71,8 @@ fn draw_cell(
 
                 draw_text_ex(
                     n.to_string().as_str(),
-                    call_location.x + pencil_font.x_offset + (pencil_font.box_size * x as f32),
-                    call_location.y + pencil_font.y_offset + (pencil_font.box_size * y as f32),
+                    cell_location.x + pencil_font.x_offset + (pencil_font.box_size * x as f32),
+                    cell_location.y + pencil_font.y_offset + (pencil_font.box_size * y as f32),
                     pencil_font.params,
                 );
             }

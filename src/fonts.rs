@@ -9,14 +9,16 @@ fn find_best_font_size(font: &Option<Font>, text: &str, cell_size: f32) -> u16 {
     }
 
     let mut start_size: u16 = 1;
-    let mut end_size: u16 = 100;
+    let mut end_size: u16 = 400;
 
     while start_size <= end_size {
         let test_size = (start_size + end_size) / 2;
         let measurement = measure_text(text, *font, test_size, 1.0);
         let ratio = measurement.height / cell_size;
 
-        if ratio > 0.6 && ratio < 0.61 {
+        debug!("ratio: {}", ratio);
+        if ratio > 0.59 && ratio < 0.62 {
+            debug!("cell: {}, test: {}", cell_size, start_size);
             return test_size;
         } else if ratio > 0.6 {
             end_size = test_size - 1;
@@ -25,6 +27,7 @@ fn find_best_font_size(font: &Option<Font>, text: &str, cell_size: f32) -> u16 {
         }
     }
 
+    debug!("cell: {}, start: {}", cell_size, start_size);
     start_size
 }
 
