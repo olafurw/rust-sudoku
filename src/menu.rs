@@ -38,6 +38,10 @@ pub fn is_menu_action_number(action: MenuActions) -> bool {
 
 pub struct Menu {
     pub board_size: f32,
+    pub menu_start_x: f32,
+    pub menu_start_y: f32,
+    pub menu_height: f32,
+    pub menu_width: f32,
     pub game_padding: f32,
     pub portrait: bool,
     pub numbers: [MenuItem; 9],
@@ -49,6 +53,10 @@ impl Menu {
     pub fn new() -> Self {
         Menu {
             board_size: 0.0,
+            menu_start_x: 0.0,
+            menu_start_y: 0.0,
+            menu_height: 0.0,
+            menu_width: 0.0,
             game_padding: 0.0,
             portrait: true,
             numbers: [Default::default(); 9],
@@ -59,39 +67,58 @@ impl Menu {
 
     fn update_portrait(&mut self) {
         let number_box = self.board_size / 9.0;
-        let mut start_x = self.game_padding;
-        let menu_y = self.board_size + (2.0 * self.game_padding);
+
+        self.menu_start_x = self.game_padding;
+        let mut start_x = self.menu_start_x;
+
+        self.menu_start_y = self.board_size + (2.0 * self.game_padding);
+
+        self.menu_height = (self.board_size + (2.0 * self.game_padding)) / 3.0;
+        self.menu_width = self.board_size;
 
         for number in self.numbers.iter_mut() {
-            number.update(start_x, menu_y, number_box);
+            number.update(start_x, self.menu_start_y, number_box);
             start_x += number_box;
         }
 
         let second_row_y = number_box + (number_box / 2.0);
-        self.undo
-            .update(self.game_padding, menu_y + second_row_y, number_box);
+        self.undo.update(
+            self.game_padding,
+            self.menu_start_y + second_row_y,
+            number_box,
+        );
+
         self.pencil.update(
             self.game_padding + number_box,
-            menu_y + second_row_y,
+            self.menu_start_y + second_row_y,
             number_box,
         );
     }
 
     fn update_landscape(&mut self) {
         let number_box = self.board_size / 9.0;
-        let menu_x = self.board_size + (2.0 * self.game_padding);
-        let mut start_y = self.game_padding;
+        self.menu_start_x = self.board_size + (2.0 * self.game_padding);
+
+        self.menu_start_y = self.game_padding;
+        let mut start_y = self.menu_start_y;
+
+        self.menu_width = (self.board_size + (2.0 * self.game_padding)) / 3.0;
+        self.menu_height = self.board_size;
 
         for number in self.numbers.iter_mut() {
-            number.update(menu_x, start_y, number_box);
+            number.update(self.menu_start_x, start_y, number_box);
             start_y += number_box;
         }
 
         let second_row_x = number_box + (number_box / 2.0);
-        self.undo
-            .update(menu_x + second_row_x, self.game_padding, number_box);
+        self.undo.update(
+            self.menu_start_x + second_row_x,
+            self.game_padding,
+            number_box,
+        );
+
         self.pencil.update(
-            menu_x + second_row_x,
+            self.menu_start_x + second_row_x,
             self.game_padding + number_box,
             number_box,
         );

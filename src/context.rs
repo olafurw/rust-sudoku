@@ -18,9 +18,14 @@ pub struct Context {
     pub board: Board,
     pub menu: Menu,
     pub game_padding: f32,
+    pub width_padding: f32,
+    pub height_padding: f32,
     pub game_square: f32,
-    pub old_game_square: u32,
     pub board_size: f32,
+    pub height: f32,
+    pub width: f32,
+    pub old_height: u32,
+    pub old_width: u32,
     pub portrait: bool,
 }
 
@@ -34,10 +39,15 @@ impl Context {
             menu_number_font: MenuNumberFont::new(font_path).await,
             board: Board::new(),
             menu: Menu::new(),
+            width_padding: 0.0,
             game_padding: 0.0,
+            height_padding: 0.0,
             game_square: 0.0,
-            old_game_square: 0,
             board_size: 0.0,
+            height: 0.0,
+            width: 0.0,
+            old_height: 0,
+            old_width: 0,
             portrait: true,
         };
 
@@ -89,22 +99,48 @@ impl Context {
     pub fn update(&mut self) {
         self.handle_input();
 
-        let height = screen_height();
-        let width = screen_width();
+        self.height = screen_height();
+        self.width = screen_width();
 
-        self.portrait = height >= width;
-        self.game_square = min(height as u32, width as u32) as f32;
-
-        if self.game_square as u32 == self.old_game_square {
+        if self.height as u32 == self.old_height && self.width as u32 == self.old_width {
             return;
         }
-        self.old_game_square = self.game_square as u32;
+        self.old_height = self.height as u32;
+        self.old_width = self.width as u32;
+
+        self.portrait = self.height >= self.width;
+        self.game_square = min(self.height as u32, self.width as u32) as f32;
+        let menu_size = self.game_square / 3.0;
+
+        if self.portrait {
+            let missing = self.height - (self.game_square + menu_size);
+            if missing < 0.0 {
+                self.game_square += missing;
+            }
+        } else {
+            let missing = self.width - (self.game_square + menu_size);
+            if missing < 0.0 {
+                self.game_square += missing;
+            }
+        }
 
         self.game_padding = self.game_square * 0.02;
+
+        if self.portrait {
+            let padding = self.width - self.game_square;
+            self.width_padding = self.game_padding + (padding / 2.0);
+            self.height_padding = self.game_padding;
+        } else {
+            let padding = self.height - self.game_square;
+            self.width_padding = self.game_padding;
+            self.height_padding = self.game_padding + (padding / 2.0);
+        }
+
         self.board_size = self.game_square - (2.0 * self.game_padding);
 
         self.board
             .update(self.board_size, self.game_padding, self.portrait);
+
         self.initial_font.update(self.board.cell_size);
         self.font.update(self.board.cell_size);
         self.pencil_font.update(self.board.cell_size);

@@ -131,8 +131,6 @@ impl Board {
                 self.number_count[(number - 1) as usize] += 1;
             }
         }
-
-        println!("{:?}", self.number_count);
     }
 
     fn handle_if_insert(&mut self, number: u8) {

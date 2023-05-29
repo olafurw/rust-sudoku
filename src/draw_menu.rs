@@ -52,4 +52,12 @@ pub fn draw_menu(context: &Context) {
 
     draw_menu_pencil(context, icon_x_offset, icon_y_offset);
     draw_menu_undo(context, icon_x_offset, icon_y_offset);
+
+    /*draw_rectangle(
+        context.menu.menu_start_x,
+        context.menu.menu_start_y,
+        context.menu.menu_width,
+        context.menu.menu_height,
+        DEBUG_BLUE,
+    );*/
 }

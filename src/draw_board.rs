@@ -24,6 +24,14 @@ pub fn draw_board(context: &Context) {
 
     draw_cell_lines(context);
     draw_box_lines(context);
+
+    /*draw_rectangle(
+        context.game_padding,
+        context.game_padding,
+        context.board_size,
+        context.board_size,
+        DEBUG_RED,
+    );*/
 }
 
 fn draw_cell(
