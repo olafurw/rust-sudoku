@@ -30,6 +30,10 @@ fn draw_menu_numbers(context: &Context) {
     let font_y_offset = context.menu_number_font.height + (context.menu_number_font.height / 3.0);
 
     for (i, number) in context.menu.numbers.iter().enumerate() {
+        if context.board.number_count[i] == 9 {
+            continue;
+        }
+
         let digit = i + 1;
         draw_text_ex(
             digit.to_string().as_str(),

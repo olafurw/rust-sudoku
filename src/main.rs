@@ -1,6 +1,6 @@
 // TODO
 //
-// clicking on numbers should highlight the clicked on number
+// make the menu numbers a little prettier
 
 mod board;
 mod cell_location;

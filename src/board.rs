@@ -15,6 +15,7 @@ pub struct Board {
     pub cell_state: [CellState; 81],
     pub cell_state_history: Vec<[CellState; 81]>,
     pub cell_location: [CellLocation; 81],
+    pub number_count: [u8; 9],
     pub mode: BoardMode,
     pub mode_history: Vec<BoardMode>,
     pub board_size: f32,
@@ -33,6 +34,7 @@ impl Board {
             cell_state: [Default::default(); 81],
             cell_state_history: vec![],
             cell_location: [Default::default(); 81],
+            number_count: [0; 9],
             mode: BoardMode::Normal,
             mode_history: vec![],
             board_size: 0.0,
@@ -76,6 +78,7 @@ impl Board {
         }
 
         self.highlight();
+        self.update_number_count();
     }
 
     pub fn add_undo_point(&mut self) {
@@ -117,6 +120,19 @@ impl Board {
 
         self.highlight();
         self.clear_pencil(number);
+        self.update_number_count();
+    }
+
+    fn update_number_count(&mut self) {
+        self.number_count = [0; 9];
+
+        for cell in self.cell_state.iter() {
+            if let Some(number) = cell.number {
+                self.number_count[(number - 1) as usize] += 1;
+            }
+        }
+
+        println!("{:?}", self.number_count);
     }
 
     fn handle_if_insert(&mut self, number: u8) {
