@@ -15,6 +15,7 @@ mod context;
 mod draw;
 mod draw_board;
 mod draw_menu;
+mod font_size;
 mod fonts;
 mod generate;
 mod index;
@@ -77,6 +78,10 @@ pub const ICON_UNDO: &str = "\u{e166}";
 pub const ICON_PENCIL: &str = "\u{e3c9}";
 pub const ICON_PENCIL_SLASH: &str = "\u{e950}";
 
+pub fn is_legal_number(number: u8) -> bool {
+    (1..=9).contains(&number)
+}
+
 #[macroquad::main("Sudoku")]
 async fn main() {
     rand::srand(macroquad::miniquad::date::now() as _);
@@ -89,5 +94,25 @@ async fn main() {
         draw_context(&context);
 
         next_frame().await
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::is_legal_number;
+
+    #[test]
+    fn legal_number_test() {
+        assert!(!is_legal_number(0));
+        assert!(is_legal_number(1));
+        assert!(is_legal_number(2));
+        assert!(is_legal_number(3));
+        assert!(is_legal_number(4));
+        assert!(is_legal_number(5));
+        assert!(is_legal_number(6));
+        assert!(is_legal_number(7));
+        assert!(is_legal_number(8));
+        assert!(is_legal_number(9));
+        assert!(!is_legal_number(10));
     }
 }

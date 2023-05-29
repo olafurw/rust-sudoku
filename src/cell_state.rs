@@ -1,3 +1,5 @@
+use crate::is_legal_number;
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum CellSelection {
     None,
@@ -43,7 +45,7 @@ impl CellState {
     }
 
     pub fn set_pencil(&mut self, number: u8) {
-        if self.initial || !(1..=9).contains(&number) {
+        if self.initial || !is_legal_number(number) {
             return;
         }
 
@@ -52,7 +54,7 @@ impl CellState {
     }
 
     pub fn remove_pencil(&mut self, number: u8) {
-        if self.initial || !(1..=9).contains(&number) {
+        if self.initial || !is_legal_number(number) {
             return;
         }
 
@@ -73,7 +75,7 @@ impl CellState {
     }
 
     pub fn set_initial_number(&mut self, number: u8) {
-        if self.initial || !(1..=9).contains(&number) {
+        if self.initial || !is_legal_number(number) {
             return;
         }
 
@@ -82,7 +84,7 @@ impl CellState {
     }
 
     pub fn set_number(&mut self, number: u8) {
-        if self.initial || !(1..=9).contains(&number) {
+        if self.initial || !is_legal_number(number) {
             return;
         }
 
@@ -106,6 +108,12 @@ mod tests {
     fn init_assert(cell: &CellState) {
         assert_eq!(cell.number, None);
         assert!(cell.selection == CellSelection::None);
+    }
+
+    #[test]
+    fn cell_default() {
+        let cell = CellState::default();
+        init_assert(&cell);
     }
 
     #[test]
@@ -134,11 +142,26 @@ mod tests {
         assert!(cell.is_number(1));
         assert!(!cell.is_number(2));
 
+        cell.set_number(2);
+        assert!(cell.has_number());
+        assert!(cell.is_number(2));
+        assert!(!cell.is_number(1));
+
+        cell.set_number(12);
+        assert!(cell.has_number());
+        assert!(cell.is_number(2));
+        assert!(!cell.is_number(1));
+
         cell.clear_number();
         assert!(!cell.has_number());
         assert!(!cell.is_number(1));
 
         cell.set_initial_number(1);
+        assert!(cell.has_number());
+        assert!(cell.is_number(1));
+        assert!(!cell.is_number(2));
+
+        cell.set_initial_number(2);
         assert!(cell.has_number());
         assert!(cell.is_number(1));
         assert!(!cell.is_number(2));
@@ -169,8 +192,13 @@ mod tests {
 
         cell.set_pencil(1);
         assert!(cell.has_pencil());
+        assert!(cell.has_this_pencil(1));
+        assert!(!cell.has_this_pencil(2));
+
         cell.clear_pencil();
         assert!(!cell.has_pencil());
+        assert!(!cell.has_this_pencil(1));
+        assert!(!cell.has_this_pencil(2));
 
         cell.set_number(1);
         assert!(cell.has_number());
@@ -192,5 +220,24 @@ mod tests {
             cell.remove_pencil(i + 1);
             assert_eq!(cell.pencil[i as usize], None);
         }
+
+        cell.clear_pencil();
+        assert!(!cell.has_pencil());
+        assert!(!cell.has_number());
+
+        cell.set_initial_number(1);
+        assert!(cell.has_number());
+        assert!(!cell.has_pencil());
+        assert!(cell.is_number(1));
+
+        cell.set_pencil(2);
+        assert!(cell.has_number());
+        assert!(!cell.has_pencil());
+        assert!(cell.is_number(1));
+
+        cell.remove_pencil(2);
+        assert!(cell.has_number());
+        assert!(!cell.has_pencil());
+        assert!(cell.is_number(1));
     }
 }

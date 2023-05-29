@@ -42,6 +42,12 @@ mod tests {
     }
 
     #[test]
+    fn cell_default() {
+        let cell = CellLocation::default();
+        init_assert(&cell);
+    }
+
+    #[test]
     fn cell_init() {
         let cell = CellLocation::new();
         init_assert(&cell);

@@ -1,4 +1,4 @@
-use crate::menu_item::MenuItem;
+use crate::{is_legal_number, menu_item::MenuItem};
 
 #[repr(u8)]
 #[derive(Copy, Clone, Eq, PartialEq, Debug)]
@@ -33,7 +33,7 @@ fn menu_action_from_u8(value: u8) -> Option<MenuActions> {
 
 pub fn is_menu_action_number(action: MenuActions) -> bool {
     let number = action as u8;
-    (1..=9).contains(&number)
+    is_legal_number(number)
 }
 
 pub struct Menu {
