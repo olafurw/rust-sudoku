@@ -1,10 +1,13 @@
 use macroquad::{
-    prelude::{vec2, Color, BLUE},
+    prelude::{vec2, Color},
     shapes::{draw_rectangle, draw_triangle},
     text::draw_text_ex,
 };
 
-use crate::{board::BoardMode, context::Context, ICON_PENCIL, ICON_PENCIL_SLASH, ICON_UNDO};
+use crate::{
+    board::BoardMode, context::Context, ICON_PENCIL, ICON_PENCIL_SLASH, ICON_UNDO,
+    MENU_NUMBER_BACKGROUND_NORMAL, MENU_NUMBER_BACKGROUND_PENCIL,
+};
 
 fn draw_menu_pencil(context: &Context, icon_x_offset: f32, icon_y_offset: f32) {
     let icon = match context.board.mode {
@@ -90,7 +93,11 @@ fn draw_menu_numbers(context: &Context) {
                 context.menu.item_size,
                 context.menu.item_size,
                 20.0,
-                BLUE,
+                if context.board.mode == BoardMode::Normal {
+                    MENU_NUMBER_BACKGROUND_NORMAL
+                } else {
+                    MENU_NUMBER_BACKGROUND_PENCIL
+                },
             );
         }
 

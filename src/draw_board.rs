@@ -11,7 +11,7 @@ use crate::{
     context::Context,
     fonts::{CellFont, CellPencilFont},
     index::index_to_xy,
-    CELL_COLOR_EMPHASIZE, CELL_COLOR_HIGHLIGHTED, CELL_COLOR_NORMAL, CELL_COLOR_SELECTED,
+    CELL_COLOR_EMPHASIZE, CELL_COLOR_HIGHLIGHTED, CELL_COLOR_NORMAL,
 };
 
 pub fn draw_board(context: &Context) {
@@ -41,9 +41,7 @@ fn draw_cell(
     font: &CellFont,
     pencil_font: &CellPencilFont,
 ) {
-    let color = if cell_state.selection == CellSelection::Selected {
-        CELL_COLOR_SELECTED
-    } else if cell_state.selection == CellSelection::Emphasized {
+    let color = if cell_state.selection == CellSelection::Emphasized {
         CELL_COLOR_EMPHASIZE
     } else if cell_state.selection == CellSelection::Highlighted {
         CELL_COLOR_HIGHLIGHTED

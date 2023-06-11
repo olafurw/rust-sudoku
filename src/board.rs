@@ -194,10 +194,7 @@ impl Board {
 
     fn clear_pencil(&mut self, number: u8) {
         for cell in self.cell_state.iter_mut() {
-            if cell.has_number()
-                || cell.selection == CellSelection::Selected
-                || cell.selection == CellSelection::Emphasized
-            {
+            if cell.has_number() || cell.selection == CellSelection::Emphasized {
                 continue;
             }
 
@@ -252,19 +249,17 @@ impl Board {
         }
 
         let sel_index = self.selected_index.unwrap();
-        self.cell_state[sel_index].selection = CellSelection::Selected;
-
         let mut highlight_list = vec![sel_index];
 
         // only highlight numbers if the selected cell has a number
         if self.selected_number.is_some() {
             for (i, cell) in self.cell_state.iter_mut().enumerate() {
-                if i != sel_index && cell.number == self.selected_number {
-                    cell.selection = CellSelection::Emphasized;
-                    highlight_list.push(i);
-                }
                 if i != sel_index && cell.has_number() {
                     cell.selection = CellSelection::Highlighted;
+                }
+                if cell.number == self.selected_number {
+                    cell.selection = CellSelection::Emphasized;
+                    highlight_list.push(i);
                 }
             }
         }

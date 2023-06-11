@@ -42,7 +42,7 @@ impl Context {
             menu_number_font_selected: MenuNumberFont::new(font_path, WHITE).await,
             board: Board::new(),
             menu: Menu::new(),
-            selected_number: Some(2),
+            selected_number: None,
             width_padding: 0.0,
             game_padding: 0.0,
             height_padding: 0.0,
@@ -73,6 +73,7 @@ impl Context {
             self.board.click(mouse_x, mouse_y);
             if let Some(menu_action) = self.menu.click(mouse_x, mouse_y) {
                 if is_menu_action_number(menu_action) {
+                    self.selected_number = Some(menu_action as u8);
                     self.board.number(menu_action as u8);
                 } else if menu_action == MenuActions::Pencil {
                     self.board.toggle_pencil_mode();

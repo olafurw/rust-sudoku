@@ -30,11 +30,14 @@ use macroquad::prelude::*;
 pub const DIGIT_COUNT: usize = 9;
 pub const CELL_COLOR_NORMAL: Color = color_u8!(255, 255, 255, 255);
 pub const CELL_COLOR_SELECTED: Color = color_u8!(255, 208, 177, 255);
-pub const CELL_COLOR_EMPHASIZE: Color = color_u8!(178, 216, 255, 255);
+pub const CELL_COLOR_EMPHASIZE: Color = color_u8!(255, 208, 177, 255);
 pub const CELL_COLOR_HIGHLIGHTED: Color = color_u8!(219, 219, 219, 255);
 
 pub const CELL_TEXT_COLOR: Color = color_u8!(44, 96, 142, 255);
 pub const CELL_TEXT_INITIAL_COLOR: Color = color_u8!(0, 0, 0, 255);
+
+pub const MENU_NUMBER_BACKGROUND_NORMAL: Color = color_u8!(56, 76, 107, 255);
+pub const MENU_NUMBER_BACKGROUND_PENCIL: Color = color_u8!(226, 138, 43, 255);
 
 pub const DEBUG_RED: Color = color_u8!(255, 0, 0, 128);
 pub const DEBUG_BLUE: Color = color_u8!(0, 0, 255, 128);
@@ -97,7 +100,8 @@ async fn main() {
         egui_macroquad::ui(|egui_ctx| {
             egui_ctx.set_visuals(egui::Visuals::light());
             egui::Window::new("debug").show(egui_ctx, |ui| {
-                ui.label(format!("selected: {:?}", context.selected_number));
+                ui.label(format!("font: {}", context.font.height));
+                ui.label(format!("penc: {}", context.pencil_font.height));
             });
         });
 

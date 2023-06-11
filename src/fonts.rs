@@ -80,7 +80,7 @@ impl CellPencilFont {
         let padding = cell_size * 0.1;
         self.box_size = (cell_size - padding) / 3.0;
 
-        self.params.font_size = estimate_font_size("9", Some(self.font), cell_size);
+        self.params.font_size = estimate_font_size("9", Some(self.font), self.box_size);
         let measure = measure_text("9", Some(self.font), self.params.font_size, 1.0);
         self.width = measure.width;
         self.height = measure.height;

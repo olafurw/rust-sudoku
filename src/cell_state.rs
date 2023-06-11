@@ -3,7 +3,6 @@ use crate::is_legal_number;
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum CellSelection {
     None,
-    Selected,
     Emphasized,
     Highlighted,
 }
