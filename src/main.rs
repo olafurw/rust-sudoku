@@ -24,6 +24,7 @@ mod menu_item;
 
 use context::Context;
 use draw::draw_context;
+use egui_macroquad::egui;
 use macroquad::prelude::*;
 
 pub const DIGIT_COUNT: usize = 9;
@@ -92,6 +93,14 @@ async fn main() {
     loop {
         context.update();
         draw_context(&context);
+
+        egui_macroquad::ui(|egui_ctx| {
+            egui::Window::new("debug").show(egui_ctx, |ui| {
+                ui.label(format!("selected: {:?}", context.selected_number));
+            });
+        });
+
+        egui_macroquad::draw();
 
         next_frame().await
     }

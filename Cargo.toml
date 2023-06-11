@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 macroquad = "0.3.25"
+egui-macroquad = "0.15.0"
 
 [profile.release]
 strip = true

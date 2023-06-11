@@ -15,8 +15,10 @@ pub struct Context {
     pub icon_font: IconFont,
     pub pencil_font: CellPencilFont,
     pub menu_number_font: MenuNumberFont,
+    pub menu_number_font_selected: MenuNumberFont,
     pub board: Board,
     pub menu: Menu,
+    pub selected_number: Option<u8>,
     pub game_padding: f32,
     pub width_padding: f32,
     pub height_padding: f32,
@@ -36,9 +38,11 @@ impl Context {
             font: CellFont::new(font_path, CELL_TEXT_COLOR).await,
             icon_font: IconFont::new(icon_font_path, BLACK).await,
             pencil_font: CellPencilFont::new(font_path).await,
-            menu_number_font: MenuNumberFont::new(font_path).await,
+            menu_number_font: MenuNumberFont::new(font_path, BLACK).await,
+            menu_number_font_selected: MenuNumberFont::new(font_path, WHITE).await,
             board: Board::new(),
             menu: Menu::new(),
+            selected_number: Some(2),
             width_padding: 0.0,
             game_padding: 0.0,
             height_padding: 0.0,
@@ -145,6 +149,7 @@ impl Context {
         self.font.update(self.board.cell_size);
         self.pencil_font.update(self.board.cell_size);
         self.menu_number_font.update(self.board.cell_size);
+        self.menu_number_font_selected.update(self.board.cell_size);
         self.icon_font.update(self.board.cell_size);
         self.menu
             .update(self.board_size, self.game_padding, self.portrait);
