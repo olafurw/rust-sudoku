@@ -24,7 +24,7 @@ mod menu_item;
 
 use context::Context;
 use draw::draw_context;
-use egui_macroquad::egui;
+//use egui_macroquad::egui;
 use macroquad::prelude::*;
 
 pub const DIGIT_COUNT: usize = 9;
@@ -86,6 +86,10 @@ pub fn is_legal_number(number: u8) -> bool {
     (1..=9).contains(&number)
 }
 
+pub fn is_legal_index(number: usize) -> bool {
+    (0..=80).contains(&number)
+}
+
 #[macroquad::main("Sudoku")]
 async fn main() {
     rand::srand(macroquad::miniquad::date::now() as _);
@@ -97,13 +101,13 @@ async fn main() {
         context.update();
         draw_context(&context);
 
-        egui_macroquad::ui(|egui_ctx| {
+        /*egui_macroquad::ui(|egui_ctx| {
             egui_ctx.set_visuals(egui::Visuals::light());
             egui::Window::new("debug").show(egui_ctx, |ui| {
                 ui.label(format!("font: {}", context.font.height));
                 ui.label(format!("penc: {}", context.pencil_font.height));
             });
-        });
+        });*/
 
         egui_macroquad::draw();
 
@@ -113,7 +117,7 @@ async fn main() {
 
 #[cfg(test)]
 mod tests {
-    use crate::is_legal_number;
+    use crate::{is_legal_index, is_legal_number};
 
     #[test]
     fn legal_number_test() {
@@ -128,5 +132,25 @@ mod tests {
         assert!(is_legal_number(8));
         assert!(is_legal_number(9));
         assert!(!is_legal_number(10));
+        assert!(!is_legal_number(11));
+    }
+
+    #[test]
+    fn legal_index_test() {
+        assert!(is_legal_index(0));
+        assert!(is_legal_index(1));
+        assert!(is_legal_index(2));
+        assert!(is_legal_index(3));
+        assert!(is_legal_index(4));
+        assert!(is_legal_index(5));
+        assert!(is_legal_index(6));
+        assert!(is_legal_index(7));
+        assert!(is_legal_index(8));
+        assert!(is_legal_index(9));
+        assert!(is_legal_index(78));
+        assert!(is_legal_index(79));
+        assert!(is_legal_index(80));
+        assert!(!is_legal_index(81));
+        assert!(!is_legal_index(82));
     }
 }

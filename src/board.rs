@@ -3,7 +3,9 @@ use std::collections::HashSet;
 use crate::cell_location::CellLocation;
 use crate::cell_state::{CellSelection, CellState};
 use crate::index::index_to_xy;
-use crate::{BOX_INDEXES, COLUMN_INDEXES, DIGIT_COUNT, ROW_INDEXES};
+use crate::{
+    is_legal_index, is_legal_number, BOX_INDEXES, COLUMN_INDEXES, DIGIT_COUNT, ROW_INDEXES,
+};
 
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub enum BoardMode {
@@ -103,6 +105,10 @@ impl Board {
         self.clear_cell_selection();
     }
 
+    pub fn set_selected_number(&mut self, number: u8) {
+        self.selected_number = Some(number);
+    }
+
     pub fn number(&mut self, number: u8) {
         if !self.is_cell_selected() {
             return;
@@ -133,6 +139,31 @@ impl Board {
         }
     }
 
+    fn try_insert(&mut self, index: Option<usize>, number: Option<u8>) -> bool {
+        if index.is_none() || number.is_none() {
+            return false;
+        }
+
+        let index = index.unwrap();
+        if !is_legal_index(index) {
+            return false;
+        }
+
+        let number = number.unwrap();
+        if !is_legal_number(number) {
+            return false;
+        }
+
+        let cell = &mut self.cell_state[index];
+
+        // this so the undo doesn't look weird
+        if cell.is_number(number) {
+            return false;
+        }
+
+        cell.set_number(number)
+    }
+
     fn handle_if_insert(&mut self, number: u8) {
         let cell = &mut self.cell_state[self.selected_index.unwrap()];
         if cell.is_number(number) {
@@ -140,6 +171,73 @@ impl Board {
         }
 
         cell.set_number(number);
+    }
+
+    pub fn new_click(&mut self, x: f32, y: f32) {
+        // Don't need to process clicks if we know they're outside the board
+        if (self.portrait && y >= self.board_size + self.game_padding)
+            || (!self.portrait && x >= self.board_size + self.game_padding)
+        {
+            return;
+        }
+
+        let mut clicked_index: Option<usize> = None;
+
+        // perform a click on each cell to see which one
+        // gets selected
+        for i in 0..81 {
+            let loc = &self.cell_location[i];
+            let clicked = loc.click(x, y);
+            if clicked {
+                clicked_index = Some(i);
+                break;
+            }
+        }
+
+        // no cell was clicked
+        if clicked_index.is_none() {
+            self.selected_index = None;
+            return;
+        }
+
+        self.add_undo_point();
+        self.selected_index = clicked_index;
+
+        let clicked_index = self.selected_index.unwrap();
+        let cell = &self.cell_state[clicked_index];
+
+        // you can't change initial numbers
+        if cell.has_initial_number() {
+            return;
+        }
+
+        if self.mode == BoardMode::Normal {
+            if !self.try_insert(self.selected_index, self.selected_number) {
+                return;
+            }
+
+            if !self.is_valid() {
+                self.undo();
+                return;
+            }
+
+            self.highlight();
+            self.clear_pencil(self.selected_number.unwrap());
+            self.update_number_count();
+        } else if self.mode == BoardMode::Pencil {
+            if self.selected_number.is_none() || cell.has_number() {
+                return;
+            }
+
+            let pencil_number = self.selected_number.unwrap();
+            if cell.has_this_pencil(pencil_number) {
+                self.add_undo_point();
+                self.cell_state[clicked_index].remove_pencil(pencil_number);
+            } else if cell.selection == CellSelection::None {
+                self.add_undo_point();
+                self.cell_state[clicked_index].set_pencil(pencil_number);
+            }
+        }
     }
 
     pub fn click(&mut self, x: f32, y: f32) {
@@ -241,20 +339,15 @@ impl Board {
         true
     }
 
-    fn highlight(&mut self) {
+    pub fn highlight(&mut self) {
         self.clear_cell_selection();
 
-        if !self.is_cell_selected() {
-            return;
-        }
-
-        let sel_index = self.selected_index.unwrap();
-        let mut highlight_list = vec![sel_index];
+        let mut highlight_list = vec![];
 
         // only highlight numbers if the selected cell has a number
         if self.selected_number.is_some() {
             for (i, cell) in self.cell_state.iter_mut().enumerate() {
-                if i != sel_index && cell.has_number() {
+                if cell.has_number() {
                     cell.selection = CellSelection::Highlighted;
                 }
                 if cell.number == self.selected_number {

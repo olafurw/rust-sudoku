@@ -70,11 +70,12 @@ impl Context {
     fn handle_input(&mut self) {
         if is_mouse_button_pressed(MouseButton::Left) {
             let (mouse_x, mouse_y) = mouse_position();
-            self.board.click(mouse_x, mouse_y);
+            self.board.new_click(mouse_x, mouse_y);
             if let Some(menu_action) = self.menu.click(mouse_x, mouse_y) {
                 if is_menu_action_number(menu_action) {
                     self.selected_number = Some(menu_action as u8);
-                    self.board.number(menu_action as u8);
+                    self.board.set_selected_number(menu_action as u8);
+                    self.board.highlight();
                 } else if menu_action == MenuActions::Pencil {
                     self.board.toggle_pencil_mode();
                 } else if menu_action == MenuActions::Undo {

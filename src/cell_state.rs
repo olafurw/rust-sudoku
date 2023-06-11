@@ -69,6 +69,10 @@ impl CellState {
         self.number.is_some()
     }
 
+    pub fn has_initial_number(&self) -> bool {
+        self.initial
+    }
+
     pub fn is_number(&self, number: u8) -> bool {
         self.number == Some(number)
     }
@@ -82,13 +86,14 @@ impl CellState {
         self.initial = true;
     }
 
-    pub fn set_number(&mut self, number: u8) {
+    pub fn set_number(&mut self, number: u8) -> bool {
         if self.initial || !is_legal_number(number) {
-            return;
+            return false;
         }
 
         self.clear_pencil();
         self.number = Some(number);
+        true
     }
 
     pub fn clear_number(&mut self) {
@@ -154,8 +159,10 @@ mod tests {
         cell.clear_number();
         assert!(!cell.has_number());
         assert!(!cell.is_number(1));
+        assert!(!cell.has_initial_number());
 
         cell.set_initial_number(1);
+        assert!(cell.has_initial_number());
         assert!(cell.has_number());
         assert!(cell.is_number(1));
         assert!(!cell.is_number(2));
