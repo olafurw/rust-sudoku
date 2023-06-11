@@ -95,6 +95,7 @@ async fn main() {
         draw_context(&context);
 
         egui_macroquad::ui(|egui_ctx| {
+            egui_ctx.set_visuals(egui::Visuals::light());
             egui::Window::new("debug").show(egui_ctx, |ui| {
                 ui.label(format!("selected: {:?}", context.selected_number));
             });

@@ -6,10 +6,6 @@ use macroquad::{
 
 use crate::{board::BoardMode, context::Context, ICON_PENCIL, ICON_PENCIL_SLASH, ICON_UNDO};
 
-const DEG270: f32 = 4.712388;
-const DEG180: f32 = std::f32::consts::PI;
-const DEG90: f32 = std::f32::consts::FRAC_PI_2;
-
 fn draw_menu_pencil(context: &Context, icon_x_offset: f32, icon_y_offset: f32) {
     let icon = match context.board.mode {
         BoardMode::Pencil => ICON_PENCIL,
@@ -33,14 +29,13 @@ fn draw_menu_undo(context: &Context, icon_x_offset: f32, icon_y_offset: f32) {
     );
 }
 
-fn draw_quarter_circle(center_x: f32, center_y: f32, radius: f32, angle_rad: f32, color: Color) {
+fn draw_quarter_circle(center_x: f32, center_y: f32, radius: f32, angle: f32, color: Color) {
     const NUM_TRIANGLES: u32 = 10;
-
-    let angle_step = std::f32::consts::FRAC_PI_2 / NUM_TRIANGLES as f32;
+    const ANGLE_STEP: f32 = std::f32::consts::FRAC_PI_2 / NUM_TRIANGLES as f32;
 
     for i in 0..NUM_TRIANGLES {
-        let start_angle = angle_rad + angle_step * i as f32;
-        let end_angle = angle_rad + angle_step * (i + 1) as f32;
+        let start_angle = angle + ANGLE_STEP * i as f32;
+        let end_angle = angle + ANGLE_STEP * (i + 1) as f32;
 
         let start_x = center_x + radius * start_angle.cos();
         let start_y = center_y + radius * start_angle.sin();
@@ -57,6 +52,10 @@ fn draw_quarter_circle(center_x: f32, center_y: f32, radius: f32, angle_rad: f32
 }
 
 fn draw_rounded_rectangle(x: f32, y: f32, width: f32, height: f32, radius: f32, color: Color) {
+    const DEG180: f32 = std::f32::consts::PI;
+    const DEG90: f32 = std::f32::consts::FRAC_PI_2;
+    const DEG270: f32 = DEG180 + DEG90;
+
     draw_rectangle(x + radius, y, width - 2.0 * radius, height, color);
     draw_rectangle(x, y + radius, width, height - 2.0 * radius, color);
 
