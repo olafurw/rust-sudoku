@@ -129,6 +129,10 @@ impl Board {
         self.update_number_count();
     }
 
+    pub fn is_number_done(&self, number: u8) -> bool {
+        self.number_count[(number - 1) as usize] == DIGIT_COUNT
+    }
+
     fn update_number_count(&mut self) {
         self.number_count = [0; 9];
 
@@ -390,7 +394,7 @@ impl Board {
         self.cell_size = self.board_size / 9.0;
 
         for (i, cell) in self.cell_location.iter_mut().enumerate() {
-            let (x, y) = index_to_xy(i, DIGIT_COUNT);
+            let (x, y) = index_to_xy(i, DIGIT_COUNT as usize);
             let x_pos = self.game_padding + (x as f32 * self.cell_size);
             let y_pos = self.game_padding + (y as f32 * self.cell_size);
 

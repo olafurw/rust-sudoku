@@ -73,8 +73,13 @@ impl Context {
             self.board.new_click(mouse_x, mouse_y);
             if let Some(menu_action) = self.menu.click(mouse_x, mouse_y) {
                 if is_menu_action_number(menu_action) {
-                    self.selected_number = Some(menu_action as u8);
-                    self.board.set_selected_number(menu_action as u8);
+                    let number = menu_action as u8;
+                    if self.board.is_number_done(number) {
+                        return;
+                    }
+
+                    self.selected_number = Some(number);
+                    self.board.set_selected_number(number);
                     self.board.highlight();
                 } else if menu_action == MenuActions::Pencil {
                     self.board.toggle_pencil_mode();

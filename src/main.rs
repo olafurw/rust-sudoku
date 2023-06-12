@@ -24,10 +24,10 @@ mod menu_item;
 
 use context::Context;
 use draw::draw_context;
-//use egui_macroquad::egui;
+use egui_macroquad::egui;
 use macroquad::prelude::*;
 
-pub const DIGIT_COUNT: usize = 9;
+pub const DIGIT_COUNT: u8 = 9;
 pub const CELL_COLOR_NORMAL: Color = color_u8!(255, 255, 255, 255);
 pub const CELL_COLOR_SELECTED: Color = color_u8!(255, 208, 177, 255);
 pub const CELL_COLOR_EMPHASIZE: Color = color_u8!(255, 208, 177, 255);
@@ -101,13 +101,13 @@ async fn main() {
         context.update();
         draw_context(&context);
 
-        /*egui_macroquad::ui(|egui_ctx| {
+        egui_macroquad::ui(|egui_ctx| {
             egui_ctx.set_visuals(egui::Visuals::light());
             egui::Window::new("debug").show(egui_ctx, |ui| {
                 ui.label(format!("font: {}", context.font.height));
                 ui.label(format!("penc: {}", context.pencil_font.height));
             });
-        });*/
+        });
 
         egui_macroquad::draw();
 
