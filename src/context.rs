@@ -70,7 +70,7 @@ impl Context {
     fn handle_input(&mut self) {
         if is_mouse_button_pressed(MouseButton::Left) {
             let (mouse_x, mouse_y) = mouse_position();
-            self.board.new_click(mouse_x, mouse_y);
+            self.board.click(mouse_x, mouse_y);
             if let Some(menu_action) = self.menu.click(mouse_x, mouse_y) {
                 if is_menu_action_number(menu_action) {
                     let number = menu_action as u8;

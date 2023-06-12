@@ -109,26 +109,6 @@ impl Board {
         self.selected_number = Some(number);
     }
 
-    pub fn number(&mut self, number: u8) {
-        if !self.is_cell_selected() {
-            return;
-        }
-
-        self.selected_number = Some(number);
-        self.add_undo_point();
-
-        self.handle_if_insert(number);
-
-        if !self.is_valid() {
-            self.undo();
-            return;
-        }
-
-        self.highlight();
-        self.clear_pencil(number);
-        self.update_number_count();
-    }
-
     pub fn is_number_done(&self, number: u8) -> bool {
         self.number_count[(number - 1) as usize] == DIGIT_COUNT
     }
@@ -168,16 +148,7 @@ impl Board {
         cell.set_number(number)
     }
 
-    fn handle_if_insert(&mut self, number: u8) {
-        let cell = &mut self.cell_state[self.selected_index.unwrap()];
-        if cell.is_number(number) {
-            return;
-        }
-
-        cell.set_number(number);
-    }
-
-    pub fn new_click(&mut self, x: f32, y: f32) {
+    pub fn click(&mut self, x: f32, y: f32) {
         // Don't need to process clicks if we know they're outside the board
         if (self.portrait && y >= self.board_size + self.game_padding)
             || (!self.portrait && x >= self.board_size + self.game_padding)
@@ -241,56 +212,6 @@ impl Board {
                 self.add_undo_point();
                 self.cell_state[clicked_index].set_pencil(pencil_number);
             }
-        }
-    }
-
-    pub fn click(&mut self, x: f32, y: f32) {
-        // Don't need to process clicks if we know they're outside the board
-        if (self.portrait && y >= self.board_size + self.game_padding)
-            || (!self.portrait && x >= self.board_size + self.game_padding)
-        {
-            return;
-        }
-
-        let mut clicked_index = None;
-
-        // perform a click on each cell to see which one
-        // gets selected
-        for i in 0..81 {
-            let loc = &self.cell_location[i];
-            let clicked = loc.click(x, y);
-            if clicked {
-                clicked_index = Some(i);
-                break;
-            }
-        }
-
-        // no cell was clicked
-        if clicked_index.is_none() {
-            self.selected_index = None;
-            return;
-        }
-
-        let clicked_index = clicked_index.unwrap();
-
-        let cell = &self.cell_state[clicked_index];
-        if self.mode == BoardMode::Pencil && self.selected_number.is_some() && !cell.has_number() {
-            let pencil_number = self.selected_number.unwrap();
-            if cell.has_this_pencil(pencil_number) {
-                self.add_undo_point();
-                self.cell_state[clicked_index].remove_pencil(pencil_number);
-            } else if cell.selection == CellSelection::None {
-                self.add_undo_point();
-                self.cell_state[clicked_index].set_pencil(pencil_number);
-            }
-        } else {
-            let cell = &self.cell_state[clicked_index];
-            self.selected_index = Some(clicked_index);
-            self.selected_number = cell.number;
-        }
-
-        if self.mode == BoardMode::Normal || self.selected_number.is_some() {
-            self.highlight();
         }
     }
 
