@@ -123,7 +123,7 @@ impl Board {
         }
     }
 
-    fn try_insert(&mut self, index: Option<usize>, number: Option<u8>) -> bool {
+    fn can_insert(&self, index: Option<usize>, number: Option<u8>) -> bool {
         if index.is_none() || number.is_none() {
             return false;
         }
@@ -138,14 +138,17 @@ impl Board {
             return false;
         }
 
-        let cell = &mut self.cell_state[index];
+        let cell = &self.cell_state[index];
+        !cell.is_number(number)
+    }
 
-        // this so the undo doesn't look weird
-        if cell.is_number(number) {
+    fn try_insert(&mut self, index: Option<usize>, number: Option<u8>) -> bool {
+        if !self.can_insert(index, number) {
             return false;
         }
 
-        cell.set_number(number)
+        let cell = &mut self.cell_state[index.unwrap()];
+        cell.set_number(number.unwrap())
     }
 
     pub fn click(&mut self, x: f32, y: f32) {
@@ -175,18 +178,20 @@ impl Board {
             return;
         }
 
-        self.add_undo_point();
-        self.selected_index = clicked_index;
-
-        let clicked_index = self.selected_index.unwrap();
-        let cell = &self.cell_state[clicked_index];
-
         // you can't change initial numbers
+        let cell = &self.cell_state[clicked_index.unwrap()];
         if cell.has_initial_number() {
             return;
         }
 
         if self.mode == BoardMode::Normal {
+            if !self.can_insert(clicked_index, self.selected_number) {
+                return;
+            }
+
+            self.add_undo_point();
+            self.selected_index = clicked_index;
+
             if !self.try_insert(self.selected_index, self.selected_number) {
                 return;
             }
@@ -207,10 +212,14 @@ impl Board {
             let pencil_number = self.selected_number.unwrap();
             if cell.has_this_pencil(pencil_number) {
                 self.add_undo_point();
-                self.cell_state[clicked_index].remove_pencil(pencil_number);
+                self.selected_index = clicked_index;
+
+                self.cell_state[self.selected_index.unwrap()].remove_pencil(pencil_number);
             } else if cell.selection == CellSelection::None {
                 self.add_undo_point();
-                self.cell_state[clicked_index].set_pencil(pencil_number);
+                self.selected_index = clicked_index;
+
+                self.cell_state[self.selected_index.unwrap()].set_pencil(pencil_number);
             }
         }
     }

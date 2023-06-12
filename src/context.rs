@@ -18,7 +18,6 @@ pub struct Context {
     pub menu_number_font_selected: MenuNumberFont,
     pub board: Board,
     pub menu: Menu,
-    pub selected_number: Option<u8>,
     pub game_padding: f32,
     pub width_padding: f32,
     pub height_padding: f32,
@@ -42,7 +41,6 @@ impl Context {
             menu_number_font_selected: MenuNumberFont::new(font_path, WHITE).await,
             board: Board::new(),
             menu: Menu::new(),
-            selected_number: None,
             width_padding: 0.0,
             game_padding: 0.0,
             height_padding: 0.0,
@@ -70,7 +68,7 @@ impl Context {
     fn handle_input(&mut self) {
         if is_mouse_button_pressed(MouseButton::Left) {
             let (mouse_x, mouse_y) = mouse_position();
-            self.board.click(mouse_x, mouse_y);
+
             if let Some(menu_action) = self.menu.click(mouse_x, mouse_y) {
                 if is_menu_action_number(menu_action) {
                     let number = menu_action as u8;
@@ -78,7 +76,6 @@ impl Context {
                         return;
                     }
 
-                    self.selected_number = Some(number);
                     self.board.set_selected_number(number);
                     self.board.highlight();
                 } else if menu_action == MenuActions::Pencil {
@@ -88,6 +85,8 @@ impl Context {
                 }
                 return;
             }
+
+            self.board.click(mouse_x, mouse_y);
         }
 
         let key_pressed = get_last_key_pressed();
@@ -107,7 +106,6 @@ impl Context {
                 return;
             }
 
-            self.selected_number = Some(number);
             self.board.set_selected_number(number);
             self.board.highlight();
         }

@@ -73,8 +73,8 @@ fn draw_menu_numbers(context: &Context) {
     let font_x_offset = (context.menu_number_font.width / 2.0) + border_offset;
     let font_y_offset = context.menu_number_font.height + (context.menu_number_font.height / 3.0);
 
-    let selected_number = if context.selected_number.is_some() {
-        context.selected_number.unwrap()
+    let selected_number = if context.board.selected_number.is_some() {
+        context.board.selected_number.unwrap()
     } else {
         0
     };
