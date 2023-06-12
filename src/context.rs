@@ -103,7 +103,13 @@ impl Context {
         let char_pressed = get_char_pressed();
         if let Some(key @ '1'..='9') = char_pressed {
             let number = key as u8 - 48; // 48 = '0'
-            self.board.number(number);
+            if self.board.is_number_done(number) {
+                return;
+            }
+
+            self.selected_number = Some(number);
+            self.board.set_selected_number(number);
+            self.board.highlight();
         }
     }
 
