@@ -1,12 +1,14 @@
 // TODO
 //
-// make the menu numbers a little prettier
 // add text under the menu
 // hightlight mode switcher
 // move the menu to the other side in landscape
 // when shrinking due to space missing, center the game board
 // add WAY more tests
-// clicking a note again with the same number should remove it
+// selecting a number on the menu should be a part of the undo stack
+// add menu and options
+// add saving through web_sys Storage
+// add win screen
 
 mod board;
 mod cell_location;
@@ -96,6 +98,9 @@ async fn main() {
     let mut context = Context::new("liberation-sans.ttf", "material-font.ttf").await;
 
     request_new_screen_size(800.0, 1080.0);
+
+    let storage = &mut quad_storage::STORAGE.lock().unwrap();
+    storage.set("test", "value");
 
     loop {
         context.update();
