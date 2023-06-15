@@ -24,10 +24,15 @@ mod index;
 mod menu;
 mod menu_item;
 
+#[cfg_attr(target_arch = "wasm32", path = "save_wasm.rs")]
+#[cfg_attr(not(target_arch = "wasm32"), path = "save_win.rs")]
+mod save;
+
 use context::Context;
 use draw::draw_context;
 use egui_macroquad::egui;
 use macroquad::prelude::*;
+use save::save;
 
 pub const DIGIT_COUNT: u8 = 9;
 pub const CELL_COLOR_NORMAL: Color = color_u8!(255, 255, 255, 255);
@@ -99,8 +104,7 @@ async fn main() {
 
     request_new_screen_size(800.0, 1080.0);
 
-    let storage = &mut quad_storage::STORAGE.lock().unwrap();
-    storage.set("test", "value");
+    save("hello test");
 
     loop {
         context.update();

@@ -6,7 +6,12 @@ edition = "2021"
 [dependencies]
 macroquad = "0.3.25"
 egui-macroquad = "0.15.0"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
 quad-storage = "0.1.0"
+
+[target.'cfg(not(target_arch = "wasm32"))'.dependencies]
+rusqlite = { version = "0.29.0", features = ["bundled"] }
 
 [profile.release]
 strip = true
