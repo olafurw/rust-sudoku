@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,height=device-height,target-densitydpi=device-dpi user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"/>
     <title>Sudoku</title>
+    <script src="https://unpkg.com/@telemetrydeck/sdk/dist/telemetrydeck.min.js" defer></script>
     <style>
         html,
         body,
@@ -28,6 +29,10 @@
     <script src="sapp-jsutils.js"></script>
     <script src="quad-storage.js"></script>
     <script>load("target/wasm32-unknown-unknown/debug/rust-sudoku.wasm");</script>
+    <script>
+        window.td = window.td || [];
+        td.push(['app', '08C14376-895A-4D95-943A-9885E16FED94'], ['user', 'anonymous'], ['signal']);
+    </script>
 </body>
 
 </html>
