@@ -50,6 +50,9 @@ pub const MENU_NUMBER_BACKGROUND_NORMAL: Color = color_u8!(56, 76, 107, 255);
 pub const MENU_NUMBER_BACKGROUND_PENCIL: Color = color_u8!(226, 138, 43, 255);
 
 pub const MODAL_BACKGROUND: Color = color_u8!(0, 0, 0, 128);
+pub const MODAL_DIFFICULTY_ONE: Color = color_u8!(0, 128, 0, 255);
+pub const MODAL_DIFFICULTY_TWO: Color = color_u8!(255, 128, 0, 255);
+pub const MODAL_DIFFICULTY_THREE: Color = color_u8!(255, 0, 0, 255);
 
 pub const DEBUG_RED: Color = color_u8!(255, 0, 0, 128);
 pub const DEBUG_BLUE: Color = color_u8!(0, 0, 255, 128);
@@ -94,6 +97,9 @@ pub const ICON_UNDO: &str = "\u{e166}";
 pub const ICON_PENCIL: &str = "\u{e3c9}";
 pub const ICON_PENCIL_SLASH: &str = "\u{e950}";
 pub const ICON_NEW: &str = "\u{e146}";
+pub const ICON_DIFFICULTY_1: &str = "\u{e400}";
+pub const ICON_DIFFICULTY_2: &str = "\u{e401}";
+pub const ICON_DIFFICULTY_3: &str = "\u{e3fb}";
 
 pub fn is_legal_number(number: u8) -> bool {
     (1..=9).contains(&number)

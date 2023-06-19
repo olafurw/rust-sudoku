@@ -158,3 +158,37 @@ impl IconFont {
         self.height = measure.height;
     }
 }
+
+pub struct ModalDifficultyFont {
+    pub params: TextParams,
+    pub font: Font,
+    pub height: f32,
+    pub width: f32,
+}
+
+impl ModalDifficultyFont {
+    pub async fn new(font_path: &str, color: Color) -> Self {
+        let font = load_ttf_font(font_path).await.unwrap();
+        let measure = measure_text(ICON_PENCIL, Some(font), 48, 1.0);
+        ModalDifficultyFont {
+            font,
+            params: TextParams {
+                font,
+                font_size: 48,
+                font_scale: 1.0,
+                font_scale_aspect: 1.0,
+                rotation: 0.0,
+                color,
+            },
+            height: measure.height,
+            width: measure.width,
+        }
+    }
+
+    pub fn update(&mut self, cell_size: f32) {
+        self.params.font_size = estimate_font_size(ICON_PENCIL, Some(self.font), cell_size * 2.0);
+        let measure = measure_text(ICON_PENCIL, Some(self.font), self.params.font_size, 1.0);
+        self.width = measure.width;
+        self.height = measure.height;
+    }
+}

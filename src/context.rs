@@ -1,13 +1,16 @@
 use std::cmp::min;
 
 use crate::board::Board;
-use crate::fonts::{CellFont, CellPencilFont, IconFont, MenuNumberFont};
+use crate::fonts::{CellFont, CellPencilFont, IconFont, MenuNumberFont, ModalDifficultyFont};
 use crate::generate::{create_puzzle, generate_board};
 use crate::index::xy_to_index;
 use crate::menu::{is_menu_action_number, Menu, MenuActions};
 use crate::modal::Modal;
 use crate::save::{load, save};
-use crate::{CELL_TEXT_COLOR, CELL_TEXT_INITIAL_COLOR};
+use crate::{
+    CELL_TEXT_COLOR, CELL_TEXT_INITIAL_COLOR, MODAL_DIFFICULTY_ONE, MODAL_DIFFICULTY_THREE,
+    MODAL_DIFFICULTY_TWO,
+};
 
 use macroquad::prelude::*;
 
@@ -18,6 +21,9 @@ pub struct Context {
     pub pencil_font: CellPencilFont,
     pub menu_number_font: MenuNumberFont,
     pub menu_number_font_selected: MenuNumberFont,
+    pub modal_difficulty_font_1: ModalDifficultyFont,
+    pub modal_difficulty_font_2: ModalDifficultyFont,
+    pub modal_difficulty_font_3: ModalDifficultyFont,
     pub board: Board,
     pub menu: Menu,
     pub game_padding: f32,
@@ -42,6 +48,15 @@ impl Context {
             pencil_font: CellPencilFont::new(font_path).await,
             menu_number_font: MenuNumberFont::new(font_path, BLACK).await,
             menu_number_font_selected: MenuNumberFont::new(font_path, WHITE).await,
+            modal_difficulty_font_1: ModalDifficultyFont::new(icon_font_path, MODAL_DIFFICULTY_ONE)
+                .await,
+            modal_difficulty_font_2: ModalDifficultyFont::new(icon_font_path, MODAL_DIFFICULTY_TWO)
+                .await,
+            modal_difficulty_font_3: ModalDifficultyFont::new(
+                icon_font_path,
+                MODAL_DIFFICULTY_THREE,
+            )
+            .await,
             board: Board::new(),
             menu: Menu::new(),
             width_padding: 0.0,
@@ -92,7 +107,7 @@ impl Context {
                 } else if menu_action == MenuActions::Undo {
                     self.board.undo();
                 } else if menu_action == MenuActions::New {
-                    self.modal.show = true;
+                    self.modal.show_new_game();
                 }
                 return;
             }
@@ -179,6 +194,10 @@ impl Context {
         self.icon_font.update(self.board.cell_size);
         self.menu
             .update(self.board_size, self.game_padding, self.portrait);
-        self.modal.update(self.board_size);
+        self.modal_difficulty_font_1.update(self.board.cell_size);
+        self.modal_difficulty_font_2.update(self.board.cell_size);
+        self.modal_difficulty_font_3.update(self.board.cell_size);
+        self.modal
+            .update(self.game_square, self.modal_difficulty_font_1.height);
     }
 }
