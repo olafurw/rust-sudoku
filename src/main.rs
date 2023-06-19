@@ -16,13 +16,16 @@ mod cell_state;
 mod context;
 mod draw;
 mod draw_board;
+mod draw_common;
 mod draw_menu;
+mod draw_modal;
 mod font_size;
 mod fonts;
 mod generate;
 mod index;
 mod menu;
 mod menu_item;
+mod modal;
 
 #[cfg_attr(target_arch = "wasm32", path = "save_wasm.rs")]
 #[cfg_attr(not(target_arch = "wasm32"), path = "save_win.rs")]
@@ -45,6 +48,8 @@ pub const CELL_TEXT_INITIAL_COLOR: Color = color_u8!(0, 0, 0, 255);
 
 pub const MENU_NUMBER_BACKGROUND_NORMAL: Color = color_u8!(56, 76, 107, 255);
 pub const MENU_NUMBER_BACKGROUND_PENCIL: Color = color_u8!(226, 138, 43, 255);
+
+pub const MODAL_BACKGROUND: Color = color_u8!(0, 0, 0, 128);
 
 pub const DEBUG_RED: Color = color_u8!(255, 0, 0, 128);
 pub const DEBUG_BLUE: Color = color_u8!(0, 0, 255, 128);
@@ -88,6 +93,7 @@ pub const COLUMN_INDEXES: &[[usize; 9]; 9] = &[
 pub const ICON_UNDO: &str = "\u{e166}";
 pub const ICON_PENCIL: &str = "\u{e3c9}";
 pub const ICON_PENCIL_SLASH: &str = "\u{e950}";
+pub const ICON_NEW: &str = "\u{e146}";
 
 pub fn is_legal_number(number: u8) -> bool {
     (1..=9).contains(&number)
@@ -103,8 +109,6 @@ async fn main() {
     let mut context = Context::new("liberation-sans.ttf", "material-font.ttf").await;
 
     request_new_screen_size(800.0, 1080.0);
-
-    save("hello test");
 
     loop {
         context.update();

@@ -5,6 +5,8 @@ use crate::fonts::{CellFont, CellPencilFont, IconFont, MenuNumberFont};
 use crate::generate::{create_puzzle, generate_board};
 use crate::index::xy_to_index;
 use crate::menu::{is_menu_action_number, Menu, MenuActions};
+use crate::modal::Modal;
+use crate::save::{load, save};
 use crate::{CELL_TEXT_COLOR, CELL_TEXT_INITIAL_COLOR};
 
 use macroquad::prelude::*;
@@ -28,6 +30,7 @@ pub struct Context {
     pub old_height: u32,
     pub old_width: u32,
     pub portrait: bool,
+    pub modal: Modal,
 }
 
 impl Context {
@@ -51,7 +54,11 @@ impl Context {
             old_height: 0,
             old_width: 0,
             portrait: true,
+            modal: Default::default(),
         };
+
+        let initial = load("initial");
+        debug!("initial: {:?}", initial);
 
         let mut board = [[0; 9]; 9];
         generate_board(&mut board);
@@ -61,6 +68,8 @@ impl Context {
                 c.board.cell_state[xy_to_index(x, y, 9)].set_initial_number(*col);
             }
         }
+
+        save("initial", c.board.cell_initial_to_string().as_str());
 
         c
     }
@@ -82,6 +91,8 @@ impl Context {
                     self.board.toggle_pencil_mode();
                 } else if menu_action == MenuActions::Undo {
                     self.board.undo();
+                } else if menu_action == MenuActions::New {
+                    self.modal.show = true;
                 }
                 return;
             }
@@ -112,7 +123,11 @@ impl Context {
     }
 
     pub fn update(&mut self) {
-        self.handle_input();
+        if self.modal.show {
+            self.modal.handle_input();
+        } else {
+            self.handle_input();
+        }
 
         self.height = screen_height();
         self.width = screen_width();
@@ -164,5 +179,6 @@ impl Context {
         self.icon_font.update(self.board.cell_size);
         self.menu
             .update(self.board_size, self.game_padding, self.portrait);
+        self.modal.update(self.board_size);
     }
 }

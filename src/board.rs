@@ -50,6 +50,20 @@ impl Board {
         }
     }
 
+    pub fn cell_initial_to_string(&self) -> String {
+        let mut result = String::new();
+        for index in 0..81 {
+            let cell = self.cell_state[index];
+            if cell.has_initial_number() {
+                result.push_str(&cell.number.unwrap().to_string());
+            } else {
+                result.push('0');
+            }
+        }
+
+        result
+    }
+
     fn is_cell_selected(&self) -> bool {
         self.selected_index.is_some()
     }

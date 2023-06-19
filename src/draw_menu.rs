@@ -1,12 +1,8 @@
-use macroquad::{
-    prelude::{vec2, Color},
-    shapes::{draw_rectangle, draw_triangle},
-    text::draw_text_ex,
-};
+use macroquad::text::draw_text_ex;
 
 use crate::{
-    board::BoardMode, context::Context, ICON_PENCIL, ICON_PENCIL_SLASH, ICON_UNDO,
-    MENU_NUMBER_BACKGROUND_NORMAL, MENU_NUMBER_BACKGROUND_PENCIL,
+    board::BoardMode, context::Context, draw_common::draw_rounded_rectangle, ICON_NEW, ICON_PENCIL,
+    ICON_PENCIL_SLASH, ICON_UNDO, MENU_NUMBER_BACKGROUND_NORMAL, MENU_NUMBER_BACKGROUND_PENCIL,
 };
 
 fn draw_menu_pencil(context: &Context, icon_x_offset: f32, icon_y_offset: f32) {
@@ -32,40 +28,13 @@ fn draw_menu_undo(context: &Context, icon_x_offset: f32, icon_y_offset: f32) {
     );
 }
 
-fn draw_quarter_circle(center_x: f32, center_y: f32, radius: f32, angle: f32, color: Color) {
-    const NUM_TRIANGLES: u32 = 10;
-    const ANGLE_STEP: f32 = std::f32::consts::FRAC_PI_2 / NUM_TRIANGLES as f32;
-
-    for i in 0..NUM_TRIANGLES {
-        let start_angle = angle + ANGLE_STEP * i as f32;
-        let end_angle = angle + ANGLE_STEP * (i + 1) as f32;
-
-        let start_x = center_x + radius * start_angle.cos();
-        let start_y = center_y + radius * start_angle.sin();
-        let end_x = center_x + radius * end_angle.cos();
-        let end_y = center_y + radius * end_angle.sin();
-
-        draw_triangle(
-            vec2(center_x, center_y),
-            vec2(start_x, start_y),
-            vec2(end_x, end_y),
-            color,
-        );
-    }
-}
-
-fn draw_rounded_rectangle(x: f32, y: f32, width: f32, height: f32, radius: f32, color: Color) {
-    const DEG180: f32 = std::f32::consts::PI;
-    const DEG90: f32 = std::f32::consts::FRAC_PI_2;
-    const DEG270: f32 = DEG180 + DEG90;
-
-    draw_rectangle(x + radius, y, width - 2.0 * radius, height, color);
-    draw_rectangle(x, y + radius, width, height - 2.0 * radius, color);
-
-    draw_quarter_circle(x + radius, y + radius, radius, DEG180, color);
-    draw_quarter_circle(x + width - radius, y + radius, radius, DEG270, color);
-    draw_quarter_circle(x + width - radius, y + height - radius, radius, 0.0, color);
-    draw_quarter_circle(x + radius, y + height - radius, radius, DEG90, color);
+fn draw_menu_new(context: &Context, icon_x_offset: f32, icon_y_offset: f32) {
+    draw_text_ex(
+        ICON_NEW,
+        context.menu.new.x + icon_x_offset,
+        context.menu.new.y + icon_y_offset + context.icon_font.height + (icon_x_offset / 2.0),
+        context.icon_font.params,
+    );
 }
 
 fn draw_menu_numbers(context: &Context) {
@@ -85,7 +54,6 @@ fn draw_menu_numbers(context: &Context) {
         }
 
         let digit = i + 1;
-
         if digit == selected_number as usize {
             draw_rounded_rectangle(
                 number.x,
@@ -122,12 +90,5 @@ pub fn draw_menu(context: &Context) {
 
     draw_menu_pencil(context, icon_x_offset, icon_y_offset);
     draw_menu_undo(context, icon_x_offset, icon_y_offset);
-
-    /*draw_rectangle(
-        context.menu.menu_start_x,
-        context.menu.menu_start_y,
-        context.menu.menu_width,
-        context.menu.menu_height,
-        DEBUG_BLUE,
-    );*/
+    draw_menu_new(context, icon_x_offset, icon_y_offset);
 }
