@@ -19,6 +19,7 @@ pub struct Board {
     pub cell_location: [CellLocation; 81],
     pub number_count: [u8; 9],
     pub mode: BoardMode,
+    pub delete_mode: bool,
     pub mode_history: Vec<BoardMode>,
     pub board_size: f32,
     pub game_padding: f32,
@@ -38,6 +39,7 @@ impl Board {
             cell_location: [Default::default(); 81],
             number_count: [0; 9],
             mode: BoardMode::Normal,
+            delete_mode: false,
             mode_history: vec![],
             board_size: 0.0,
             game_padding: 0.0,
@@ -64,15 +66,19 @@ impl Board {
         result
     }
 
-    fn is_cell_selected(&self) -> bool {
-        self.selected_index.is_some()
-    }
-
     pub fn toggle_pencil_mode(&mut self) {
         match self.mode {
             BoardMode::Normal => self.mode = BoardMode::Pencil,
             BoardMode::Pencil => self.mode = BoardMode::Normal,
         }
+    }
+
+    pub fn toggle_delete_mode(&mut self) {
+        self.delete_mode = !self.delete_mode;
+    }
+
+    pub fn disable_delete_mode(&mut self) {
+        self.delete_mode = false;
     }
 
     pub fn undo(&mut self) {
@@ -110,17 +116,15 @@ impl Board {
         }
     }
 
-    pub fn clear_number(&mut self) {
-        if !self.is_cell_selected() {
-            return;
+    pub fn set_selected_number(&mut self, number: u8) {
+        if let Some(num) = self.selected_number {
+            if num == number {
+                return;
+            }
         }
 
-        self.cell_state[self.selected_index.unwrap()].clear_number();
-        self.clear_cell_selection();
-    }
-
-    pub fn set_selected_number(&mut self, number: u8) {
         self.selected_number = Some(number);
+        self.add_undo_point();
     }
 
     pub fn is_number_done(&self, number: u8) -> bool {
@@ -195,6 +199,24 @@ impl Board {
         // you can't change initial numbers
         let cell = &self.cell_state[clicked_index.unwrap()];
         if cell.has_initial_number() {
+            return;
+        }
+
+        if self.delete_mode {
+            if cell.has_number() && !cell.has_initial_number() {
+                self.add_undo_point();
+                self.selected_index = clicked_index;
+                self.selected_number = self.cell_state[self.selected_index.unwrap()].number;
+                self.cell_state[self.selected_index.unwrap()].clear_number();
+                self.update_number_count();
+                self.highlight();
+            } else if cell.has_pencil() {
+                self.add_undo_point();
+                self.selected_index = clicked_index;
+                self.cell_state[self.selected_index.unwrap()].clear_pencil();
+                self.highlight();
+            }
+
             return;
         }
 

@@ -18,6 +18,7 @@ pub struct Context {
     pub initial_font: CellFont,
     pub font: CellFont,
     pub icon_font: IconFont,
+    pub icon_font_selected: IconFont,
     pub pencil_font: CellPencilFont,
     pub menu_number_font: MenuNumberFont,
     pub menu_number_font_selected: MenuNumberFont,
@@ -46,6 +47,7 @@ impl Context {
             initial_font: CellFont::new(font_path, CELL_TEXT_INITIAL_COLOR).await,
             font: CellFont::new(font_path, CELL_TEXT_COLOR).await,
             icon_font: IconFont::new(icon_font_path, BLACK).await,
+            icon_font_selected: IconFont::new(icon_font_path, WHITE).await,
             pencil_font: CellPencilFont::new(font_path).await,
             menu_number_font: MenuNumberFont::new(font_path, BLACK).await,
             menu_number_font_selected: MenuNumberFont::new(font_path, WHITE).await,
@@ -111,11 +113,16 @@ impl Context {
                         return;
                     }
 
+                    self.board.disable_delete_mode();
                     self.board.set_selected_number(number);
                     self.board.highlight();
                 } else if menu_action == MenuActions::Pencil {
+                    self.board.disable_delete_mode();
                     self.board.toggle_pencil_mode();
+                } else if menu_action == MenuActions::Delete {
+                    self.board.toggle_delete_mode()
                 } else if menu_action == MenuActions::Undo {
+                    self.board.disable_delete_mode();
                     self.board.undo();
                 } else if menu_action == MenuActions::New {
                     self.new_game_modal.show();
@@ -128,9 +135,7 @@ impl Context {
 
         let key_pressed = get_last_key_pressed();
         if let Some(key) = key_pressed {
-            if key == KeyCode::Delete {
-                self.board.clear_number();
-            } else if key == KeyCode::U {
+            if key == KeyCode::U {
                 self.board.undo();
             }
             return;
@@ -229,6 +234,7 @@ impl Context {
         self.menu_number_font.update(self.board.cell_size);
         self.menu_number_font_selected.update(self.board.cell_size);
         self.icon_font.update(self.board.cell_size);
+        self.icon_font_selected.update(self.board.cell_size);
         self.menu
             .update(self.board_size, self.game_padding, self.portrait);
 

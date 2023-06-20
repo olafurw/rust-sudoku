@@ -15,6 +15,7 @@ pub enum MenuActions {
     Pencil = 10,
     Undo = 11,
     New = 12,
+    Delete = 13,
 }
 
 fn menu_action_from_u8(value: u8) -> Option<MenuActions> {
@@ -50,6 +51,7 @@ pub struct Menu {
     pub pencil: MenuItem,
     pub undo: MenuItem,
     pub new: MenuItem,
+    pub delete: MenuItem,
 }
 
 impl Menu {
@@ -67,6 +69,7 @@ impl Menu {
             pencil: Default::default(),
             undo: Default::default(),
             new: Default::default(),
+            delete: Default::default(),
         }
     }
 
@@ -93,6 +96,12 @@ impl Menu {
 
         self.pencil.update(
             self.game_padding + self.item_size,
+            self.menu_start_y + second_row_y,
+            self.item_size,
+        );
+
+        self.delete.update(
+            self.game_padding + (2.0 * self.item_size),
             self.menu_start_y + second_row_y,
             self.item_size,
         );
@@ -131,6 +140,12 @@ impl Menu {
             self.item_size,
         );
 
+        self.delete.update(
+            self.menu_start_x + second_row_x,
+            self.game_padding + (2.0 * self.item_size),
+            self.item_size,
+        );
+
         self.new.update(
             self.menu_start_x + second_row_x,
             self.game_padding + (8.0 * self.item_size),
@@ -160,6 +175,10 @@ impl Menu {
 
         if self.pencil.click(x, y) {
             return Some(MenuActions::Pencil);
+        }
+
+        if self.delete.click(x, y) {
+            return Some(MenuActions::Delete);
         }
 
         if self.undo.click(x, y) {

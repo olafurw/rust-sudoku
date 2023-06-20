@@ -1,8 +1,9 @@
 use macroquad::text::draw_text_ex;
 
 use crate::{
-    board::BoardMode, context::Context, draw_common::draw_rounded_rectangle, ICON_NEW, ICON_PENCIL,
-    ICON_PENCIL_SLASH, ICON_UNDO, MENU_NUMBER_BACKGROUND_NORMAL, MENU_NUMBER_BACKGROUND_PENCIL,
+    board::BoardMode, context::Context, draw_common::draw_rounded_rectangle, ICON_DELETE, ICON_NEW,
+    ICON_PENCIL, ICON_PENCIL_SLASH, ICON_UNDO, MENU_DELETE_BACKGROUND,
+    MENU_NUMBER_BACKGROUND_NORMAL, MENU_NUMBER_BACKGROUND_PENCIL,
 };
 
 fn draw_menu_pencil(context: &Context, icon_x_offset: f32, icon_y_offset: f32) {
@@ -35,6 +36,39 @@ fn draw_menu_new(context: &Context, icon_x_offset: f32, icon_y_offset: f32) {
         context.menu.new.y + icon_y_offset + context.icon_font.height + (icon_x_offset / 2.0),
         context.icon_font.params,
     );
+}
+
+fn draw_menu_delete(context: &Context, icon_x_offset: f32, icon_y_offset: f32) {
+    if !context.board.delete_mode {
+        draw_text_ex(
+            ICON_DELETE,
+            context.menu.delete.x + icon_x_offset,
+            context.menu.delete.y
+                + icon_y_offset
+                + context.icon_font.height
+                + (icon_x_offset / 2.0),
+            context.icon_font.params,
+        );
+    } else {
+        draw_rounded_rectangle(
+            context.menu.delete.x,
+            context.menu.delete.y,
+            context.menu.item_size,
+            context.menu.item_size,
+            20.0,
+            MENU_DELETE_BACKGROUND,
+        );
+
+        draw_text_ex(
+            ICON_DELETE,
+            context.menu.delete.x + icon_x_offset,
+            context.menu.delete.y
+                + icon_y_offset
+                + context.icon_font_selected.height
+                + (icon_x_offset / 2.0),
+            context.icon_font_selected.params,
+        );
+    }
 }
 
 fn draw_menu_numbers(context: &Context) {
@@ -90,5 +124,6 @@ pub fn draw_menu(context: &Context) {
 
     draw_menu_pencil(context, icon_x_offset, icon_y_offset);
     draw_menu_undo(context, icon_x_offset, icon_y_offset);
+    draw_menu_delete(context, icon_x_offset, icon_y_offset);
     draw_menu_new(context, icon_x_offset, icon_y_offset);
 }

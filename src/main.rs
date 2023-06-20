@@ -48,6 +48,7 @@ pub const CELL_TEXT_INITIAL_COLOR: Color = color_u8!(0, 0, 0, 255);
 
 pub const MENU_NUMBER_BACKGROUND_NORMAL: Color = color_u8!(56, 76, 107, 255);
 pub const MENU_NUMBER_BACKGROUND_PENCIL: Color = color_u8!(226, 138, 43, 255);
+pub const MENU_DELETE_BACKGROUND: Color = color_u8!(255, 0, 0, 255);
 
 pub const MODAL_BACKGROUND: Color = color_u8!(0, 0, 0, 128);
 pub const MODAL_DIFFICULTY_ONE: Color = color_u8!(0, 128, 0, 255);
@@ -101,6 +102,7 @@ pub const ICON_DIFFICULTY_1: &str = "\u{f784}";
 pub const ICON_DIFFICULTY_2: &str = "\u{f783}";
 pub const ICON_DIFFICULTY_3: &str = "\u{f782}";
 pub const ICON_DIFFICULTY_NEW: &str = "\u{e3fc}";
+pub const ICON_DELETE: &str = "\u{e872}";
 
 pub fn is_legal_number(number: u8) -> bool {
     (1..=9).contains(&number)
