@@ -5,7 +5,7 @@ use crate::fonts::{CellFont, CellPencilFont, IconFont, MenuNumberFont, ModalDiff
 use crate::generate::{create_puzzle, generate_board};
 use crate::index::xy_to_index;
 use crate::menu::{is_menu_action_number, Menu, MenuActions};
-use crate::modal::Modal;
+use crate::new_game_modal::NewGameModal;
 use crate::save::{load, save};
 use crate::{
     CELL_TEXT_COLOR, CELL_TEXT_INITIAL_COLOR, MODAL_DIFFICULTY_ONE, MODAL_DIFFICULTY_THREE,
@@ -24,6 +24,7 @@ pub struct Context {
     pub modal_difficulty_font_1: ModalDifficultyFont,
     pub modal_difficulty_font_2: ModalDifficultyFont,
     pub modal_difficulty_font_3: ModalDifficultyFont,
+    pub modal_difficulty_title_font: ModalDifficultyFont,
     pub board: Board,
     pub menu: Menu,
     pub game_padding: f32,
@@ -36,7 +37,7 @@ pub struct Context {
     pub old_height: u32,
     pub old_width: u32,
     pub portrait: bool,
-    pub modal: Modal,
+    pub new_game_modal: NewGameModal,
 }
 
 impl Context {
@@ -48,15 +49,25 @@ impl Context {
             pencil_font: CellPencilFont::new(font_path).await,
             menu_number_font: MenuNumberFont::new(font_path, BLACK).await,
             menu_number_font_selected: MenuNumberFont::new(font_path, WHITE).await,
-            modal_difficulty_font_1: ModalDifficultyFont::new(icon_font_path, MODAL_DIFFICULTY_ONE)
-                .await,
-            modal_difficulty_font_2: ModalDifficultyFont::new(icon_font_path, MODAL_DIFFICULTY_TWO)
-                .await,
+            modal_difficulty_font_1: ModalDifficultyFont::new(
+                icon_font_path,
+                1.5,
+                MODAL_DIFFICULTY_ONE,
+            )
+            .await,
+            modal_difficulty_font_2: ModalDifficultyFont::new(
+                icon_font_path,
+                1.5,
+                MODAL_DIFFICULTY_TWO,
+            )
+            .await,
             modal_difficulty_font_3: ModalDifficultyFont::new(
                 icon_font_path,
+                1.5,
                 MODAL_DIFFICULTY_THREE,
             )
             .await,
+            modal_difficulty_title_font: ModalDifficultyFont::new(icon_font_path, 1.0, BLACK).await,
             board: Board::new(),
             menu: Menu::new(),
             width_padding: 0.0,
@@ -69,7 +80,7 @@ impl Context {
             old_height: 0,
             old_width: 0,
             portrait: true,
-            modal: Default::default(),
+            new_game_modal: Default::default(),
         };
 
         let initial = load("initial");
@@ -107,7 +118,7 @@ impl Context {
                 } else if menu_action == MenuActions::Undo {
                     self.board.undo();
                 } else if menu_action == MenuActions::New {
-                    self.modal.show_new_game();
+                    self.new_game_modal.show();
                 }
                 return;
             }
@@ -138,8 +149,31 @@ impl Context {
     }
 
     pub fn update(&mut self) {
-        if self.modal.show {
-            self.modal.handle_input();
+        let mut force_update = false;
+
+        if self.new_game_modal.show {
+            if is_mouse_button_pressed(MouseButton::Left) {
+                let (mouse_x, mouse_y) = mouse_position();
+                if self.new_game_modal.click_outside(mouse_x, mouse_y) {
+                    self.new_game_modal.hide();
+                    return;
+                }
+
+                if let Some(difficulty) = self.new_game_modal.click(mouse_x, mouse_y) {
+                    force_update = true;
+                    self.new_game_modal.hide();
+                    self.board = Board::new();
+
+                    let mut board = [[0; 9]; 9];
+                    generate_board(&mut board);
+                    create_puzzle(&mut board, difficulty);
+                    for (y, row) in board.iter().enumerate() {
+                        for (x, col) in row.iter().enumerate() {
+                            self.board.cell_state[xy_to_index(x, y, 9)].set_initial_number(*col);
+                        }
+                    }
+                }
+            }
         } else {
             self.handle_input();
         }
@@ -147,7 +181,10 @@ impl Context {
         self.height = screen_height();
         self.width = screen_width();
 
-        if self.height as u32 == self.old_height && self.width as u32 == self.old_width {
+        if !force_update
+            && self.height as u32 == self.old_height
+            && self.width as u32 == self.old_width
+        {
             return;
         }
         self.old_height = self.height as u32;
@@ -194,10 +231,16 @@ impl Context {
         self.icon_font.update(self.board.cell_size);
         self.menu
             .update(self.board_size, self.game_padding, self.portrait);
+
         self.modal_difficulty_font_1.update(self.board.cell_size);
         self.modal_difficulty_font_2.update(self.board.cell_size);
         self.modal_difficulty_font_3.update(self.board.cell_size);
-        self.modal
-            .update(self.game_square, self.modal_difficulty_font_1.height);
+        self.modal_difficulty_title_font
+            .update(self.board.cell_size);
+        self.new_game_modal.update(
+            self.game_square,
+            self.modal_difficulty_font_1.width,
+            self.modal_difficulty_font_1.height,
+        );
     }
 }

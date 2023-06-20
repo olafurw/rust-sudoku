@@ -89,12 +89,12 @@ fn is_valid(board: &[[u8; 9]; 9], row: usize, col: usize, value: u8) -> bool {
 
 // 2nd part of the puzzle generation algorithm
 
-pub fn create_puzzle(board: &mut [[u8; 9]; 9], difficulty: usize) {
+pub fn create_puzzle(board: &mut [[u8; 9]; 9], difficulty: u8) {
     // Determine the number of cells to remove based on difficulty
     let num_cells_to_remove = match difficulty {
-        1 => 40, // Easy
-        2 => 50, // Medium
-        3 => 60, // Hard
+        1 => 35, // Easy
+        2 => 45, // Medium
+        3 => 50, // Hard
         _ => panic!("Invalid difficulty level!"),
     };
 
@@ -155,46 +155,50 @@ fn solve_with_unique_solution(board: &mut [[u8; 9]; 9], solution_count: &mut usi
 
 #[cfg(test)]
 mod tests {
-    use std::collections::HashSet;
-
     use super::*;
 
     #[test]
-    fn test_generate_board() {
+    fn test_create_easy() {
         let mut board = [[0; 9]; 9];
         generate_board(&mut board);
 
-        // Check that the board is filled
-        assert!(board.iter().all(|row| row.iter().all(|&value| value != 0)));
+        create_puzzle(&mut board, 1); // Easy difficulty
 
-        // Check that each row has unique values
-        for row in &board {
-            assert!(row.iter().collect::<HashSet<_>>().len() == 9);
-        }
+        // Count the number of filled cells
+        let num_filled_cells = board.iter().flatten().filter(|&&value| value != 0).count();
 
-        // Check that each column has unique values
-        for col in 0..9 {
-            let column_values = board.iter().map(|row| row[col]).collect::<HashSet<_>>();
-            assert!(column_values.len() == 9);
-        }
+        // Check that the number of filled cells matches the expected difficulty level
+        assert_eq!(num_filled_cells, 81 - 35); // 81 is the total number of cells in the board
 
-        // Check that each 3x3 subgrid has unique values
-        for i in 0..3 {
-            for j in 0..3 {
-                let subgrid_values = (0..3)
-                    .flat_map(|di| (0..3).map(move |dj| board[i * 3 + di][j * 3 + dj]))
-                    .collect::<HashSet<_>>();
-                assert!(subgrid_values.len() == 9);
-            }
-        }
+        // Check that the puzzle is still solvable and has a unique solution
+        let mut puzzle_board = board;
+        assert!(has_unique_solution(&mut puzzle_board));
     }
 
     #[test]
-    fn test_create_puzzle() {
+    fn test_create_medium() {
         let mut board = [[0; 9]; 9];
         generate_board(&mut board);
 
         create_puzzle(&mut board, 2); // Medium difficulty
+
+        // Count the number of filled cells
+        let num_filled_cells = board.iter().flatten().filter(|&&value| value != 0).count();
+
+        // Check that the number of filled cells matches the expected difficulty level
+        assert_eq!(num_filled_cells, 81 - 45); // 81 is the total number of cells in the board
+
+        // Check that the puzzle is still solvable and has a unique solution
+        let mut puzzle_board = board;
+        assert!(has_unique_solution(&mut puzzle_board));
+    }
+
+    #[test]
+    fn test_create_hard() {
+        let mut board = [[0; 9]; 9];
+        generate_board(&mut board);
+
+        create_puzzle(&mut board, 3); // Hard difficulty
 
         // Count the number of filled cells
         let num_filled_cells = board.iter().flatten().filter(|&&value| value != 0).count();

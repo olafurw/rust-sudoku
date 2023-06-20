@@ -18,14 +18,14 @@ mod draw;
 mod draw_board;
 mod draw_common;
 mod draw_menu;
-mod draw_modal;
+mod draw_new_game_modal;
 mod font_size;
 mod fonts;
 mod generate;
 mod index;
 mod menu;
 mod menu_item;
-mod modal;
+mod new_game_modal;
 
 #[cfg_attr(target_arch = "wasm32", path = "save_wasm.rs")]
 #[cfg_attr(not(target_arch = "wasm32"), path = "save_win.rs")]
@@ -97,9 +97,10 @@ pub const ICON_UNDO: &str = "\u{e166}";
 pub const ICON_PENCIL: &str = "\u{e3c9}";
 pub const ICON_PENCIL_SLASH: &str = "\u{e950}";
 pub const ICON_NEW: &str = "\u{e146}";
-pub const ICON_DIFFICULTY_1: &str = "\u{e400}";
-pub const ICON_DIFFICULTY_2: &str = "\u{e401}";
-pub const ICON_DIFFICULTY_3: &str = "\u{e3fb}";
+pub const ICON_DIFFICULTY_1: &str = "\u{f784}";
+pub const ICON_DIFFICULTY_2: &str = "\u{f783}";
+pub const ICON_DIFFICULTY_3: &str = "\u{f782}";
+pub const ICON_DIFFICULTY_NEW: &str = "\u{e3fc}";
 
 pub fn is_legal_number(number: u8) -> bool {
     (1..=9).contains(&number)
@@ -123,8 +124,9 @@ async fn main() {
         egui_macroquad::ui(|egui_ctx| {
             egui_ctx.set_visuals(egui::Visuals::light());
             egui::Window::new("debug").show(egui_ctx, |ui| {
-                ui.label(format!("font: {}", context.font.height));
-                ui.label(format!("penc: {}", context.pencil_font.height));
+                ui.label(format!("sq: {}", context.game_square));
+                ui.label(format!("fw: {}", context.new_game_modal.font_width));
+                ui.label(format!("fh: {}", context.new_game_modal.font_height));
             });
         });
 

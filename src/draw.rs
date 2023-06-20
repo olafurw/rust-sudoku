@@ -1,7 +1,8 @@
 use macroquad::prelude::*;
 
 use crate::{
-    context::Context, draw_board::draw_board, draw_menu::draw_menu, draw_modal::draw_modal,
+    context::Context, draw_board::draw_board, draw_menu::draw_menu,
+    draw_new_game_modal::draw_new_game_modal,
 };
 
 pub fn draw_context(context: &Context) {
@@ -9,5 +10,5 @@ pub fn draw_context(context: &Context) {
 
     draw_board(context);
     draw_menu(context);
-    draw_modal(context);
+    draw_new_game_modal(context);
 }
