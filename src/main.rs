@@ -1,14 +1,14 @@
 // TODO
 //
 // different hightlight mode switcher
-// move the menu to the other side in landscape
-// when shrinking due to space missing, center the game board
-// add WAY more tests
-// add menu and options
-// add saving through web_sys Storage
-// add win screen
+// add saving through wasm quad_storage
 // refactor fonts and put them in their own file to use in context.rs
 // screen and game sizing should be in one place, currently it's in context and board.
+// when shrinking due to space missing, center the game board
+// move the menu to the other side in landscape
+// add WAY more tests
+// add menu and options
+// add win screen
 // move input handling out of context and into its own file.
 // put some of these common files into their own folder, like draw
 
