@@ -11,6 +11,7 @@
 // add win screen
 
 mod board;
+mod board_history;
 mod cell_location;
 mod cell_state;
 mod context;

@@ -1,5 +1,6 @@
 use std::collections::HashSet;
 
+use crate::board_history::BoardHistory;
 use crate::cell_location::CellLocation;
 use crate::cell_state::{CellSelection, CellState};
 use crate::index::index_to_xy;
@@ -14,41 +15,35 @@ pub enum BoardMode {
 }
 
 pub struct Board {
+    pub history: BoardHistory,
     pub cell_state: [CellState; 81],
-    pub cell_state_history: Vec<[CellState; 81]>,
     pub cell_location: [CellLocation; 81],
     pub number_count: [u8; 9],
     pub mode: BoardMode,
     pub delete_mode: bool,
-    pub mode_history: Vec<BoardMode>,
     pub board_size: f32,
     pub game_padding: f32,
     pub portrait: bool,
     pub cell_size: f32,
     pub selected_index: Option<usize>,
-    pub selected_index_history: Vec<Option<usize>>,
     pub selected_number: Option<u8>,
-    pub selected_number_history: Vec<Option<u8>>,
 }
 
 impl Board {
     pub fn new() -> Self {
         Board {
+            history: BoardHistory::new(),
             cell_state: [Default::default(); 81],
-            cell_state_history: vec![],
             cell_location: [Default::default(); 81],
             number_count: [0; 9],
             mode: BoardMode::Normal,
             delete_mode: false,
-            mode_history: vec![],
             board_size: 0.0,
             game_padding: 0.0,
             portrait: true,
             cell_size: 0.0,
             selected_index: None,
-            selected_index_history: vec![],
             selected_number: None,
-            selected_number_history: vec![],
         }
     }
 
@@ -82,35 +77,32 @@ impl Board {
     }
 
     pub fn undo(&mut self) {
-        if self.cell_state_history.is_empty() {
+        let undo_point = self.history.undo();
+        if undo_point.is_none() {
             return;
         }
 
-        self.cell_state = self.cell_state_history.pop().unwrap();
-        self.mode = self.mode_history.pop().unwrap();
-        self.selected_index_history.pop();
-        self.selected_number_history.pop();
+        let undo_point = undo_point.unwrap();
 
-        if self.selected_index_history.is_empty() {
-            self.selected_index = None;
-            self.selected_number = None;
-        } else {
-            self.selected_index = *self.selected_index_history.last().unwrap();
-            self.selected_number = *self.selected_number_history.last().unwrap();
-        }
+        self.cell_state = undo_point.cell_state;
+        self.mode = undo_point.mode;
+        self.selected_index = undo_point.selected_index;
+        self.selected_number = undo_point.selected_number;
 
         self.highlight();
         self.update_number_count();
     }
 
-    pub fn add_undo_point(&mut self) {
-        self.cell_state_history.push(self.cell_state);
-        self.mode_history.push(self.mode);
-        self.selected_index_history.push(self.selected_index);
-        self.selected_number_history.push(self.selected_number);
+    fn add_undo_point(&mut self) {
+        self.history.add_undo_point(
+            &self.cell_state,
+            self.mode,
+            self.selected_index,
+            self.selected_number,
+        );
     }
 
-    pub fn clear_cell_selection(&mut self) {
+    fn clear_cell_selection(&mut self) {
         for cell in self.cell_state.iter_mut() {
             cell.clear_selection();
         }
@@ -170,7 +162,6 @@ impl Board {
     }
 
     pub fn click(&mut self, x: f32, y: f32) {
-        // Don't need to process clicks if we know they're outside the board
         if (self.portrait && y >= self.board_size + self.game_padding)
             || (!self.portrait && x >= self.board_size + self.game_padding)
         {
