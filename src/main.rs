@@ -7,6 +7,9 @@
 // add menu and options
 // add saving through web_sys Storage
 // add win screen
+// refactor fonts and put them in their own file to use in context.rs
+// screen and game sizing should be in one place, currently it's in context and board.
+// move input handling out of context and into its own file.
 
 mod board;
 mod board_history;
