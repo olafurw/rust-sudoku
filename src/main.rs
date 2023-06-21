@@ -10,6 +10,7 @@
 // refactor fonts and put them in their own file to use in context.rs
 // screen and game sizing should be in one place, currently it's in context and board.
 // move input handling out of context and into its own file.
+// put some of these common files into their own folder, like draw
 
 mod board;
 mod board_history;
