@@ -1,13 +1,13 @@
 use macroquad::{
     prelude::WHITE,
-    shapes::{draw_circle, draw_poly, draw_rectangle},
+    shapes::{draw_poly, draw_rectangle},
     text::draw_text_ex,
     window::{screen_height, screen_width},
 };
 
 use crate::{
-    context::Context, draw_common::draw_rounded_rectangle, DEBUG_BLUE, ICON_DIFFICULTY_1,
-    ICON_DIFFICULTY_2, ICON_DIFFICULTY_3, ICON_DIFFICULTY_NEW, MODAL_BACKGROUND,
+    context::Context, draw_common::draw_rounded_rectangle, ICON_DIFFICULTY_1, ICON_DIFFICULTY_2,
+    ICON_DIFFICULTY_3, ICON_DIFFICULTY_NEW, MODAL_BACKGROUND,
 };
 
 pub fn draw_new_game_modal(context: &Context) {

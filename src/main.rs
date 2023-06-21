@@ -1,11 +1,9 @@
 // TODO
 //
-// add text under the menu
-// hightlight mode switcher
+// different hightlight mode switcher
 // move the menu to the other side in landscape
 // when shrinking due to space missing, center the game board
 // add WAY more tests
-// selecting a number on the menu should be a part of the undo stack
 // add menu and options
 // add saving through web_sys Storage
 // add win screen
