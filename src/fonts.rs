@@ -1,7 +1,7 @@
 use macroquad::prelude::*;
 use macroquad::text::TextParams;
 
-use crate::{font_size::estimate_font_size, ICON_DIFFICULTY_1, ICON_PENCIL};
+use crate::{font_size::estimate_font_size, ICON_DIFFICULTY_1, ICON_PENCIL, ICON_VICTORY_STAR};
 
 pub struct CellFont {
     pub params: TextParams,
@@ -195,6 +195,51 @@ impl ModalDifficultyFont {
         );
         let measure = measure_text(
             ICON_DIFFICULTY_1,
+            Some(self.font),
+            self.params.font_size,
+            1.0,
+        );
+        self.width = measure.width;
+        self.height = measure.height;
+    }
+}
+
+pub struct ModalVictoryFont {
+    pub params: TextParams,
+    pub font: Font,
+    pub height: f32,
+    pub width: f32,
+    pub estimate_scale: f32,
+}
+
+impl ModalVictoryFont {
+    pub async fn new(font_path: &str, estimate_scale: f32, color: Color) -> Self {
+        let font = load_ttf_font(font_path).await.unwrap();
+        let measure = measure_text(ICON_VICTORY_STAR, Some(font), 48, 1.0);
+        ModalVictoryFont {
+            font,
+            params: TextParams {
+                font,
+                font_size: 48,
+                font_scale: 1.0,
+                font_scale_aspect: 1.0,
+                rotation: 0.0,
+                color,
+            },
+            height: measure.height,
+            width: measure.width,
+            estimate_scale,
+        }
+    }
+
+    pub fn update(&mut self, cell_size: f32) {
+        self.params.font_size = estimate_font_size(
+            ICON_VICTORY_STAR,
+            Some(self.font),
+            cell_size * self.estimate_scale,
+        );
+        let measure = measure_text(
+            ICON_VICTORY_STAR,
             Some(self.font),
             self.params.font_size,
             1.0,

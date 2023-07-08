@@ -1,15 +1,18 @@
 use std::cmp::min;
 
 use crate::board::Board;
-use crate::fonts::{CellFont, CellPencilFont, IconFont, MenuNumberFont, ModalDifficultyFont};
+use crate::fonts::{
+    CellFont, CellPencilFont, IconFont, MenuNumberFont, ModalDifficultyFont, ModalVictoryFont,
+};
 use crate::generate::{create_puzzle, generate_board};
 use crate::index::xy_to_index;
 use crate::menu::{is_menu_action_number, Menu, MenuActions};
 use crate::new_game_modal::NewGameModal;
 use crate::save::{load, save};
+use crate::victory_modal::VictoryModal;
 use crate::{
     CELL_TEXT_COLOR, CELL_TEXT_INITIAL_COLOR, MODAL_DIFFICULTY_ONE, MODAL_DIFFICULTY_THREE,
-    MODAL_DIFFICULTY_TWO,
+    MODAL_DIFFICULTY_TWO, MODAL_VICTORY_GOLD, MODAL_VICTORY_RED,
 };
 
 use macroquad::prelude::*;
@@ -26,6 +29,8 @@ pub struct Context {
     pub modal_difficulty_font_2: ModalDifficultyFont,
     pub modal_difficulty_font_3: ModalDifficultyFont,
     pub modal_difficulty_title_font: ModalDifficultyFont,
+    pub modal_victory_star_font: ModalVictoryFont,
+    pub modal_victory_heart_font: ModalVictoryFont,
     pub board: Board,
     pub menu: Menu,
     pub game_padding: f32,
@@ -39,6 +44,7 @@ pub struct Context {
     pub old_width: u32,
     pub portrait: bool,
     pub new_game_modal: NewGameModal,
+    pub victory_modal: VictoryModal,
 }
 
 impl Context {
@@ -70,6 +76,10 @@ impl Context {
             )
             .await,
             modal_difficulty_title_font: ModalDifficultyFont::new(icon_font_path, 1.0, BLACK).await,
+            modal_victory_star_font: ModalVictoryFont::new(icon_font_path, 1.5, MODAL_VICTORY_GOLD)
+                .await,
+            modal_victory_heart_font: ModalVictoryFont::new(icon_font_path, 1.5, MODAL_VICTORY_RED)
+                .await,
             board: Board::new(),
             menu: Menu::new(),
             width_padding: 0.0,
@@ -83,6 +93,7 @@ impl Context {
             old_width: 0,
             portrait: true,
             new_game_modal: Default::default(),
+            victory_modal: Default::default(),
         };
 
         let initial = load("initial");
@@ -96,6 +107,7 @@ impl Context {
                 c.board.cell_state[xy_to_index(x, y, 9)].set_initial_number(*col);
             }
         }
+        c.board.update_number_count();
 
         save("initial", c.board.cell_initial_to_string().as_str());
 
@@ -131,6 +143,9 @@ impl Context {
             }
 
             self.board.click(mouse_x, mouse_y);
+            if self.board.is_victory() {
+                self.victory_modal.show();
+            }
         }
 
         let key_pressed = get_last_key_pressed();
@@ -156,7 +171,15 @@ impl Context {
     pub fn update(&mut self) {
         let mut force_update = false;
 
-        if self.new_game_modal.show {
+        if self.victory_modal.show {
+            if is_mouse_button_pressed(MouseButton::Left) {
+                let (mouse_x, mouse_y) = mouse_position();
+                if self.victory_modal.click_outside(mouse_x, mouse_y) {
+                    self.victory_modal.hide();
+                    return;
+                }
+            }
+        } else if self.new_game_modal.show {
             if is_mouse_button_pressed(MouseButton::Left) {
                 let (mouse_x, mouse_y) = mouse_position();
                 if self.new_game_modal.click_outside(mouse_x, mouse_y) {
@@ -177,6 +200,7 @@ impl Context {
                             self.board.cell_state[xy_to_index(x, y, 9)].set_initial_number(*col);
                         }
                     }
+                    self.board.update_number_count();
                 }
             }
         } else {
@@ -241,9 +265,16 @@ impl Context {
         self.modal_difficulty_font_1.update(self.board.cell_size);
         self.modal_difficulty_font_2.update(self.board.cell_size);
         self.modal_difficulty_font_3.update(self.board.cell_size);
+        self.modal_victory_heart_font.update(self.board.cell_size);
+        self.modal_victory_star_font.update(self.board.cell_size);
         self.modal_difficulty_title_font
             .update(self.board.cell_size);
         self.new_game_modal.update(
+            self.game_square,
+            self.modal_difficulty_font_1.width,
+            self.modal_difficulty_font_1.height,
+        );
+        self.victory_modal.update(
             self.game_square,
             self.modal_difficulty_font_1.width,
             self.modal_difficulty_font_1.height,

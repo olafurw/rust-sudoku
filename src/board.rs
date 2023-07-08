@@ -119,11 +119,20 @@ impl Board {
         self.add_undo_point();
     }
 
+    pub fn is_victory(&self) -> bool {
+        for count in self.number_count.iter() {
+            if *count != DIGIT_COUNT {
+                return false;
+            }
+        }
+        true
+    }
+
     pub fn is_number_done(&self, number: u8) -> bool {
         self.number_count[(number - 1) as usize] == DIGIT_COUNT
     }
 
-    fn update_number_count(&mut self) {
+    pub fn update_number_count(&mut self) {
         self.number_count = [0; 9];
 
         for cell in self.cell_state.iter() {

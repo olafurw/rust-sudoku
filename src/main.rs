@@ -22,6 +22,7 @@ mod draw_board;
 mod draw_common;
 mod draw_menu;
 mod draw_new_game_modal;
+mod draw_victory_modal;
 mod font_size;
 mod fonts;
 mod generate;
@@ -29,6 +30,7 @@ mod index;
 mod menu;
 mod menu_item;
 mod new_game_modal;
+mod victory_modal;
 
 #[cfg_attr(target_arch = "wasm32", path = "save_wasm.rs")]
 #[cfg_attr(not(target_arch = "wasm32"), path = "save_win.rs")]
@@ -57,6 +59,8 @@ pub const MODAL_BACKGROUND: Color = color_u8!(0, 0, 0, 128);
 pub const MODAL_DIFFICULTY_ONE: Color = color_u8!(0, 128, 0, 255);
 pub const MODAL_DIFFICULTY_TWO: Color = color_u8!(255, 128, 0, 255);
 pub const MODAL_DIFFICULTY_THREE: Color = color_u8!(255, 0, 0, 255);
+pub const MODAL_VICTORY_GOLD: Color = color_u8!(242, 183, 5, 255);
+pub const MODAL_VICTORY_RED: Color = color_u8!(239, 50, 50, 255);
 
 pub const DEBUG_RED: Color = color_u8!(255, 0, 0, 128);
 pub const DEBUG_BLUE: Color = color_u8!(0, 0, 255, 128);
@@ -106,6 +110,8 @@ pub const ICON_DIFFICULTY_2: &str = "\u{f783}";
 pub const ICON_DIFFICULTY_3: &str = "\u{f782}";
 pub const ICON_DIFFICULTY_NEW: &str = "\u{e3fc}";
 pub const ICON_DELETE: &str = "\u{e872}";
+pub const ICON_VICTORY_HEART: &str = "\u{e87d}";
+pub const ICON_VICTORY_STAR: &str = "\u{e8d0}";
 
 pub fn is_legal_number(number: u8) -> bool {
     (1..=9).contains(&number)
