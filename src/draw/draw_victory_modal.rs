@@ -5,10 +5,8 @@ use macroquad::{
     window::{screen_height, screen_width},
 };
 
-use crate::{
-    context::Context, draw_common::draw_rounded_rectangle, ICON_VICTORY_HEART, ICON_VICTORY_STAR,
-    MODAL_BACKGROUND,
-};
+use crate::draw::draw_common::draw_rounded_rectangle;
+use crate::{context::Context, ICON_VICTORY_HEART, ICON_VICTORY_STAR, MODAL_BACKGROUND};
 
 pub fn draw_victory_modal(context: &Context) {
     if !context.victory_modal.show {

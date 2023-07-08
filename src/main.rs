@@ -18,11 +18,6 @@ mod cell_location;
 mod cell_state;
 mod context;
 mod draw;
-mod draw_board;
-mod draw_common;
-mod draw_menu;
-mod draw_new_game_modal;
-mod draw_victory_modal;
 mod fonts;
 mod generate;
 mod index;
@@ -35,8 +30,8 @@ mod victory_modal;
 #[cfg_attr(not(target_arch = "wasm32"), path = "save_win.rs")]
 mod save;
 
+use crate::draw::draw::draw_context;
 use context::Context;
-use draw::draw_context;
 use egui_macroquad::egui;
 use macroquad::prelude::*;
 use save::save;

@@ -1,9 +1,10 @@
 use macroquad::text::draw_text_ex;
 
+use crate::draw::draw_common::draw_rounded_rectangle;
 use crate::{
-    board::BoardMode, context::Context, draw_common::draw_rounded_rectangle, ICON_DELETE, ICON_NEW,
-    ICON_PENCIL, ICON_PENCIL_SLASH, ICON_UNDO, MENU_DELETE_BACKGROUND,
-    MENU_NUMBER_BACKGROUND_NORMAL, MENU_NUMBER_BACKGROUND_PENCIL,
+    board::BoardMode, context::Context, ICON_DELETE, ICON_NEW, ICON_PENCIL, ICON_PENCIL_SLASH,
+    ICON_UNDO, MENU_DELETE_BACKGROUND, MENU_NUMBER_BACKGROUND_NORMAL,
+    MENU_NUMBER_BACKGROUND_PENCIL,
 };
 
 fn draw_menu_pencil(context: &Context, icon_x_offset: f32, icon_y_offset: f32) {
