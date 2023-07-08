@@ -15,8 +15,11 @@ fn draw_menu_pencil(context: &Context, icon_x_offset: f32, icon_y_offset: f32) {
     draw_text_ex(
         icon,
         context.menu.pencil.x + icon_x_offset,
-        context.menu.pencil.y + icon_y_offset + context.icon_font.height + (icon_x_offset / 2.0),
-        context.icon_font.params,
+        context.menu.pencil.y
+            + icon_y_offset
+            + context.font_context.icon_font.height
+            + (icon_x_offset / 2.0),
+        context.font_context.icon_font.params,
     );
 }
 
@@ -24,8 +27,11 @@ fn draw_menu_undo(context: &Context, icon_x_offset: f32, icon_y_offset: f32) {
     draw_text_ex(
         ICON_UNDO,
         context.menu.undo.x + icon_x_offset,
-        context.menu.undo.y + icon_y_offset + context.icon_font.height + (icon_x_offset / 2.0),
-        context.icon_font.params,
+        context.menu.undo.y
+            + icon_y_offset
+            + context.font_context.icon_font.height
+            + (icon_x_offset / 2.0),
+        context.font_context.icon_font.params,
     );
 }
 
@@ -33,8 +39,11 @@ fn draw_menu_new(context: &Context, icon_x_offset: f32, icon_y_offset: f32) {
     draw_text_ex(
         ICON_NEW,
         context.menu.new.x + icon_x_offset,
-        context.menu.new.y + icon_y_offset + context.icon_font.height + (icon_x_offset / 2.0),
-        context.icon_font.params,
+        context.menu.new.y
+            + icon_y_offset
+            + context.font_context.icon_font.height
+            + (icon_x_offset / 2.0),
+        context.font_context.icon_font.params,
     );
 }
 
@@ -45,9 +54,9 @@ fn draw_menu_delete(context: &Context, icon_x_offset: f32, icon_y_offset: f32) {
             context.menu.delete.x + icon_x_offset,
             context.menu.delete.y
                 + icon_y_offset
-                + context.icon_font.height
+                + context.font_context.icon_font.height
                 + (icon_x_offset / 2.0),
-            context.icon_font.params,
+            context.font_context.icon_font.params,
         );
     } else {
         draw_rounded_rectangle(
@@ -64,17 +73,18 @@ fn draw_menu_delete(context: &Context, icon_x_offset: f32, icon_y_offset: f32) {
             context.menu.delete.x + icon_x_offset,
             context.menu.delete.y
                 + icon_y_offset
-                + context.icon_font_selected.height
+                + context.font_context.icon_font_selected.height
                 + (icon_x_offset / 2.0),
-            context.icon_font_selected.params,
+            context.font_context.icon_font_selected.params,
         );
     }
 }
 
 fn draw_menu_numbers(context: &Context) {
     let border_offset = context.board.board_size * 0.005;
-    let font_x_offset = (context.menu_number_font.width / 2.0) + border_offset;
-    let font_y_offset = context.menu_number_font.height + (context.menu_number_font.height / 3.0);
+    let font_x_offset = (context.font_context.menu_number_font.width / 2.0) + border_offset;
+    let font_y_offset = context.font_context.menu_number_font.height
+        + (context.font_context.menu_number_font.height / 3.0);
 
     let selected_number = if context.board.selected_number.is_some() {
         context.board.selected_number.unwrap()
@@ -108,9 +118,9 @@ fn draw_menu_numbers(context: &Context) {
             number.x + font_x_offset,
             number.y + font_y_offset,
             if digit == selected_number as usize {
-                context.menu_number_font_selected.params
+                context.font_context.menu_number_font_selected.params
             } else {
-                context.menu_number_font.params
+                context.font_context.menu_number_font.params
             },
         );
     }
@@ -119,8 +129,10 @@ fn draw_menu_numbers(context: &Context) {
 pub fn draw_menu(context: &Context) {
     draw_menu_numbers(context);
 
-    let icon_x_offset = (context.icon_font.width - context.menu.pencil.size).abs() / 2.0;
-    let icon_y_offset = (context.icon_font.height - context.menu.pencil.size).abs() / 2.0;
+    let icon_x_offset =
+        (context.font_context.icon_font.width - context.menu.pencil.size).abs() / 2.0;
+    let icon_y_offset =
+        (context.font_context.icon_font.height - context.menu.pencil.size).abs() / 2.0;
 
     draw_menu_pencil(context, icon_x_offset, icon_y_offset);
     draw_menu_undo(context, icon_x_offset, icon_y_offset);

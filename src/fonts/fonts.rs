@@ -1,7 +1,9 @@
 use macroquad::prelude::*;
 use macroquad::text::TextParams;
 
-use crate::{font_size::estimate_font_size, ICON_DIFFICULTY_1, ICON_PENCIL, ICON_VICTORY_STAR};
+use crate::{ICON_DIFFICULTY_1, ICON_PENCIL, ICON_VICTORY_STAR};
+
+use super::font_size::estimate_font_size;
 
 pub struct CellFont {
     pub params: TextParams,

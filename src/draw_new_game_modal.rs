@@ -33,30 +33,30 @@ pub fn draw_new_game_modal(context: &Context) {
 
     draw_text_ex(
         ICON_DIFFICULTY_NEW,
-        title_x - (context.modal_difficulty_title_font.width / 2.0),
+        title_x - (context.font_context.modal_difficulty_title_font.width / 2.0),
         title_y,
-        context.modal_difficulty_title_font.params,
+        context.font_context.modal_difficulty_title_font.params,
     );
 
-    let extra_y_offset =
-        (context.new_game_modal.height / 3.0) + (context.modal_difficulty_font_1.height / 2.0);
+    let extra_y_offset = (context.new_game_modal.height / 3.0)
+        + (context.font_context.modal_difficulty_font_1.height / 2.0);
 
     draw_text_ex(
         ICON_DIFFICULTY_1,
         context.new_game_modal.difficulty_1.x,
         context.new_game_modal.difficulty_1.y + extra_y_offset,
-        context.modal_difficulty_font_1.params,
+        context.font_context.modal_difficulty_font_1.params,
     );
     draw_text_ex(
         ICON_DIFFICULTY_2,
         context.new_game_modal.difficulty_2.x,
         context.new_game_modal.difficulty_2.y + extra_y_offset,
-        context.modal_difficulty_font_2.params,
+        context.font_context.modal_difficulty_font_2.params,
     );
     draw_text_ex(
         ICON_DIFFICULTY_3,
         context.new_game_modal.difficulty_3.x,
         context.new_game_modal.difficulty_3.y + extra_y_offset,
-        context.modal_difficulty_font_3.params,
+        context.font_context.modal_difficulty_font_3.params,
     );
 }

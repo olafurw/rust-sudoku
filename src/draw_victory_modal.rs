@@ -25,25 +25,25 @@ pub fn draw_victory_modal(context: &Context) {
         WHITE,
     );
 
-    let extra_y_offset =
-        (context.victory_modal.height / 3.0) + (context.modal_victory_star_font.height / 2.0);
+    let extra_y_offset = (context.victory_modal.height / 3.0)
+        + (context.font_context.modal_victory_star_font.height / 2.0);
 
     draw_text_ex(
         ICON_VICTORY_STAR,
         context.victory_modal.star_1.x,
         context.victory_modal.star_1.y + extra_y_offset,
-        context.modal_victory_star_font.params,
+        context.font_context.modal_victory_star_font.params,
     );
     draw_text_ex(
         ICON_VICTORY_HEART,
         context.victory_modal.heart.x,
         context.victory_modal.heart.y + extra_y_offset,
-        context.modal_victory_heart_font.params,
+        context.font_context.modal_victory_heart_font.params,
     );
     draw_text_ex(
         ICON_VICTORY_STAR,
         context.victory_modal.star_2.x,
         context.victory_modal.star_2.y + extra_y_offset,
-        context.modal_victory_star_font.params,
+        context.font_context.modal_victory_star_font.params,
     );
 }

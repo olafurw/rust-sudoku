@@ -23,7 +23,6 @@ mod draw_common;
 mod draw_menu;
 mod draw_new_game_modal;
 mod draw_victory_modal;
-mod font_size;
 mod fonts;
 mod generate;
 mod index;

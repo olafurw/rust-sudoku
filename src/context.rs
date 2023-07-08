@@ -1,36 +1,18 @@
 use std::cmp::min;
 
 use crate::board::Board;
-use crate::fonts::{
-    CellFont, CellPencilFont, IconFont, MenuNumberFont, ModalDifficultyFont, ModalVictoryFont,
-};
+use crate::fonts::font_context::FontContext;
 use crate::generate::{create_puzzle, generate_board};
 use crate::index::xy_to_index;
 use crate::menu::{is_menu_action_number, Menu, MenuActions};
 use crate::new_game_modal::NewGameModal;
 use crate::save::{load, save};
 use crate::victory_modal::VictoryModal;
-use crate::{
-    CELL_TEXT_COLOR, CELL_TEXT_INITIAL_COLOR, MODAL_DIFFICULTY_ONE, MODAL_DIFFICULTY_THREE,
-    MODAL_DIFFICULTY_TWO, MODAL_VICTORY_GOLD, MODAL_VICTORY_RED,
-};
 
 use macroquad::prelude::*;
 
 pub struct Context {
-    pub initial_font: CellFont,
-    pub font: CellFont,
-    pub icon_font: IconFont,
-    pub icon_font_selected: IconFont,
-    pub pencil_font: CellPencilFont,
-    pub menu_number_font: MenuNumberFont,
-    pub menu_number_font_selected: MenuNumberFont,
-    pub modal_difficulty_font_1: ModalDifficultyFont,
-    pub modal_difficulty_font_2: ModalDifficultyFont,
-    pub modal_difficulty_font_3: ModalDifficultyFont,
-    pub modal_difficulty_title_font: ModalDifficultyFont,
-    pub modal_victory_star_font: ModalVictoryFont,
-    pub modal_victory_heart_font: ModalVictoryFont,
+    pub font_context: FontContext,
     pub board: Board,
     pub menu: Menu,
     pub game_padding: f32,
@@ -50,36 +32,7 @@ pub struct Context {
 impl Context {
     pub async fn new(font_path: &str, icon_font_path: &str) -> Self {
         let mut c = Context {
-            initial_font: CellFont::new(font_path, CELL_TEXT_INITIAL_COLOR).await,
-            font: CellFont::new(font_path, CELL_TEXT_COLOR).await,
-            icon_font: IconFont::new(icon_font_path, BLACK).await,
-            icon_font_selected: IconFont::new(icon_font_path, WHITE).await,
-            pencil_font: CellPencilFont::new(font_path).await,
-            menu_number_font: MenuNumberFont::new(font_path, BLACK).await,
-            menu_number_font_selected: MenuNumberFont::new(font_path, WHITE).await,
-            modal_difficulty_font_1: ModalDifficultyFont::new(
-                icon_font_path,
-                1.5,
-                MODAL_DIFFICULTY_ONE,
-            )
-            .await,
-            modal_difficulty_font_2: ModalDifficultyFont::new(
-                icon_font_path,
-                1.5,
-                MODAL_DIFFICULTY_TWO,
-            )
-            .await,
-            modal_difficulty_font_3: ModalDifficultyFont::new(
-                icon_font_path,
-                1.5,
-                MODAL_DIFFICULTY_THREE,
-            )
-            .await,
-            modal_difficulty_title_font: ModalDifficultyFont::new(icon_font_path, 1.0, BLACK).await,
-            modal_victory_star_font: ModalVictoryFont::new(icon_font_path, 1.5, MODAL_VICTORY_GOLD)
-                .await,
-            modal_victory_heart_font: ModalVictoryFont::new(icon_font_path, 1.5, MODAL_VICTORY_RED)
-                .await,
+            font_context: FontContext::new(font_path, icon_font_path).await,
             board: Board::new(),
             menu: Menu::new(),
             width_padding: 0.0,
@@ -252,32 +205,20 @@ impl Context {
         self.board
             .update(self.board_size, self.game_padding, self.portrait);
 
-        self.initial_font.update(self.board.cell_size);
-        self.font.update(self.board.cell_size);
-        self.pencil_font.update(self.board.cell_size);
-        self.menu_number_font.update(self.board.cell_size);
-        self.menu_number_font_selected.update(self.board.cell_size);
-        self.icon_font.update(self.board.cell_size);
-        self.icon_font_selected.update(self.board.cell_size);
         self.menu
             .update(self.board_size, self.game_padding, self.portrait);
 
-        self.modal_difficulty_font_1.update(self.board.cell_size);
-        self.modal_difficulty_font_2.update(self.board.cell_size);
-        self.modal_difficulty_font_3.update(self.board.cell_size);
-        self.modal_victory_heart_font.update(self.board.cell_size);
-        self.modal_victory_star_font.update(self.board.cell_size);
-        self.modal_difficulty_title_font
-            .update(self.board.cell_size);
+        self.font_context.update(self.board.cell_size);
+
         self.new_game_modal.update(
             self.game_square,
-            self.modal_difficulty_font_1.width,
-            self.modal_difficulty_font_1.height,
+            self.font_context.modal_difficulty_font_1.width,
+            self.font_context.modal_difficulty_font_1.height,
         );
         self.victory_modal.update(
             self.game_square,
-            self.modal_difficulty_font_1.width,
-            self.modal_difficulty_font_1.height,
+            self.font_context.modal_difficulty_font_1.width,
+            self.font_context.modal_difficulty_font_1.height,
         );
     }
 }

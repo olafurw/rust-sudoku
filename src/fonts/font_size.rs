@@ -37,8 +37,9 @@ fn find_best_font_size(measure_fn: Box<dyn Fn(u16) -> TextDimensions>, cell_size
 
 #[cfg(test)]
 mod tests {
-    use crate::font_size::find_best_font_size;
     use macroquad::text::TextDimensions;
+
+    use crate::fonts::font_size::find_best_font_size;
 
     #[test]
     fn empty_measure() {

@@ -9,7 +9,7 @@ use crate::{
     cell_location::CellLocation,
     cell_state::{CellSelection, CellState},
     context::Context,
-    fonts::{CellFont, CellPencilFont},
+    fonts::fonts::{CellFont, CellPencilFont},
     index::index_to_xy,
     CELL_COLOR_HIGHLIGHTED, CELL_COLOR_NORMAL, CELL_COLOR_NORMAL_EMPHASIZE,
     CELL_COLOR_PENCIL_EMPHASIZE,
@@ -18,9 +18,9 @@ use crate::{
 pub fn draw_board(context: &Context) {
     draw_board_cells(
         &context.board,
-        &context.initial_font,
-        &context.font,
-        &context.pencil_font,
+        &context.font_context.initial_font,
+        &context.font_context.font,
+        &context.font_context.pencil_font,
     );
 
     draw_cell_lines(context);
