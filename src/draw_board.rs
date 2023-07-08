@@ -5,13 +5,14 @@ use macroquad::{
 };
 
 use crate::{
-    board::Board,
+    board::{Board, BoardMode},
     cell_location::CellLocation,
     cell_state::{CellSelection, CellState},
     context::Context,
     fonts::{CellFont, CellPencilFont},
     index::index_to_xy,
-    CELL_COLOR_EMPHASIZE, CELL_COLOR_HIGHLIGHTED, CELL_COLOR_NORMAL,
+    CELL_COLOR_HIGHLIGHTED, CELL_COLOR_NORMAL, CELL_COLOR_NORMAL_EMPHASIZE,
+    CELL_COLOR_PENCIL_EMPHASIZE,
 };
 
 pub fn draw_board(context: &Context) {
@@ -29,12 +30,17 @@ pub fn draw_board(context: &Context) {
 fn draw_cell(
     cell_state: &CellState,
     cell_location: &CellLocation,
+    mode: &BoardMode,
     initial_font: &CellFont,
     font: &CellFont,
     pencil_font: &CellPencilFont,
 ) {
     let color = if cell_state.selection == CellSelection::Emphasized {
-        CELL_COLOR_EMPHASIZE
+        if *mode == BoardMode::Pencil {
+            CELL_COLOR_PENCIL_EMPHASIZE
+        } else {
+            CELL_COLOR_NORMAL_EMPHASIZE
+        }
     } else if cell_state.selection == CellSelection::Highlighted {
         CELL_COLOR_HIGHLIGHTED
     } else {
@@ -88,6 +94,7 @@ fn draw_board_cells(
         draw_cell(
             &board.cell_state[i],
             &board.cell_location[i],
+            &board.mode,
             initial_font,
             font,
             pencil_font,

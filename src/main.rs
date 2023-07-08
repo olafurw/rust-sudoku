@@ -42,11 +42,11 @@ use save::save;
 
 pub const DIGIT_COUNT: u8 = 9;
 pub const CELL_COLOR_NORMAL: Color = color_u8!(255, 255, 255, 255);
-pub const CELL_COLOR_SELECTED: Color = color_u8!(255, 208, 177, 255);
-pub const CELL_COLOR_EMPHASIZE: Color = color_u8!(255, 208, 177, 255);
-pub const CELL_COLOR_HIGHLIGHTED: Color = color_u8!(219, 219, 219, 255);
+pub const CELL_COLOR_NORMAL_EMPHASIZE: Color = color_u8!(158, 190, 255, 255);
+pub const CELL_COLOR_PENCIL_EMPHASIZE: Color = color_u8!(255, 193, 140, 255);
+pub const CELL_COLOR_HIGHLIGHTED: Color = color_u8!(225, 225, 225, 255);
 
-pub const CELL_TEXT_COLOR: Color = color_u8!(44, 96, 142, 255);
+pub const CELL_TEXT_COLOR: Color = color_u8!(35, 77, 114, 255);
 pub const CELL_TEXT_INITIAL_COLOR: Color = color_u8!(0, 0, 0, 255);
 
 pub const MENU_NUMBER_BACKGROUND_NORMAL: Color = color_u8!(56, 76, 107, 255);
@@ -129,9 +129,7 @@ async fn main() {
         egui_macroquad::ui(|egui_ctx| {
             egui_ctx.set_visuals(egui::Visuals::light());
             egui::Window::new("debug").show(egui_ctx, |ui| {
-                ui.label(format!("sq: {}", context.game_square));
-                ui.label(format!("fw: {}", context.new_game_modal.font_width));
-                ui.label(format!("fh: {}", context.new_game_modal.font_height));
+                ui.label(format!("mode: {:?}", context.board.mode));
             });
         });
 
