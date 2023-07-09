@@ -3,8 +3,14 @@ use rusqlite::{params, Connection};
 pub fn load(key: &str) -> Option<String> {
     let db = Connection::open("save.db").unwrap();
     let mut stmt = db.prepare("SELECT value FROM save WHERE key = ?1").unwrap();
+
     let mut rows = stmt.query(params![key]).unwrap();
-    let row = rows.next().unwrap().unwrap();
+    let row = rows.next();
+    if row.is_err() {
+        return None;
+    }
+
+    let row = row.unwrap()?;
     let value: String = row.get(0).unwrap();
     Some(value)
 }

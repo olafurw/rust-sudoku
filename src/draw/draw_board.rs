@@ -9,7 +9,7 @@ use crate::{
     cell_location::CellLocation,
     cell_state::{CellSelection, CellState},
     context::Context,
-    fonts::fonts::{CellFont, CellPencilFont},
+    fonts::font_types::{CellFont, CellPencilFont},
     index::index_to_xy,
     CELL_COLOR_HIGHLIGHTED, CELL_COLOR_NORMAL, CELL_COLOR_NORMAL_EMPHASIZE,
     CELL_COLOR_PENCIL_EMPHASIZE,

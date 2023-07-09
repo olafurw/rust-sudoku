@@ -1,4 +1,6 @@
-#[derive(Clone, Copy)]
+use serde_derive::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 pub struct CellLocation {
     pub x: f32,
     pub y: f32,

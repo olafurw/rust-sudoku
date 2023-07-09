@@ -1,13 +1,15 @@
+use serde_derive::{Deserialize, Serialize};
+
 use crate::is_legal_number;
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
 pub enum CellSelection {
     None,
     Emphasized,
     Highlighted,
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Serialize, Deserialize, Debug)]
 pub struct CellState {
     pub number: Option<u8>,
     pub pencil: [Option<u8>; 9],

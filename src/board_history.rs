@@ -1,4 +1,6 @@
 use crate::{board::BoardMode, cell_state::CellState};
+use serde_big_array::BigArray;
+use serde_derive::{Deserialize, Serialize};
 
 pub struct BoardUndoPoint {
     pub cell_state: [CellState; 81],
@@ -7,8 +9,15 @@ pub struct BoardUndoPoint {
     pub selected_number: Option<u8>,
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+pub struct CellStates {
+    #[serde(with = "BigArray")]
+    state: [CellState; 81],
+}
+
+#[derive(Serialize, Deserialize, Debug)]
 pub struct BoardHistory {
-    pub cell_state_history: Vec<[CellState; 81]>,
+    pub cell_state_history: Vec<CellStates>,
     pub mode_history: Vec<BoardMode>,
     pub selected_index_history: Vec<Option<usize>>,
     pub selected_number_history: Vec<Option<u8>>,
@@ -47,7 +56,7 @@ impl BoardHistory {
         };
 
         Some(BoardUndoPoint {
-            cell_state,
+            cell_state: cell_state.state,
             mode,
             selected_index,
             selected_number,
@@ -61,7 +70,9 @@ impl BoardHistory {
         selected_index: Option<usize>,
         selected_number: Option<u8>,
     ) {
-        self.cell_state_history.push(*cell_states);
+        self.cell_state_history.push(CellStates {
+            state: *cell_states,
+        });
         self.mode_history.push(mode);
         self.selected_index_history.push(selected_index);
         self.selected_number_history.push(selected_number);

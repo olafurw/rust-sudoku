@@ -30,11 +30,10 @@ mod victory_modal;
 #[cfg_attr(not(target_arch = "wasm32"), path = "save_win.rs")]
 mod save;
 
-use crate::draw::draw::draw_context;
 use context::Context;
-use egui_macroquad::egui;
+use draw::draw_context::draw_context;
+//use egui_macroquad::egui;
 use macroquad::prelude::*;
-use save::save;
 
 pub const DIGIT_COUNT: u8 = 9;
 pub const CELL_COLOR_NORMAL: Color = color_u8!(255, 255, 255, 255);
@@ -126,14 +125,14 @@ async fn main() {
         context.update();
         draw_context(&context);
 
-        egui_macroquad::ui(|egui_ctx| {
+        /*egui_macroquad::ui(|egui_ctx| {
             egui_ctx.set_visuals(egui::Visuals::light());
             egui::Window::new("debug").show(egui_ctx, |ui| {
                 ui.label(format!("mode: {:?}", context.board.mode));
             });
         });
 
-        egui_macroquad::draw();
+        egui_macroquad::draw();*/
 
         next_frame().await
     }

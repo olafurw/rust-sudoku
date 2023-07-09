@@ -7,16 +7,21 @@ use crate::index::index_to_xy;
 use crate::{
     is_legal_index, is_legal_number, BOX_INDEXES, COLUMN_INDEXES, DIGIT_COUNT, ROW_INDEXES,
 };
+use serde_big_array::BigArray;
+use serde_derive::{Deserialize, Serialize};
 
-#[derive(Debug, PartialEq, Clone, Copy)]
+#[derive(Debug, PartialEq, Clone, Copy, Serialize, Deserialize)]
 pub enum BoardMode {
     Normal,
     Pencil,
 }
 
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Board {
     pub history: BoardHistory,
+    #[serde(with = "BigArray")]
     pub cell_state: [CellState; 81],
+    #[serde(with = "BigArray")]
     pub cell_location: [CellLocation; 81],
     pub number_count: [u8; 9],
     pub mode: BoardMode,
@@ -45,20 +50,6 @@ impl Board {
             selected_index: None,
             selected_number: None,
         }
-    }
-
-    pub fn cell_initial_to_string(&self) -> String {
-        let mut result = String::new();
-        for index in 0..81 {
-            let cell = self.cell_state[index];
-            if cell.has_initial_number() {
-                result.push_str(&cell.number.unwrap().to_string());
-            } else {
-                result.push('0');
-            }
-        }
-
-        result
     }
 
     pub fn toggle_pencil_mode(&mut self) {

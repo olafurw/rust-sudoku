@@ -5,7 +5,7 @@ use crate::{
     MODAL_DIFFICULTY_TWO, MODAL_VICTORY_GOLD, MODAL_VICTORY_RED,
 };
 
-use super::fonts::{
+use super::font_types::{
     CellFont, CellPencilFont, IconFont, MenuNumberFont, ModalDifficultyFont, ModalVictoryFont,
 };
 
