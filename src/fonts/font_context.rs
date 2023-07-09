@@ -37,26 +37,26 @@ impl FontContext {
             menu_number_font_selected: MenuNumberFont::new(font_path, WHITE).await,
             modal_difficulty_font_1: ModalDifficultyFont::new(
                 icon_font_path,
-                1.5,
+                0.5,
                 MODAL_DIFFICULTY_ONE,
             )
             .await,
             modal_difficulty_font_2: ModalDifficultyFont::new(
                 icon_font_path,
-                1.5,
+                0.5,
                 MODAL_DIFFICULTY_TWO,
             )
             .await,
             modal_difficulty_font_3: ModalDifficultyFont::new(
                 icon_font_path,
-                1.5,
+                0.5,
                 MODAL_DIFFICULTY_THREE,
             )
             .await,
-            modal_difficulty_title_font: ModalDifficultyFont::new(icon_font_path, 1.0, BLACK).await,
-            modal_victory_star_font: ModalVictoryFont::new(icon_font_path, 1.5, MODAL_VICTORY_GOLD)
+            modal_difficulty_title_font: ModalDifficultyFont::new(icon_font_path, 0.7, BLACK).await,
+            modal_victory_star_font: ModalVictoryFont::new(icon_font_path, 0.5, MODAL_VICTORY_GOLD)
                 .await,
-            modal_victory_heart_font: ModalVictoryFont::new(icon_font_path, 1.5, MODAL_VICTORY_RED)
+            modal_victory_heart_font: ModalVictoryFont::new(icon_font_path, 0.5, MODAL_VICTORY_RED)
                 .await,
         }
     }

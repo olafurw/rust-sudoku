@@ -66,7 +66,7 @@ impl NewGameModal {
 
         let button_y = self.y + self.height / 2.0 - self.font_height / 2.0;
 
-        let button_2_x = (self.game_square / 2.0) - (self.font_width / 2.0);
+        let button_2_x = (self.game_square / 2.0) - self.font_width;
         self.difficulty_2.update(button_2_x, button_y, cell_width);
 
         let button_1_x = button_2_x - (cell_width * 1.25);

@@ -61,7 +61,7 @@ fn draw_menu_delete(context: &Context, icon_x_offset: f32, icon_y_offset: f32) {
         );
     } else {
         draw_rounded_rectangle(
-            context.menu.delete.x,
+            context.menu.delete.x + (icon_x_offset / 3.5),
             context.menu.delete.y,
             context.menu.item_size,
             context.menu.item_size,
@@ -130,8 +130,7 @@ fn draw_menu_numbers(context: &Context) {
 pub fn draw_menu(context: &Context) {
     draw_menu_numbers(context);
 
-    let icon_x_offset =
-        (context.font_context.icon_font.width - context.menu.pencil.size).abs() / 2.0;
+    let icon_x_offset = context.font_context.icon_font.width / 2.0; //  (context.font_context.icon_font.width - context.menu.pencil.size).abs() / 2.0;
     let icon_y_offset =
         (context.font_context.icon_font.height - context.menu.pencil.size).abs() / 2.0;
 

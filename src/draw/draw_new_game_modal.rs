@@ -34,7 +34,8 @@ pub fn draw_new_game_modal(context: &Context) {
 
     draw_text_ex(
         ICON_DIFFICULTY_NEW,
-        title_x - (context.font_context.modal_difficulty_title_font.width / 2.0),
+        title_x - (title_width / 2.0)
+            + (context.font_context.modal_difficulty_title_font.width * 0.85), //  - (context.font_context.modal_difficulty_title_font.width / 3.0)
         title_y,
         context.font_context.modal_difficulty_title_font.params,
     );

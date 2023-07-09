@@ -36,7 +36,7 @@ impl CellFont {
     }
 
     pub fn update(&mut self, cell_size: f32) {
-        self.params.font_size = estimate_font_size("9", Some(self.font), cell_size);
+        self.params.font_size = estimate_font_size("9", Some(self.font), cell_size, 1.0);
         let measure = measure_text("9", Some(self.font), self.params.font_size, 1.0);
         self.width = measure.width;
         self.height = measure.height;
@@ -82,7 +82,7 @@ impl CellPencilFont {
         let padding = cell_size * 0.1;
         self.box_size = (cell_size - padding) / 3.0;
 
-        self.params.font_size = estimate_font_size("9", Some(self.font), self.box_size);
+        self.params.font_size = estimate_font_size("9", Some(self.font), self.box_size, 1.0);
         let measure = measure_text("9", Some(self.font), self.params.font_size, 1.0);
         self.width = measure.width;
         self.height = measure.height;
@@ -119,7 +119,7 @@ impl MenuNumberFont {
     }
 
     pub fn update(&mut self, cell_size: f32) {
-        self.params.font_size = estimate_font_size("9", Some(self.font), cell_size);
+        self.params.font_size = estimate_font_size("9", Some(self.font), cell_size, 1.0);
 
         let measure = measure_text("9", Some(self.font), self.params.font_size, 1.0);
         self.width = measure.width;
@@ -137,7 +137,7 @@ pub struct IconFont {
 impl IconFont {
     pub async fn new(font_path: &str, color: Color) -> Self {
         let font = load_ttf_font(font_path).await.unwrap();
-        let measure = measure_text(ICON_PENCIL, Some(font), 48, 1.0);
+        let measure = measure_text(ICON_PENCIL, Some(font), 48, 0.7);
         IconFont {
             font,
             params: TextParams {
@@ -154,8 +154,8 @@ impl IconFont {
     }
 
     pub fn update(&mut self, cell_size: f32) {
-        self.params.font_size = estimate_font_size(ICON_PENCIL, Some(self.font), cell_size);
-        let measure = measure_text(ICON_PENCIL, Some(self.font), self.params.font_size, 1.0);
+        self.params.font_size = estimate_font_size(ICON_PENCIL, Some(self.font), cell_size, 0.7);
+        let measure = measure_text(ICON_PENCIL, Some(self.font), self.params.font_size, 0.7);
         self.width = measure.width;
         self.height = measure.height;
     }
@@ -172,7 +172,7 @@ pub struct ModalDifficultyFont {
 impl ModalDifficultyFont {
     pub async fn new(font_path: &str, estimate_scale: f32, color: Color) -> Self {
         let font = load_ttf_font(font_path).await.unwrap();
-        let measure = measure_text(ICON_DIFFICULTY_1, Some(font), 48, 1.0);
+        let measure = measure_text(ICON_DIFFICULTY_1, Some(font), 48, estimate_scale);
         ModalDifficultyFont {
             font,
             params: TextParams {
@@ -193,13 +193,14 @@ impl ModalDifficultyFont {
         self.params.font_size = estimate_font_size(
             ICON_DIFFICULTY_1,
             Some(self.font),
-            cell_size * self.estimate_scale,
+            cell_size,
+            self.estimate_scale,
         );
         let measure = measure_text(
             ICON_DIFFICULTY_1,
             Some(self.font),
             self.params.font_size,
-            1.0,
+            self.estimate_scale,
         );
         self.width = measure.width;
         self.height = measure.height;
@@ -238,7 +239,8 @@ impl ModalVictoryFont {
         self.params.font_size = estimate_font_size(
             ICON_VICTORY_STAR,
             Some(self.font),
-            cell_size * self.estimate_scale,
+            cell_size,
+            self.estimate_scale,
         );
         let measure = measure_text(
             ICON_VICTORY_STAR,

@@ -37,11 +37,11 @@ use macroquad::prelude::*;
 
 pub const DIGIT_COUNT: u8 = 9;
 pub const CELL_COLOR_NORMAL: Color = color_u8!(255, 255, 255, 255);
-pub const CELL_COLOR_NORMAL_EMPHASIZE: Color = color_u8!(158, 190, 255, 255);
+pub const CELL_COLOR_NORMAL_EMPHASIZE: Color = color_u8!(186, 209, 255, 255);
 pub const CELL_COLOR_PENCIL_EMPHASIZE: Color = color_u8!(255, 193, 140, 255);
-pub const CELL_COLOR_HIGHLIGHTED: Color = color_u8!(225, 225, 225, 255);
+pub const CELL_COLOR_HIGHLIGHTED: Color = color_u8!(219, 219, 219, 255);
 
-pub const CELL_TEXT_COLOR: Color = color_u8!(35, 77, 114, 255);
+pub const CELL_TEXT_COLOR: Color = color_u8!(41, 91, 135, 255);
 pub const CELL_TEXT_INITIAL_COLOR: Color = color_u8!(0, 0, 0, 255);
 
 pub const MENU_NUMBER_BACKGROUND_NORMAL: Color = color_u8!(56, 76, 107, 255);
@@ -117,7 +117,11 @@ pub fn is_legal_index(number: usize) -> bool {
 #[macroquad::main("Sudoku")]
 async fn main() {
     rand::srand(macroquad::miniquad::date::now() as _);
-    let mut context = Context::new("liberation-sans.ttf", "material-font.ttf").await;
+    let mut context = Context::new(
+        "liberation-sans-minimized.ttf",
+        "material-font-minimized.ttf",
+    )
+    .await;
 
     request_new_screen_size(800.0, 1080.0);
 
