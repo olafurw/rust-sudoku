@@ -82,13 +82,13 @@ impl CellPencilFont {
         let padding = cell_size * 0.1;
         self.box_size = (cell_size - padding) / 3.0;
 
-        self.params.font_size = estimate_font_size("9", Some(self.font), self.box_size, 1.0);
+        self.params.font_size = estimate_font_size("9", Some(self.font), self.box_size * 1.1, 1.0);
         let measure = measure_text("9", Some(self.font), self.params.font_size, 1.0);
         self.width = measure.width;
         self.height = measure.height;
 
-        self.x_offset = (self.box_size / 2.0) - (self.width / 2.0) + (padding / 2.0);
-        self.y_offset = (self.box_size / 2.0) + (self.height / 2.0) + (padding / 2.0);
+        self.x_offset = (self.box_size / 2.0) - (self.width / 2.0) + (self.box_size * 0.1);
+        self.y_offset = (self.box_size / 2.0) + (self.height / 2.0) + (self.box_size * 0.1);
     }
 }
 
