@@ -25,7 +25,9 @@ pub fn save(key: &str, value: &str) {
 }
 
 fn migrate_db(db: &Connection) {
-    let mut stmt = db.prepare("CREATE TABLE IF NOT EXISTS save (key VARCHAR(255) PRIMARY KEY, value LONGTEXT);").unwrap();
+    let mut stmt = db
+        .prepare("CREATE TABLE IF NOT EXISTS save (key VARCHAR(255) PRIMARY KEY, value LONGTEXT);")
+        .unwrap();
     stmt.execute(params![]).unwrap();
 }
 
@@ -37,7 +39,6 @@ fn get_connection() -> Connection {
 
     return conn;
 }
-
 
 fn get_database_flags() -> OpenFlags {
     let mut db_flags = OpenFlags::empty();
