@@ -37,7 +37,7 @@ fn get_connection() -> Connection {
 
     migrate_db(&conn);
 
-    return conn;
+    conn
 }
 
 fn get_database_flags() -> OpenFlags {
