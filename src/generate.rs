@@ -1,5 +1,7 @@
 use macroquad::rand::gen_range;
 
+const DIGITS: [u8; 9] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
 fn shuffle<T>(array: &mut [T]) {
     let mut i = array.len();
     while i >= 2 {
@@ -21,19 +23,19 @@ fn fill_diagonal(board: &mut [[u8; 9]; 9]) {
 }
 
 fn fill_subgrid(board: &mut [[u8; 9]; 9], row: usize, col: usize) {
-    let mut values: Vec<u8> = (1..=9).collect();
+    let mut values = DIGITS;
     shuffle(&mut values);
 
     for i in 0..3 {
         for j in 0..3 {
-            board[row + i][col + j] = values.pop().unwrap();
+            board[row + i][col + j] = values[i * 3 + j];
         }
     }
 }
 
 fn solve(board: &mut [[u8; 9]; 9]) -> bool {
     if let Some((row, col)) = find_empty_cell(board) {
-        let mut values: Vec<u8> = (1..=9).collect();
+        let mut values = DIGITS;
         shuffle(&mut values);
 
         for value in values {
@@ -94,7 +96,7 @@ pub fn create_puzzle(board: &mut [[u8; 9]; 9], difficulty: u8) {
     let num_cells_to_remove = match difficulty {
         1 => 35, // Easy
         2 => 45, // Medium
-        3 => 50, // Hard
+        3 => 52, // Hard
         _ => panic!("Invalid difficulty level!"),
     };
 
@@ -129,7 +131,7 @@ fn has_unique_solution(board: &mut [[u8; 9]; 9]) -> bool {
 
 fn solve_with_unique_solution(board: &mut [[u8; 9]; 9], solution_count: &mut usize) {
     if let Some((row, col)) = find_empty_cell(board) {
-        let mut values: Vec<u8> = (1..=9).collect();
+        let mut values = DIGITS;
         shuffle(&mut values);
 
         for value in values {
@@ -204,7 +206,7 @@ mod tests {
         let num_filled_cells = board.iter().flatten().filter(|&&value| value != 0).count();
 
         // Check that the number of filled cells matches the expected difficulty level
-        assert_eq!(num_filled_cells, 81 - 50); // 81 is the total number of cells in the board
+        assert_eq!(num_filled_cells, 81 - 52); // 81 is the total number of cells in the board
 
         // Check that the puzzle is still solvable and has a unique solution
         let mut puzzle_board = board;
